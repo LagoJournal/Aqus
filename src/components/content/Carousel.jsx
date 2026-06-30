@@ -18,17 +18,25 @@ export function Carousel({
   const trackRef = React.useRef(null);
   const items = React.Children.toArray(children);
   const [active, setActive] = React.useState(0);
+  const isProgrammatic = React.useRef(false);
+  const programmaticTimer = React.useRef(null);
 
   const scrollTo = (i) => {
     const track = trackRef.current;
     if (!track) return;
     const clamped = Math.max(0, Math.min(i, items.length - 1));
     const child = track.children[clamped];
-    if (child) track.scrollTo({ left: child.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    if (child) {
+      isProgrammatic.current = true;
+      clearTimeout(programmaticTimer.current);
+      programmaticTimer.current = setTimeout(() => { isProgrammatic.current = false; }, 400);
+      track.scrollTo({ left: child.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    }
     setActive(clamped);
   };
 
   const onScroll = () => {
+    if (isProgrammatic.current) return;
     const track = trackRef.current;
     if (!track) return;
     let nearest = 0, min = Infinity;
