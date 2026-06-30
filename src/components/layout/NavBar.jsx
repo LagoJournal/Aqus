@@ -11,6 +11,8 @@ export function NavBar({
   action,
   activeHref,
   onLinkClick,
+  homeHref = '/',
+  onBrandClick,
   style = {},
   ...rest
 }) {
@@ -34,7 +36,9 @@ export function NavBar({
         position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none',
         background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass)',
       }} />
-      <a href="/" style={{ position: 'relative', display: 'inline-flex', textDecoration: 'none' }}>
+      <a href={homeHref}
+        onClick={onBrandClick ? (e) => { e.preventDefault(); onBrandClick(e); } : undefined}
+        style={{ position: 'relative', display: 'inline-flex', textDecoration: 'none' }}>
         <Wordmark size={22} animate={false} />
       </a>
       {links.length > 0 && (

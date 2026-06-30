@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Extract `aqus-handoff/` into a standalone git repo (`github.com/agustinlago/aqus`), restructure into a clean `src/` + `docs/` layout, package as `@agustin/aqus` npm library (v0.1.0), and ship a User Guide + Agent Guide so any project can pin a version and get matching components + documentation.
+**Goal:** Extract `aqus-handoff/` into a standalone git repo (`github.com/LagoJournal/aqus`), restructure into a clean `src/` + `docs/` layout, package as `@agustin/aqus` npm library (v0.1.0), and ship a User Guide + Agent Guide so any project can pin a version and get matching components + documentation.
 
-**Architecture:** Own git repo with semver tags. Consumers install via `github:agustinlago/aqus#v0.1.0` — pinning a tag gives them components and AGENT_GUIDE from that exact version. Vite library mode builds ESM + CJS into `dist/`. CSS tokens stay as source CSS (bundlers resolve `@import` natively). SKILL.md makes the `aqus-design` skill point agents to `docs/AGENT_GUIDE.md` for view composition.
+**Architecture:** Own git repo with semver tags. Consumers install via `github:LagoJournal/aqus#v0.1.0` — pinning a tag gives them components and AGENT_GUIDE from that exact version. Vite library mode builds ESM + CJS into `dist/`. CSS tokens stay as source CSS (bundlers resolve `@import` natively). SKILL.md makes the `aqus-design` skill point agents to `docs/AGENT_GUIDE.md` for view composition.
 
 **Tech Stack:** Vite 5 (library mode), `@vitejs/plugin-react`, React 18 peer dep, CSS custom properties, Phosphor icons (peer/CDN), oxlint rule enforcement.
 
@@ -51,16 +51,16 @@ aqus/                            ← new standalone repo (extracted from aqus-ha
 - [ ] **Step 1: Create new repo directory alongside current project**
 
 ```bash
-mkdir -p /Users/agustinlago/Documents/Projects/aqus
-cd /Users/agustinlago/Documents/Projects/aqus
+mkdir -p /Users/LagoJournal/Documents/Projects/aqus
+cd /Users/LagoJournal/Documents/Projects/aqus
 git init
 ```
 
 - [ ] **Step 2: Copy source files preserving structure**
 
 ```bash
-SRC=/Users/agustinlago/Documents/Projects/Aqus/aqus-handoff
-DEST=/Users/agustinlago/Documents/Projects/aqus
+SRC=/Users/LagoJournal/Documents/Projects/Aqus/aqus-handoff
+DEST=/Users/LagoJournal/Documents/Projects/aqus
 
 # Source components and tokens → src/
 cp -r "$SRC/components" "$DEST/src/"
@@ -88,12 +88,12 @@ cp "$SRC/SKILL.md" "$DEST/"
 Open `aqus/styles.css`. Every `@import` that pointed to `tokens/` must now point to `src/tokens/`:
 
 ```bash
-sed -i '' "s|@import './tokens/|@import './src/tokens/|g" /Users/agustinlago/Documents/Projects/aqus/styles.css
+sed -i '' "s|@import './tokens/|@import './src/tokens/|g" /Users/LagoJournal/Documents/Projects/aqus/styles.css
 ```
 
 Verify:
 ```bash
-grep "@import" /Users/agustinlago/Documents/Projects/aqus/styles.css | head -10
+grep "@import" /Users/LagoJournal/Documents/Projects/aqus/styles.css | head -10
 ```
 
 Expected: all imports read `./src/tokens/...`
@@ -110,7 +110,7 @@ dist/
 - [ ] **Step 5: Verify structure**
 
 ```bash
-find /Users/agustinlago/Documents/Projects/aqus -not -path "*/node_modules/*" | sort | head -60
+find /Users/LagoJournal/Documents/Projects/aqus -not -path "*/node_modules/*" | sort | head -60
 ```
 
 Expected tree shows `src/components/`, `src/tokens/`, `docs/`, `assets/`, `styles.css`.
@@ -118,7 +118,7 @@ Expected tree shows `src/components/`, `src/tokens/`, `docs/`, `assets/`, `style
 - [ ] **Step 6: Initial commit**
 
 ```bash
-cd /Users/agustinlago/Documents/Projects/aqus
+cd /Users/LagoJournal/Documents/Projects/aqus
 git add .
 git commit -m "chore: initial scaffold — extracted from aqus-handoff, restructured into src/ + docs/"
 ```
@@ -171,7 +171,7 @@ git commit -m "chore: initial scaffold — extracted from aqus-handoff, restruct
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/agustinlago/aqus.git"
+    "url": "https://github.com/LagoJournal/aqus.git"
   },
   "keywords": ["design-system", "react", "aqua", "retro-aero", "component-library"],
   "license": "MIT"
@@ -181,7 +181,7 @@ git commit -m "chore: initial scaffold — extracted from aqus-handoff, restruct
 - [ ] **Step 2: Install dev deps**
 
 ```bash
-cd /Users/agustinlago/Documents/Projects/aqus && npm install
+cd /Users/LagoJournal/Documents/Projects/aqus && npm install
 ```
 
 Expected: `node_modules/` created, no errors.
@@ -294,7 +294,7 @@ export { Wordmark } from './components/brand/Wordmark.jsx'
 - [ ] **Step 2: Verify exports resolve**
 
 ```bash
-cd /Users/agustinlago/Documents/Projects/aqus
+cd /Users/LagoJournal/Documents/Projects/aqus
 node --input-type=module <<'EOF'
 import('./src/index.js').then(m => console.log('Exports:', Object.keys(m).length)).catch(e => console.error(e.message))
 EOF
@@ -356,7 +356,7 @@ export default defineConfig({
 - [ ] **Step 2: Build**
 
 ```bash
-cd /Users/agustinlago/Documents/Projects/aqus && npm run build
+cd /Users/LagoJournal/Documents/Projects/aqus && npm run build
 ```
 
 Expected output in `dist/`:
@@ -377,7 +377,7 @@ For each hit: add named export alongside default, e.g. `export function Button` 
 - [ ] **Step 3: Spot-check bundle**
 
 ```bash
-grep -c "function Button" /Users/agustinlago/Documents/Projects/aqus/dist/aqus.es.js
+grep -c "function Button" /Users/LagoJournal/Documents/Projects/aqus/dist/aqus.es.js
 ```
 
 Expected: `1`
@@ -401,7 +401,7 @@ git commit -m "feat: add vite library build — ESM + CJS in dist/"
 mkdir /tmp/aqus-test && cd /tmp/aqus-test
 npm init -y
 npm install react react-dom
-npm install file:/Users/agustinlago/Documents/Projects/aqus
+npm install file:/Users/LagoJournal/Documents/Projects/aqus
 ```
 
 - [ ] **Step 2: Smoke test**
@@ -450,10 +450,10 @@ Retro-Aero × Modern React component library. Glass and gloss on structural chro
 
 ```bash
 # Pin a version (recommended — get components + docs locked together)
-npm install github:agustinlago/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.1.0
 
 # Always latest main (use for active development on Aqus itself)
-npm install github:agustinlago/aqus
+npm install github:LagoJournal/aqus
 
 # Local sibling path (monorepo or side-by-side dev)
 npm install file:../aqus
@@ -579,8 +579,8 @@ Each component has a `.d.ts` (TypeScript props contract) and a `.prompt.md` (wha
 Each git tag is a self-contained release. Components and documentation are versioned together — pinning a tag gives you matching guides.
 
 ```bash
-npm install github:agustinlago/aqus#v0.1.0   # lock to this release
-npm install github:agustinlago/aqus#v0.2.0   # opt into next release
+npm install github:LagoJournal/aqus#v0.1.0   # lock to this release
+npm install github:LagoJournal/aqus#v0.2.0   # opt into next release
 ```
 
 See [`CHANGELOG.md`](CHANGELOG.md) for what changed between versions.
@@ -620,7 +620,7 @@ Aqus is a Retro-Aero × Modern React component library. Glass and gloss live onl
 ## Installation
 
 ```bash
-npm install github:agustinlago/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.1.0
 ```
 
 ## Setup
@@ -966,7 +966,7 @@ import { Accordion } from '@agustin/aqus'
 
 <Accordion items={[
   { id: 'a', label: 'What is Aqus?', content: 'A Retro-Aero design system.' },
-  { id: 'b', label: 'How to install?', content: 'npm install github:agustinlago/aqus#v0.1.0' },
+  { id: 'b', label: 'How to install?', content: 'npm install github:LagoJournal/aqus#v0.1.0' },
 ]} />
 ```
 
@@ -1362,7 +1362,7 @@ export function LandingPage() {
         </Container>
       </Section>
 
-      <Footer logo={<Wordmark size="sm" />} links={[{ label: 'GitHub', href: 'https://github.com/agustinlago' }]} />
+      <Footer logo={<Wordmark size="sm" />} links={[{ label: 'GitHub', href: 'https://github.com/LagoJournal' }]} />
     </>
   )
 }
@@ -1694,7 +1694,7 @@ Read `README.md` for the full system guide. Read `docs/brand-guide.md` for visua
 ## Install
 
 ```bash
-npm install github:agustinlago/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.1.0
 ```
 
 ```js
@@ -1763,7 +1763,7 @@ Initial release. Extracted from `aqus-handoff`, restructured into standalone lib
 - `docs/USER_GUIDE.md` — human consumer reference
 - `docs/AGENT_GUIDE.md` — LLM view composition guide with catalog, view recipes, constraints
 - `SKILL.md` — `aqus-design` skill for agent invocation
-- Install via `github:agustinlago/aqus#v0.1.0`
+- Install via `github:LagoJournal/aqus#v0.1.0`
 ```
 
 - [ ] **Step 2: Commit + tag v0.1.0**
@@ -1780,13 +1780,13 @@ git tag -a v0.1.0 -m "v0.1.0 — initial library release"
 
 - [ ] **Step 1: Create GitHub repo**
 
-Go to https://github.com/new and create repo `aqus` under `agustinlago`. Public. No README (we have one). No .gitignore (we have one).
+Go to https://github.com/new and create repo `aqus` under `LagoJournal`. Public. No README (we have one). No .gitignore (we have one).
 
 - [ ] **Step 2: Add remote and push**
 
 ```bash
-cd /Users/agustinlago/Documents/Projects/aqus
-git remote add origin https://github.com/agustinlago/aqus.git
+cd /Users/LagoJournal/Documents/Projects/aqus
+git remote add origin https://github.com/LagoJournal/aqus.git
 git push -u origin main
 git push origin v0.1.0
 ```
@@ -1797,7 +1797,7 @@ git push origin v0.1.0
 mkdir /tmp/aqus-github-test && cd /tmp/aqus-github-test
 npm init -y
 npm install react react-dom
-npm install github:agustinlago/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.1.0
 node -e "const a = require('@agustin/aqus'); console.log('Button:', typeof a.Button)"
 ```
 
@@ -1839,7 +1839,7 @@ No TBDs, no "implement later", no "similar to task N". All file contents complet
 
 - `src/index.js` barrel paths all start `./components/` matching `src/components/` structure
 - Component names consistent across barrel, catalog, and all recipe imports
-- Install URL `github:agustinlago/aqus#v0.1.0` consistent across README, SKILL.md, USER_GUIDE, CHANGELOG
+- Install URL `github:LagoJournal/aqus#v0.1.0` consistent across README, SKILL.md, USER_GUIDE, CHANGELOG
 - All recipes use named imports from `@agustin/aqus` (not default imports)
 - Props (`tone`, `variant`, `value`/`onChange`, `open`/`onClose`) consistent across catalog and recipes
 

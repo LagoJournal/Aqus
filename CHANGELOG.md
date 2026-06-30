@@ -19,4 +19,4 @@ Initial release. Extracted from `aqus-handoff`, restructured into standalone lib
 - `docs/USER_GUIDE.md` — human consumer reference
 - `docs/AGENT_GUIDE.md` — LLM view composition guide with catalog, view recipes, constraints
 - `SKILL.md` — `aqus-design` skill for agent invocation
-- Install via `github:agustinlago/aqus#v0.1.0`
+- Install via `github:LagoJournal/aqus#v0.1.0`

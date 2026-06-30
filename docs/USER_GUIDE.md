@@ -7,7 +7,7 @@ Aqus is a Retro-Aero × Modern React component library. Glass and gloss live onl
 ## Installation
 
 ```bash
-npm install github:agustinlago/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.1.0
 ```
 
 ## Setup
@@ -35,6 +35,10 @@ import '@agustin/aqus/styles.css'
 ```
 
 Constraints: L must be 0.55–0.72, C must be 0.12–0.24. One accent per project, no hex.
+
+To swap the accent at runtime (e.g. a [ColorPicker](#colorpicker)), set the same
+nine tokens on `document.documentElement.style` — inline values override both
+`:root` and `[data-theme="dark"]`, so re-apply with dark values when the theme flips.
 
 ### Dark mode
 
@@ -206,6 +210,36 @@ import { FileDropzone } from '@agustin/aqus'
 <FileDropzone onFiles={handleFiles} accept=".pdf,.png" label="Drop files here or click to browse" />
 ```
 
+#### ColorPicker
+Curated swatch picker. `onChange` gives you the chosen color — it does **not**
+restyle the page on its own. To make it drive the live accent, map the value
+to the nine `--accent-*` tokens (see [Accent color](#accent-color-in-your-root-css)).
+
+```jsx
+import { ColorPicker } from '@agustin/aqus'
+
+const HUES = [{ name: 'Cobalt', h: 250 }, { name: 'Teal', h: 195 }, { name: 'Violet', h: 300 }]
+
+function applyAccent(h) {
+  const s = document.documentElement.style
+  s.setProperty('--accent',       `oklch(0.65 0.20 ${h})`)
+  s.setProperty('--accent-hover', `oklch(0.59 0.22 ${h})`)
+  s.setProperty('--accent-light', `oklch(0.92 0.07 ${h})`)
+  s.setProperty('--accent-mid',   `oklch(0.78 0.11 ${h})`)
+  s.setProperty('--accent-text',  `oklch(0.25 0.05 ${h})`)
+  s.setProperty('--accent-glow',  `oklch(0.65 0.20 ${h} / 0.25)`)
+  s.setProperty('--accent-glass', `oklch(0.65 0.20 ${h} / 0.12)`)
+  s.setProperty('--focus-ring',   `oklch(0.65 0.24 ${h} / 0.80)`)
+  s.setProperty('--on-accent',    `oklch(0.99 0.005 ${h})`)
+}
+
+<ColorPicker
+  value={hue}
+  onChange={(h) => { setHue(h); applyAccent(h) }}
+  options={HUES.map((x) => ({ color: `oklch(0.65 0.20 ${x.h})`, name: x.name }))}
+/>
+```
+
 ---
 
 ### Feedback
@@ -355,7 +389,7 @@ import { Accordion } from '@agustin/aqus'
 
 <Accordion items={[
   { id: 'a', title: 'What is Aqus?', content: 'A Retro-Aero design system.' },
-  { id: 'b', title: 'How to install?', content: 'npm install github:agustinlago/aqus#v0.1.0' },
+  { id: 'b', title: 'How to install?', content: 'npm install github:LagoJournal/aqus#v0.1.0' },
 ]} />
 ```
 

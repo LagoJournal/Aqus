@@ -9,6 +9,10 @@ export interface NavBarProps extends React.HTMLAttributes<HTMLElement> {
   /** href matching the active link. */
   activeHref?: string;
   onLinkClick?: (link: NavLink) => void;
+  /** Wordmark link target. Default '/'. */
+  homeHref?: string;
+  /** Wordmark click handler. When set, the default navigation is prevented. */
+  onBrandClick?: (e: React.MouseEvent) => void;
 }
 
 /**

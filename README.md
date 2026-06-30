@@ -10,10 +10,10 @@ Retro-Aero × Modern React component library. Glass and gloss on structural chro
 
 ```bash
 # Pin a version (recommended — get components + docs locked together)
-npm install github:agustinlago/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.1.0
 
 # Always latest main (use for active development on Aqus itself)
-npm install github:agustinlago/aqus
+npm install github:LagoJournal/aqus
 
 # Local sibling path (monorepo or side-by-side dev)
 npm install file:../aqus
@@ -139,8 +139,8 @@ Each component has a `.d.ts` (TypeScript props contract) and a `.prompt.md` (wha
 Each git tag is a self-contained release. Components and documentation are versioned together — pinning a tag gives you matching guides.
 
 ```bash
-npm install github:agustinlago/aqus#v0.1.0   # lock to this release
-npm install github:agustinlago/aqus#v0.2.0   # opt into next release
+npm install github:LagoJournal/aqus#v0.1.0   # lock to this release
+npm install github:LagoJournal/aqus#v0.2.0   # opt into next release
 ```
 
 See [`CHANGELOG.md`](CHANGELOG.md) for what changed between versions.

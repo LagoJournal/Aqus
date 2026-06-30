@@ -37,6 +37,40 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 }
 ```
 
+### Runtime accent (ColorPicker / theme switcher)
+
+`ColorPicker` only emits the selected color via `onChange` — it does not
+restyle the page. To change the live accent, derive the nine `--accent-*`
+tokens from one hue and write them to `documentElement.style`. Keep the L/C
+deltas below (light values; lift L for dark mode). Stay inside L 0.55–0.72,
+C 0.12–0.24 for the base.
+
+```jsx
+// One hue → the nine accent tokens (light mode)
+function applyAccent(h) {
+  const s = document.documentElement.style
+  s.setProperty('--accent',       `oklch(0.65 0.20 ${h})`)
+  s.setProperty('--accent-hover', `oklch(0.59 0.22 ${h})`)
+  s.setProperty('--accent-light', `oklch(0.92 0.07 ${h})`)
+  s.setProperty('--accent-mid',   `oklch(0.78 0.11 ${h})`)
+  s.setProperty('--accent-text',  `oklch(0.25 0.05 ${h})`)
+  s.setProperty('--accent-glow',  `oklch(0.65 0.20 ${h} / 0.25)`)
+  s.setProperty('--accent-glass', `oklch(0.65 0.20 ${h} / 0.12)`)
+  s.setProperty('--focus-ring',   `oklch(0.65 0.24 ${h} / 0.80)`)
+  s.setProperty('--on-accent',    `oklch(0.99 0.005 ${h})`)
+}
+
+const HUES = [{ name: 'Cobalt', h: 250 }, { name: 'Teal', h: 195 }, { name: 'Violet', h: 300 }]
+<ColorPicker
+  value={hue}
+  onChange={(c) => { setHue(c); applyAccent(c) }}
+  options={HUES.map((x) => ({ color: `oklch(0.65 0.20 ${x.h})`, name: x.name }))}
+/>
+```
+
+Inline styles on `documentElement` beat both `:root` and `[data-theme="dark"]`,
+so re-run `applyAccent` (with dark-mode L/C values) whenever the theme flips.
+
 ---
 
 ## Component Catalog
@@ -75,6 +109,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | `OTPInput` | Code entry. | `length`, `value`, `onChange` | `<OTPInput length={6} value={code} onChange={setCode}/>` |
 | `DatePicker` | Date selection. | `label`, `value`, `onChange` | — |
 | `FileDropzone` | Drag-and-drop upload. | `onFiles`, `accept`, `label` | `<FileDropzone onFiles={fn} accept=".pdf"/>` |
+| `ColorPicker` | Curated swatch picker. Emits the chosen color — does NOT change the accent itself (see Accent below). | `value`, `onChange(color)`, `options` (hex/{color,name}[]), `size` | `<ColorPicker value={c} onChange={setC} options={swatches}/>` |
 
 ### Feedback
 
@@ -234,7 +269,7 @@ export function LandingPage() {
       </Section>
 
       <Footer
-        columns={[{ title: 'Links', links: [{ label: 'GitHub', href: 'https://github.com/agustinlago' }] }]}
+        columns={[{ title: 'Links', links: [{ label: 'GitHub', href: 'https://github.com/LagoJournal' }] }]}
         copyright="© 2026 Agustin Lago"
       />
     </>

@@ -24,7 +24,7 @@ Read `README.md` for the full system guide. Read `docs/brand-guide.md` for visua
 ## Install
 
 ```bash
-npm install github:agustinlago/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.1.0
 ```
 
 ```js
