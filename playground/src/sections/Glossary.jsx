@@ -1,6 +1,8 @@
 import React from 'react'
 import {
   Section, Container, Card, Stack, SearchInput, Badge,
+  // charts
+  BarChart, LineChart, DonutChart, Sparkline,
   // core
   Button, IconButton, GlassPanel, Tag, Input, Switch, SegmentedControl,
   ToggleGroup, Spinner, LiquidBubble, Kbd,
@@ -256,7 +258,17 @@ const CATALOG = [
   ]],
   ['Brand', [
     ['Monogram', 'The liquid-drop mark.', <Monogram size={48} letter="A" />],
-    ['Wordmark', 'Full logotype with a liquid “s”.', <Wordmark size={30} />],
+    ['Wordmark', 'Full logotype with a liquid "s".', <Wordmark size={30} />],
+  ]],
+  ['Charts', [
+    ['LineChart', 'Multi-series line / area chart. Smooth Catmull-Rom curves, glass tooltip, animated liquid end-markers.',
+      <div style={{ width: '100%' }}><LineChart data={[{x:'J',v:30},{x:'F',v:45},{x:'M',v:38},{x:'A',v:60},{x:'M',v:55},{x:'J',v:72}]} series={[{key:'v',label:'Value'}]} height={120} area showLegend={false} /></div>],
+    ['BarChart', 'Grouped or stacked bars. Aqua gloss on each bar, glass tooltip, responsive.',
+      <div style={{ width: '100%' }}><BarChart data={[{x:'Q1',a:40,b:25},{x:'Q2',a:60,b:38},{x:'Q3',a:52,b:44},{x:'Q4',a:78,b:55}]} series={[{key:'a',label:'Web'},{key:'b',label:'Mobile'}]} height={120} showLegend={false} /></div>],
+    ['DonutChart', 'Proportional ring with morphing liquid animation, hover tooltips, and center label.',
+      <div style={{ display:'flex', justifyContent:'center' }}><DonutChart data={[{label:'A',value:42},{label:'B',value:31},{label:'C',value:18},{label:'D',value:9}]} size={140} thickness={18} showLegend={false} /></div>],
+    ['Sparkline', 'Tiny inline trend line — no axes. For table cells, StatCards, lists.',
+      <Stack gap={2}><Sparkline data={[10,18,14,24,20,30,26,38]} width={120} height={32} /><Sparkline data={[38,26,30,20,24,14,18,10]} width={120} height={32} color="var(--chart-3)" /></Stack>],
   ]],
 ]
 

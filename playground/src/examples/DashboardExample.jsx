@@ -3,8 +3,14 @@ import {
   NavBar, Container, Section, Stack, PageHeader, Button, StatCard, Card,
   Table, Badge, Avatar, SearchInput, SegmentedControl, Tabs, IconButton,
   Tag, FilterBar, Pagination, Timeline, ProgressCircle, NotificationItem,
-  Divider, Menu,
+  Divider, Menu, LineChart,
 } from '@agustin/aqus'
+
+const DEPLOY_DATA = [
+  { x: 'Mon', deploys: 4 }, { x: 'Tue', deploys: 7 }, { x: 'Wed', deploys: 5 },
+  { x: 'Thu', deploys: 12 }, { x: 'Fri', deploys: 9 }, { x: 'Sat', deploys: 3 }, { x: 'Sun', deploys: 6 },
+]
+const DEPLOY_SERIES = [{ key: 'deploys', label: 'Deploys' }]
 
 const ROWS = [
   { name: 'Aero Mail', owner: 'Agustin', status: 'active', deploys: 34, updated: '2m ago' },
@@ -70,6 +76,17 @@ export function DashboardExample() {
               <StatCard label="Open issues" value="5" delta="−3" up={false} icon={<i className="ph ph-bug" />} />
               <StatCard label="Uptime" value="99.9%" delta="30d" icon={<i className="ph ph-pulse" />} />
             </div>
+
+            <Card variant="resting" style={{ padding: 20 }}>
+              <Stack gap={3}>
+                <Stack direction="row" justify="space-between" align="center">
+                  <strong>Deploy frequency</strong>
+                  <Badge tone="success" dot>This week</Badge>
+                </Stack>
+                <Divider />
+                <LineChart data={DEPLOY_DATA} series={DEPLOY_SERIES} height={140} area showLegend={false} />
+              </Stack>
+            </Card>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2.6fr) minmax(0, 1fr)', gap: 28, alignItems: 'start' }}>
               {/* Main: projects table */}

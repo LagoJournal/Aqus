@@ -4,6 +4,7 @@ import { Hero } from './sections/Hero.jsx'
 import { DesignRules } from './sections/DesignRules.jsx'
 import { Materials } from './sections/Materials.jsx'
 import { Animations } from './sections/Animations.jsx'
+import { Charts } from './sections/Charts.jsx'
 import { Usage } from './sections/Usage.jsx'
 import { Glossary } from './sections/Glossary.jsx'
 import { Examples } from './sections/Examples.jsx'
@@ -15,6 +16,7 @@ const NAV_LINKS = [
   { href: '#animations', label: 'Motion' },
   { href: '#usage', label: 'Usage' },
   { href: '#glossary', label: 'Components' },
+  { href: '#charts', label: 'Charts' },
   { href: '#examples', label: 'Examples' },
 ]
 
@@ -143,6 +145,7 @@ export function App() {
         <Animations />
         <Usage />
         <Glossary />
+        <Charts />
         <Examples hue={hue} theme={theme} />
       </main>
 
@@ -156,6 +159,7 @@ export function App() {
               { label: 'Design rules', href: '#rules' },
               { label: 'Glass', href: '#materials' },
               { label: 'Motion', href: '#animations' },
+              { label: 'Charts', href: '#charts' },
             ],
           },
           {

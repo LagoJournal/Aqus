@@ -4342,16 +4342,430 @@ function Wordmark({
     }
   );
 }
+const PALETTE = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)", "var(--chart-7)", "var(--chart-8)"];
+function ChartLegend({ series = [], direction = "row", style = {}, ...rest }) {
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+    display: "flex",
+    flexDirection: direction,
+    flexWrap: "wrap",
+    gap: direction === "row" ? "var(--space-4)" : "var(--space-2)",
+    fontFamily: "var(--font-ui)",
+    ...style
+  }, ...rest, children: series.map((s, i) => /* @__PURE__ */ jsxRuntime.jsxs("span", { style: { display: "inline-flex", alignItems: "center", gap: 7 }, children: [
+    /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: 10, color: s.color || PALETTE[i % PALETTE.length], animate: false }),
+    /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontSize: "var(--text-label)", color: "var(--text-muted)", fontWeight: "var(--weight-medium)" }, children: s.label })
+  ] }, s.key ?? i)) });
+}
+const CHART_PALETTE = PALETTE;
+function BarChart({
+  data = [],
+  series = [],
+  height = 240,
+  stacked = false,
+  showGrid = true,
+  showLegend = true,
+  yTicks = 4,
+  valueFormat = (v) => v,
+  style = {},
+  ...rest
+}) {
+  const ref = React.useRef(null);
+  const [w, setW] = React.useState(640);
+  const [hover, setHover] = React.useState(null);
+  React.useEffect(() => {
+    if (!ref.current) return;
+    const ro = new ResizeObserver(([e]) => setW(e.contentRect.width));
+    ro.observe(ref.current);
+    return () => ro.disconnect();
+  }, []);
+  const padL = 44, padR = 16, padT = 14, padB = 28;
+  const innerW = Math.max(0, w - padL - padR);
+  const innerH = height - padT - padB;
+  const totals = data.map((d) => stacked ? series.reduce((a, s) => a + (+d[s.key] || 0), 0) : Math.max(...series.map((s) => +d[s.key] || 0)));
+  const maxV = Math.max(1, ...totals);
+  const ticks = Array.from({ length: yTicks + 1 }, (_, i) => maxV * i / yTicks);
+  const groupW = innerW / Math.max(1, data.length);
+  const colorOf = (s, i) => s.color || CHART_PALETTE[i % CHART_PALETTE.length];
+  const yAt = (v) => padT + innerH - v / maxV * innerH;
+  const barGap = 0.22;
+  const bw = stacked ? groupW * (1 - barGap) : groupW * (1 - barGap) / series.length;
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { ref, style: { width: "100%", fontFamily: "var(--font-ui)", position: "relative", ...style }, ...rest, children: [
+    /* @__PURE__ */ jsxRuntime.jsxs("svg", { width: "100%", height, viewBox: `0 0 ${w} ${height}`, style: { display: "block", overflow: "visible" }, children: [
+      /* @__PURE__ */ jsxRuntime.jsx("defs", { children: /* @__PURE__ */ jsxRuntime.jsxs("linearGradient", { id: "aqus-bar-gloss", x1: "0", y1: "0", x2: "0", y2: "1", children: [
+        /* @__PURE__ */ jsxRuntime.jsx("stop", { offset: "0%", stopColor: "rgba(255,255,255,0.28)" }),
+        /* @__PURE__ */ jsxRuntime.jsx("stop", { offset: "42%", stopColor: "rgba(255,255,255,0)" })
+      ] }) }),
+      showGrid && ticks.map((t, i) => /* @__PURE__ */ jsxRuntime.jsxs("g", { children: [
+        /* @__PURE__ */ jsxRuntime.jsx("line", { x1: padL, y1: yAt(t), x2: w - padR, y2: yAt(t), stroke: "var(--chart-grid)", strokeWidth: "1", strokeDasharray: i === 0 ? "0" : "3 4", opacity: i === 0 ? 1 : 0.6 }),
+        /* @__PURE__ */ jsxRuntime.jsx("text", { x: padL - 8, y: yAt(t) + 4, textAnchor: "end", fontSize: "11", fill: "var(--chart-axis)", children: valueFormat(Math.round(t)) })
+      ] }, i)),
+      data.map((d, gi) => {
+        const gx = padL + gi * groupW + groupW * barGap / 2;
+        const colPath = (x, y, bwid, h, round) => {
+          if (h <= 0) return "";
+          if (!round) return `M${x},${y.toFixed(1)} L${(x + bwid).toFixed(1)},${y.toFixed(1)} L${(x + bwid).toFixed(1)},${(y + h).toFixed(1)} L${x},${(y + h).toFixed(1)} Z`;
+          const rad = Math.min(bwid / 2, h, 14);
+          return `M${x},${(y + h).toFixed(1)} L${x},${(y + rad).toFixed(1)} Q${x},${y.toFixed(1)} ${(x + rad).toFixed(1)},${y.toFixed(1)} L${(x + bwid - rad).toFixed(1)},${y.toFixed(1)} Q${(x + bwid).toFixed(1)},${y.toFixed(1)} ${(x + bwid).toFixed(1)},${(y + rad).toFixed(1)} L${(x + bwid).toFixed(1)},${(y + h).toFixed(1)} Z`;
+        };
+        if (stacked) {
+          const total = series.reduce((a, s) => a + (+d[s.key] || 0), 0);
+          const totalH = total / maxV * innerH;
+          const topY = yAt(0) - totalH;
+          let segTop = yAt(0);
+          const lastNonZero = [...series].reverse().findIndex((s) => (+d[s.key] || 0) > 0);
+          const topIdx = lastNonZero === -1 ? -1 : series.length - 1 - lastNonZero;
+          return /* @__PURE__ */ jsxRuntime.jsxs("g", { onMouseEnter: () => setHover(gi), onMouseLeave: () => setHover(null), children: [
+            /* @__PURE__ */ jsxRuntime.jsx("rect", { x: padL + gi * groupW, y: padT, width: groupW, height: innerH, fill: hover === gi ? "var(--accent-glass)" : "transparent", rx: "6" }),
+            series.map((s, si) => {
+              const v = +d[s.key] || 0;
+              const h = v / maxV * innerH;
+              const y = segTop - h;
+              segTop -= h;
+              return /* @__PURE__ */ jsxRuntime.jsx("path", { d: colPath(gx, y, bw, h, si === topIdx), fill: colorOf(s, si) }, si);
+            }),
+            /* @__PURE__ */ jsxRuntime.jsx("path", { d: colPath(gx, topY, bw, totalH, true), fill: "url(#aqus-bar-gloss)" }),
+            /* @__PURE__ */ jsxRuntime.jsx("text", { x: padL + gi * groupW + groupW / 2, y: height - 8, textAnchor: "middle", fontSize: "11", fill: "var(--chart-axis)", children: d.x })
+          ] }, gi);
+        }
+        return /* @__PURE__ */ jsxRuntime.jsxs("g", { onMouseEnter: () => setHover(gi), onMouseLeave: () => setHover(null), children: [
+          /* @__PURE__ */ jsxRuntime.jsx("rect", { x: padL + gi * groupW, y: padT, width: groupW, height: innerH, fill: hover === gi ? "var(--accent-glass)" : "transparent", rx: "6" }),
+          series.map((s, si) => {
+            const v = +d[s.key] || 0;
+            const h = v / maxV * innerH;
+            const cw = Math.max(0, bw - 3);
+            const x = gx + si * bw, y = yAt(v);
+            return /* @__PURE__ */ jsxRuntime.jsxs("g", { children: [
+              /* @__PURE__ */ jsxRuntime.jsx("path", { d: colPath(x, y, cw, h, true), fill: colorOf(s, si) }),
+              /* @__PURE__ */ jsxRuntime.jsx("path", { d: colPath(x, y, cw, h, true), fill: "url(#aqus-bar-gloss)" })
+            ] }, si);
+          }),
+          /* @__PURE__ */ jsxRuntime.jsx("text", { x: padL + gi * groupW + groupW / 2, y: height - 8, textAnchor: "middle", fontSize: "11", fill: "var(--chart-axis)", children: d.x })
+        ] }, gi);
+      })
+    ] }),
+    hover != null && (() => {
+      const cxp = (padL + hover * groupW + groupW / 2) / w;
+      const total = stacked ? series.reduce((a, s) => a + (+data[hover][s.key] || 0), 0) : null;
+      return /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
+        position: "absolute",
+        top: padT,
+        left: `${cxp * 100}%`,
+        transform: `translateX(${cxp > 0.5 ? "-108%" : "8%"})`,
+        background: "var(--chart-tooltip-bg)",
+        WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+        backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+        border: "1px solid var(--glass-border-light)",
+        borderBottomColor: "var(--glass-border-dark)",
+        boxShadow: "var(--shadow-glass)",
+        borderRadius: "var(--radius-md)",
+        padding: "8px 12px",
+        pointerEvents: "none",
+        zIndex: 5,
+        minWidth: 104
+      }, children: [
+        /* @__PURE__ */ jsxRuntime.jsx("div", { style: { fontSize: "var(--text-mini)", fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, letterSpacing: "var(--tracking-wide)", textTransform: "uppercase" }, children: data[hover].x }),
+        series.map((s, i) => /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: colorOf(s, i), flex: "none" } }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color: "var(--text-muted)", flex: 1 }, children: s.label }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color: "var(--text)", fontWeight: 600 }, children: valueFormat(+data[hover][s.key] || 0) })
+        ] }, i)),
+        stacked && series.length > 1 && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)", marginTop: 4, paddingTop: 4, borderTop: "1px solid var(--border)" }, children: [
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { width: 8, flex: "none" } }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color: "var(--text-muted)", flex: 1, fontWeight: 600 }, children: "Total" }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color: "var(--text)", fontWeight: 700 }, children: valueFormat(total) })
+        ] })
+      ] });
+    })(),
+    showLegend && series.length > 1 && /* @__PURE__ */ jsxRuntime.jsx(ChartLegend, { series, style: { marginTop: "var(--space-3)", paddingLeft: padL } })
+  ] });
+}
+function liquidBlobAt(cx, cy, r) {
+  const k = r;
+  return `M${cx},${(cy - k * 1.02).toFixed(2)} C${(cx + k * 0.95).toFixed(2)},${(cy - k * 1).toFixed(2)} ${(cx + k * 1.05).toFixed(2)},${(cy + k * 0.35).toFixed(2)} ${(cx + k * 0.88).toFixed(2)},${(cy + k * 0.7).toFixed(2)} C${(cx + k * 0.72).toFixed(2)},${(cy + k * 1.04).toFixed(2)} ${(cx - k * 0.5).toFixed(2)},${(cy + k * 1.06).toFixed(2)} ${(cx - k * 0.82).toFixed(2)},${(cy + k * 0.74).toFixed(2)} C${(cx - k * 1.04).toFixed(2)},${(cy + k * 0.4).toFixed(2)} ${(cx - k * 1).toFixed(2)},${(cy - k * 0.62).toFixed(2)} ${(cx - k * 0.72).toFixed(2)},${(cy - k * 0.86).toFixed(2)} C${(cx - k * 0.46).toFixed(2)},${(cy - k * 1.06).toFixed(2)} ${(cx - k * 0.36).toFixed(2)},${(cy - k * 1.04).toFixed(2)} ${cx},${(cy - k * 1.02).toFixed(2)} Z`;
+}
+function LineChart({
+  data = [],
+  series = [],
+  height = 240,
+  area = false,
+  showGrid = true,
+  showLegend = true,
+  yTicks = 4,
+  smooth = true,
+  smoothTension = 1,
+  valueFormat = (v) => v,
+  style = {},
+  ...rest
+}) {
+  const ref = React.useRef(null);
+  const [w, setW] = React.useState(640);
+  const [hover, setHover] = React.useState(null);
+  React.useEffect(() => {
+    if (!ref.current) return;
+    const ro = new ResizeObserver(([e]) => setW(e.contentRect.width));
+    ro.observe(ref.current);
+    return () => ro.disconnect();
+  }, []);
+  const padL = 44, padR = 16, padT = 14, padB = 28;
+  const innerW = Math.max(0, w - padL - padR);
+  const innerH = height - padT - padB;
+  const allVals = data.flatMap((d) => series.map((s) => +d[s.key] || 0));
+  const maxV = Math.max(1, ...allVals);
+  const minV = Math.min(0, ...allVals);
+  const range = maxV - minV || 1;
+  const xAt = (i) => padL + (data.length <= 1 ? innerW / 2 : i / (data.length - 1) * innerW);
+  const yAt = (v) => padT + innerH - (v - minV) / range * innerH;
+  const ticks = Array.from({ length: yTicks + 1 }, (_, i) => minV + range * i / yTicks);
+  const colorOf = (s, i) => s.color || CHART_PALETTE[i % CHART_PALETTE.length];
+  const linePath = (s) => {
+    const pts = data.map((d2, i) => [xAt(i), yAt(+d2[s.key] || 0)]);
+    if (pts.length < 2) return pts.length ? `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}` : "";
+    if (!smooth) return pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+    let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const t = 0.5 * smoothTension;
+      const c1x = p1[0] + (p2[0] - p0[0]) * t / 3;
+      const c1y = p1[1] + (p2[1] - p0[1]) * t / 3;
+      const c2x = p2[0] - (p3[0] - p1[0]) * t / 3;
+      const c2y = p2[1] - (p3[1] - p1[1]) * t / 3;
+      d += ` C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+    }
+    return d;
+  };
+  const areaPath = (s) => `${linePath(s)} L${xAt(data.length - 1).toFixed(1)},${yAt(minV).toFixed(1)} L${xAt(0).toFixed(1)},${yAt(minV).toFixed(1)} Z`;
+  const onMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width * w;
+    let nearest = 0, min = Infinity;
+    data.forEach((_, i) => {
+      const d = Math.abs(xAt(i) - x);
+      if (d < min) {
+        min = d;
+        nearest = i;
+      }
+    });
+    setHover(nearest);
+  };
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { ref, style: { width: "100%", fontFamily: "var(--font-ui)", position: "relative", ...style }, ...rest, children: [
+    /* @__PURE__ */ jsxRuntime.jsxs("svg", { width: "100%", height, viewBox: `0 0 ${w} ${height}`, onMouseMove: onMove, onMouseLeave: () => setHover(null), style: { display: "block", overflow: "visible" }, children: [
+      /* @__PURE__ */ jsxRuntime.jsx("defs", { children: series.map((s, i) => /* @__PURE__ */ jsxRuntime.jsxs("linearGradient", { id: `aqus-line-fill-${i}`, x1: "0", y1: "0", x2: "0", y2: "1", children: [
+        /* @__PURE__ */ jsxRuntime.jsx("stop", { offset: "0%", stopColor: colorOf(s, i), stopOpacity: "var(--chart-fill-from)" }),
+        /* @__PURE__ */ jsxRuntime.jsx("stop", { offset: "100%", stopColor: colorOf(s, i), stopOpacity: "var(--chart-fill-to)" })
+      ] }, i)) }),
+      showGrid && ticks.map((t, i) => /* @__PURE__ */ jsxRuntime.jsxs("g", { children: [
+        /* @__PURE__ */ jsxRuntime.jsx("line", { x1: padL, y1: yAt(t), x2: w - padR, y2: yAt(t), stroke: "var(--chart-grid)", strokeWidth: "1", strokeDasharray: i === 0 ? "0" : "3 4", opacity: i === 0 ? 1 : 0.6 }),
+        /* @__PURE__ */ jsxRuntime.jsx("text", { x: padL - 8, y: yAt(t) + 4, textAnchor: "end", fontSize: "11", fill: "var(--chart-axis)", children: valueFormat(Math.round(t)) })
+      ] }, i)),
+      data.map((d, i) => /* @__PURE__ */ jsxRuntime.jsx("text", { x: xAt(i), y: height - 8, textAnchor: "middle", fontSize: "11", fill: "var(--chart-axis)", children: d.x }, i)),
+      area && series.map((s, i) => /* @__PURE__ */ jsxRuntime.jsx("path", { d: areaPath(s), fill: `url(#aqus-line-fill-${i})` }, `a${i}`)),
+      series.map((s, i) => /* @__PURE__ */ jsxRuntime.jsx("path", { d: linePath(s), fill: "none", stroke: colorOf(s, i), strokeWidth: "2.5", strokeLinecap: "round", strokeLinejoin: "round" }, `l${i}`)),
+      data.length > 0 && series.map((s, i) => {
+        const ex = xAt(data.length - 1), ey = yAt(+data[data.length - 1][s.key] || 0);
+        return /* @__PURE__ */ jsxRuntime.jsxs("g", { style: { transformOrigin: `${ex}px ${ey}px` }, children: [
+          /* @__PURE__ */ jsxRuntime.jsxs("circle", { cx: ex, cy: ey, r: "7", fill: colorOf(s, i), opacity: "0.18", children: [
+            /* @__PURE__ */ jsxRuntime.jsx("animate", { attributeName: "r", values: "6;10;6", dur: "2.4s", repeatCount: "indefinite" }),
+            /* @__PURE__ */ jsxRuntime.jsx("animate", { attributeName: "opacity", values: "0.22;0.05;0.22", dur: "2.4s", repeatCount: "indefinite" })
+          ] }),
+          /* @__PURE__ */ jsxRuntime.jsx("path", { d: liquidBlobAt(ex, ey, 4.5), fill: colorOf(s, i), stroke: "var(--surface)", strokeWidth: "1.5" })
+        ] }, `end${i}`);
+      }),
+      hover != null && /* @__PURE__ */ jsxRuntime.jsx("line", { x1: xAt(hover), y1: padT, x2: xAt(hover), y2: padT + innerH, stroke: "var(--accent)", strokeWidth: "1", opacity: "0.4" }),
+      hover != null && series.map((s, i) => /* @__PURE__ */ jsxRuntime.jsx("circle", { cx: xAt(hover), cy: yAt(+data[hover][s.key] || 0), r: "4.5", fill: "var(--surface)", stroke: colorOf(s, i), strokeWidth: "2.5" }, `p${i}`))
+    ] }),
+    hover != null && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
+      position: "absolute",
+      top: 0,
+      left: `${xAt(hover) / w * 100}%`,
+      transform: `translateX(${xAt(hover) > w / 2 ? "-108%" : "8%"})`,
+      background: "var(--chart-tooltip-bg)",
+      WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+      backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+      border: "1px solid var(--glass-border-light)",
+      borderBottomColor: "var(--glass-border-dark)",
+      boxShadow: "var(--shadow-glass)",
+      borderRadius: "var(--radius-md)",
+      padding: "8px 12px",
+      pointerEvents: "none",
+      zIndex: 5,
+      minWidth: 96
+    }, children: [
+      /* @__PURE__ */ jsxRuntime.jsx("div", { style: { fontSize: "var(--text-mini)", fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, letterSpacing: "var(--tracking-wide)", textTransform: "uppercase" }, children: data[hover].x }),
+      series.map((s, i) => /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
+        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: colorOf(s, i), flex: "none" } }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color: "var(--text-muted)", flex: 1 }, children: s.label }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color: "var(--text)", fontWeight: 600 }, children: valueFormat(+data[hover][s.key] || 0) })
+      ] }, i))
+    ] }),
+    showLegend && series.length > 0 && /* @__PURE__ */ jsxRuntime.jsx(ChartLegend, { series, style: { marginTop: "var(--space-3)", paddingLeft: padL } })
+  ] });
+}
+function DonutChart({
+  data = [],
+  size = 200,
+  thickness = 26,
+  gap = 2,
+  morph = true,
+  centerLabel,
+  centerValue,
+  showLegend = true,
+  valueFormat = (v) => v,
+  style = {},
+  ...rest
+}) {
+  const total = data.reduce((a, d) => a + (+d.value || 0), 0) || 1;
+  const r = (size - thickness) / 2;
+  const cx = size / 2, cy = size / 2;
+  const circ = 2 * Math.PI * r;
+  const gapLen = gap / 360 * circ;
+  let offset = 0;
+  const segs = data.map((d, i) => {
+    const frac = (+d.value || 0) / total;
+    const len = frac * circ;
+    const seg = { d, i, len, offset, color: d.color || CHART_PALETTE[i % CHART_PALETTE.length] };
+    offset += len;
+    return seg;
+  });
+  const legendSeries = data.map((d, i) => ({ label: d.label, color: d.color || CHART_PALETTE[i % CHART_PALETTE.length] }));
+  const [hover, setHover] = React.useState(null);
+  const tipPos = (() => {
+    if (hover == null || !segs[hover]) return null;
+    const midFrac = (segs[hover].offset + segs[hover].len / 2) / circ;
+    const a = midFrac * 2 * Math.PI;
+    return { x: cx + r * Math.sin(a), y: cy - r * Math.cos(a) };
+  })();
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "center", gap: "var(--space-6)", flexWrap: "wrap", fontFamily: "var(--font-ui)", ...style }, ...rest, children: [
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", width: size, height: size, flex: "none" }, children: [
+      /* @__PURE__ */ jsxRuntime.jsxs("svg", { width: size, height: size, viewBox: `0 0 ${size} ${size}`, style: { transform: "rotate(-90deg)", animation: morph ? "agus-liquid var(--dur-liquid) var(--ease-inout) infinite" : "none", overflow: "visible" }, children: [
+        /* @__PURE__ */ jsxRuntime.jsx("circle", { cx, cy, r, fill: "none", stroke: "var(--chart-track)", strokeWidth: thickness }),
+        segs.map((s) => /* @__PURE__ */ jsxRuntime.jsx(
+          "circle",
+          {
+            cx,
+            cy,
+            r,
+            fill: "none",
+            stroke: s.color,
+            strokeWidth: hover === s.i ? thickness + 5 : thickness,
+            strokeDasharray: `${Math.max(0, s.len - gapLen)} ${circ - Math.max(0, s.len - gapLen)}`,
+            strokeDashoffset: -s.offset,
+            strokeLinecap: "round",
+            opacity: hover == null || hover === s.i ? 1 : 0.4,
+            style: { cursor: "pointer", transition: "opacity var(--dur-fast) var(--ease-out), stroke-width var(--dur-fast) var(--ease-out)" },
+            onMouseEnter: () => setHover(s.i),
+            onMouseLeave: () => setHover(null)
+          },
+          s.i
+        ))
+      ] }),
+      (centerValue != null || centerLabel) && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", pointerEvents: "none" }, children: [
+        centerValue != null && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontFamily: "var(--font-display)", fontWeight: 800, fontSize: Math.round(size * 0.2), color: "var(--text)", lineHeight: 1 }, children: centerValue }),
+        centerLabel && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontSize: "var(--text-caption)", color: "var(--text-muted)", marginTop: 2 }, children: centerLabel })
+      ] }),
+      hover != null && tipPos && /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+        position: "absolute",
+        left: tipPos.x,
+        top: tipPos.y,
+        transform: `translate(${tipPos.x > cx ? "8px" : "-108%"}, -50%)`,
+        background: "var(--chart-tooltip-bg)",
+        WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+        backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+        border: "1px solid var(--glass-border-light)",
+        borderBottomColor: "var(--glass-border-dark)",
+        boxShadow: "var(--shadow-glass)",
+        borderRadius: "var(--radius-md)",
+        padding: "7px 11px",
+        pointerEvents: "none",
+        zIndex: 5,
+        whiteSpace: "nowrap"
+      }, children: /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
+        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: segs[hover].color, flex: "none" } }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color: "var(--text-muted)" }, children: data[hover].label }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color: "var(--text)", fontWeight: 700 }, children: valueFormat(+data[hover].value || 0) }),
+        /* @__PURE__ */ jsxRuntime.jsxs("span", { style: { color: "var(--text-muted)", fontSize: "var(--text-caption)" }, children: [
+          "· ",
+          Math.round((+data[hover].value || 0) / total * 100),
+          "%"
+        ] })
+      ] }) })
+    ] }),
+    showLegend && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { display: "flex", flexDirection: "column", gap: "var(--space-2)" }, children: data.map((d, i) => /* @__PURE__ */ jsxRuntime.jsxs(
+      "div",
+      {
+        onMouseEnter: () => setHover(i),
+        onMouseLeave: () => setHover(null),
+        style: { display: "flex", alignItems: "center", gap: 8, cursor: "default", opacity: hover == null || hover === i ? 1 : 0.5, transition: "opacity var(--dur-fast) var(--ease-out)" },
+        children: [
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { width: 10, height: 10, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: legendSeries[i].color, flex: "none" } }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontSize: "var(--text-body-sm)", color: "var(--text-muted)", flex: 1 }, children: d.label }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontSize: "var(--text-body-sm)", color: "var(--text)", fontWeight: 600 }, children: valueFormat(+d.value || 0) })
+        ]
+      },
+      i
+    )) })
+  ] });
+}
+function Sparkline({
+  data = [],
+  width = 96,
+  height = 28,
+  color = "var(--accent)",
+  area = true,
+  endDot = true,
+  smooth = true,
+  strokeWidth = 1.75,
+  style = {},
+  ...rest
+}) {
+  const vals = data.map(Number);
+  const max = Math.max(...vals), min = Math.min(...vals);
+  const range = max - min || 1;
+  const pad = strokeWidth + 1;
+  const xAt = (i) => pad + (vals.length <= 1 ? 0 : i / (vals.length - 1) * (width - pad * 2));
+  const yAt = (v) => pad + (height - pad * 2) - (v - min) / range * (height - pad * 2);
+  const pts = vals.map((v, i) => [xAt(i), yAt(v)]);
+  const line = (() => {
+    if (pts.length < 2) return pts.length ? `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}` : "";
+    if (!smooth) return pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+    let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      const c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      const c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += ` C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+    }
+    return d;
+  })();
+  const fill = `${line} L${xAt(vals.length - 1).toFixed(1)},${height} L${xAt(0).toFixed(1)},${height} Z`;
+  const uid = React.useId().replace(/:/g, "");
+  return /* @__PURE__ */ jsxRuntime.jsxs("svg", { width, height, viewBox: `0 0 ${width} ${height}`, style: { display: "inline-block", verticalAlign: "middle", overflow: "visible", ...style }, ...rest, children: [
+    area && /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntime.jsx("defs", { children: /* @__PURE__ */ jsxRuntime.jsxs("linearGradient", { id: `spark-${uid}`, x1: "0", y1: "0", x2: "0", y2: "1", children: [
+        /* @__PURE__ */ jsxRuntime.jsx("stop", { offset: "0%", stopColor: color, stopOpacity: "var(--chart-fill-from)" }),
+        /* @__PURE__ */ jsxRuntime.jsx("stop", { offset: "100%", stopColor: color, stopOpacity: "var(--chart-fill-to)" })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntime.jsx("path", { d: fill, fill: `url(#spark-${uid})` })
+    ] }),
+    /* @__PURE__ */ jsxRuntime.jsx("path", { d: line, fill: "none", stroke: color, strokeWidth, strokeLinecap: "round", strokeLinejoin: "round" }),
+    endDot && vals.length > 0 && /* @__PURE__ */ jsxRuntime.jsx("circle", { cx: xAt(vals.length - 1), cy: yAt(vals[vals.length - 1]), r: strokeWidth + 1, fill: color })
+  ] });
+}
 exports.Accordion = Accordion;
 exports.Alert = Alert;
 exports.Avatar = Avatar;
 exports.Badge = Badge;
 exports.Banner = Banner;
+exports.BarChart = BarChart;
 exports.BlogCard = BlogCard;
 exports.Breadcrumb = Breadcrumb;
 exports.Button = Button;
+exports.CHART_PALETTE = CHART_PALETTE;
 exports.Card = Card;
 exports.Carousel = Carousel;
+exports.ChartLegend = ChartLegend;
 exports.Checkbox = Checkbox;
 exports.CodeBlock = CodeBlock;
 exports.ColorPicker = ColorPicker;
@@ -4363,6 +4777,7 @@ exports.DatePicker = DatePicker;
 exports.DescriptionList = DescriptionList;
 exports.Dialog = Dialog;
 exports.Divider = Divider;
+exports.DonutChart = DonutChart;
 exports.Drawer = Drawer;
 exports.EmptyState = EmptyState;
 exports.FeatureCard = FeatureCard;
@@ -4374,6 +4789,7 @@ exports.HeroSection = HeroSection;
 exports.IconButton = IconButton;
 exports.Input = Input;
 exports.Kbd = Kbd;
+exports.LineChart = LineChart;
 exports.LiquidBubble = LiquidBubble;
 exports.LoadingOverlay = LoadingOverlay;
 exports.MediaCard = MediaCard;
@@ -4397,6 +4813,7 @@ exports.SegmentedControl = SegmentedControl;
 exports.Select = Select;
 exports.Skeleton = Skeleton;
 exports.Slider = Slider;
+exports.Sparkline = Sparkline;
 exports.Spinner = Spinner;
 exports.Stack = Stack;
 exports.StatCard = StatCard;

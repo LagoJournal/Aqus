@@ -84,3 +84,10 @@ export { Carousel } from './components/content/Carousel.jsx'
 // Brand
 export { Monogram } from './components/brand/Monogram.jsx'
 export { Wordmark } from './components/brand/Wordmark.jsx'
+
+// Charts
+export { BarChart } from './components/charts/BarChart.jsx'
+export { LineChart } from './components/charts/LineChart.jsx'
+export { DonutChart } from './components/charts/DonutChart.jsx'
+export { Sparkline } from './components/charts/Sparkline.jsx'
+export { ChartLegend, CHART_PALETTE } from './components/charts/ChartLegend.jsx'

@@ -2,8 +2,30 @@ import React from 'react'
 import {
   NavBar, Container, Section, Stack, Button, Card, Avatar, Badge,
   Tabs, DescriptionList, Timeline, StatCard, Switch, Divider, ProgressCircle,
-  IconButton, Progress, Stepper, Alert, Tooltip,
+  IconButton, Progress, Stepper, Alert, Tooltip, LineChart, DonutChart,
 } from '@agustin/aqus'
+
+const PERF_DATA = [
+  { x: 'Jan', portfolio: 195, benchmark: 200 },
+  { x: 'Feb', portfolio: 210, benchmark: 205 },
+  { x: 'Mar', portfolio: 198, benchmark: 202 },
+  { x: 'Apr', portfolio: 225, benchmark: 210 },
+  { x: 'May', portfolio: 218, benchmark: 208 },
+  { x: 'Jun', portfolio: 242, benchmark: 218 },
+  { x: 'Jul', portfolio: 235, benchmark: 215 },
+  { x: 'Aug', portfolio: 260, benchmark: 224 },
+]
+const PERF_SERIES = [
+  { key: 'portfolio', label: 'Portfolio' },
+  { key: 'benchmark', label: 'S&P 500' },
+]
+
+const ALLOCATION_DATA = [
+  { label: 'US Equities', value: 52 },
+  { label: 'Bonds', value: 18 },
+  { label: 'Int\'l Equities', value: 16 },
+  { label: 'Alternatives', value: 14 },
+]
 
 const ACCOUNTS = [
   { name: 'Checking', bank: 'Chase', balance: '$12,430.00', icon: 'ph-bank', tone: 'accent' },
@@ -193,30 +215,38 @@ export function ProfileExample() {
                 )}
 
                 {tab === 'portfolio' && (
-                  <Card variant="resting" style={{ padding: 20 }}>
-                    <Stack gap={3}>
-                      <Stack direction="row" justify="space-between" align="center">
-                        <strong>Asset allocation</strong>
-                        <Badge tone="success" pill>Balanced</Badge>
-                      </Stack>
-                      <Divider />
-                      {PORTFOLIO.map((p) => (
-                        <Stack key={p.label} gap={1}>
-                          <Stack direction="row" justify="space-between" align="center">
-                            <Stack direction="row" gap={2} align="center">
-                              <span style={{ fontSize: 'var(--text-body-sm)', color: 'var(--text)', fontWeight: 500 }}>{p.label}</span>
-                              <Badge tone={p.up ? 'success' : 'danger'} pill>{p.change}</Badge>
-                            </Stack>
-                            <Stack direction="row" gap={3} align="center">
-                              <span className="sc-foot-note">{p.value}</span>
-                              <span className="sc-foot-note">{p.pct}%</span>
-                            </Stack>
-                          </Stack>
-                          <Progress value={p.pct} />
+                  <Stack gap={3}>
+                    <Card variant="resting" style={{ padding: 20 }}>
+                      <Stack gap={3}>
+                        <Stack direction="row" justify="space-between" align="center">
+                          <strong>Performance vs benchmark</strong>
+                          <Badge tone="success" pill>+6.2% YTD</Badge>
                         </Stack>
-                      ))}
-                    </Stack>
-                  </Card>
+                        <Divider />
+                        <LineChart
+                          data={PERF_DATA}
+                          series={PERF_SERIES}
+                          height={180}
+                          area
+                          valueFormat={(v) => `$${v}k`}
+                        />
+                      </Stack>
+                    </Card>
+                    <Card variant="resting" style={{ padding: 20 }}>
+                      <Stack gap={3}>
+                        <strong>Asset allocation</strong>
+                        <Divider />
+                        <DonutChart
+                          data={ALLOCATION_DATA}
+                          size={160}
+                          thickness={20}
+                          centerValue="$204k"
+                          centerLabel="total"
+                          valueFormat={(v) => `${v}%`}
+                        />
+                      </Stack>
+                    </Card>
+                  </Stack>
                 )}
 
                 {tab === 'transactions' && (
