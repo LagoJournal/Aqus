@@ -4370,6 +4370,7 @@ function BarChart({
   const ref = React.useRef(null);
   const [w, setW] = React.useState(640);
   const [hover, setHover] = React.useState(null);
+  const [pos, setPos] = React.useState({ x: 0, y: 0 });
   React.useEffect(() => {
     if (!ref.current) return;
     const ro = new ResizeObserver(([e]) => setW(e.contentRect.width));
@@ -4387,7 +4388,7 @@ function BarChart({
   const yAt = (v) => padT + innerH - v / maxV * innerH;
   const barGap = 0.22;
   const bw = stacked ? groupW * (1 - barGap) : groupW * (1 - barGap) / series.length;
-  return /* @__PURE__ */ jsxs("div", { ref, style: { width: "100%", fontFamily: "var(--font-ui)", position: "relative", ...style }, ...rest, children: [
+  return /* @__PURE__ */ jsxs("div", { ref, onMouseMove: (e) => setPos({ x: e.clientX, y: e.clientY }), style: { width: "100%", fontFamily: "var(--font-ui)", position: "relative", ...style }, ...rest, children: [
     /* @__PURE__ */ jsxs("svg", { width: "100%", height, viewBox: `0 0 ${w} ${height}`, style: { display: "block", overflow: "visible" }, children: [
       /* @__PURE__ */ jsx("defs", { children: /* @__PURE__ */ jsxs("linearGradient", { id: "aqus-bar-gloss", x1: "0", y1: "0", x2: "0", y2: "1", children: [
         /* @__PURE__ */ jsx("stop", { offset: "0%", stopColor: "rgba(255,255,255,0.28)" }),
@@ -4442,13 +4443,12 @@ function BarChart({
       })
     ] }),
     hover != null && (() => {
-      const cxp = (padL + hover * groupW + groupW / 2) / w;
       const total = stacked ? series.reduce((a, s) => a + (+data[hover][s.key] || 0), 0) : null;
       return /* @__PURE__ */ jsxs("div", { style: {
-        position: "absolute",
-        top: padT,
-        left: `${cxp * 100}%`,
-        transform: `translateX(${cxp > 0.5 ? "-108%" : "8%"})`,
+        position: "fixed",
+        left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+        top: pos.y - 32,
+        transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
         background: "var(--chart-tooltip-bg)",
         WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
         backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -4458,7 +4458,7 @@ function BarChart({
         borderRadius: "var(--radius-md)",
         padding: "8px 12px",
         pointerEvents: "none",
-        zIndex: 5,
+        zIndex: 9999,
         minWidth: 104
       }, children: [
         /* @__PURE__ */ jsx("div", { style: { fontSize: "var(--text-mini)", fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, letterSpacing: "var(--tracking-wide)", textTransform: "uppercase" }, children: data[hover].x }),
@@ -4498,6 +4498,7 @@ function LineChart({
   const ref = React.useRef(null);
   const [w, setW] = React.useState(640);
   const [hover, setHover] = React.useState(null);
+  const [pos, setPos] = React.useState({ x: 0, y: 0 });
   React.useEffect(() => {
     if (!ref.current) return;
     const ro = new ResizeObserver(([e]) => setW(e.contentRect.width));
@@ -4547,6 +4548,7 @@ function LineChart({
       }
     });
     setHover(nearest);
+    setPos({ x: e.clientX, y: e.clientY });
   };
   return /* @__PURE__ */ jsxs("div", { ref, style: { width: "100%", fontFamily: "var(--font-ui)", position: "relative", ...style }, ...rest, children: [
     /* @__PURE__ */ jsxs("svg", { width: "100%", height, viewBox: `0 0 ${w} ${height}`, onMouseMove: onMove, onMouseLeave: () => setHover(null), style: { display: "block", overflow: "visible" }, children: [
@@ -4575,10 +4577,10 @@ function LineChart({
       hover != null && series.map((s, i) => /* @__PURE__ */ jsx("circle", { cx: xAt(hover), cy: yAt(+data[hover][s.key] || 0), r: "4.5", fill: "var(--surface)", stroke: colorOf(s, i), strokeWidth: "2.5" }, `p${i}`))
     ] }),
     hover != null && /* @__PURE__ */ jsxs("div", { style: {
-      position: "absolute",
-      top: 0,
-      left: `${xAt(hover) / w * 100}%`,
-      transform: `translateX(${xAt(hover) > w / 2 ? "-108%" : "8%"})`,
+      position: "fixed",
+      left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+      top: pos.y - 32,
+      transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
       background: "var(--chart-tooltip-bg)",
       WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -4588,7 +4590,7 @@ function LineChart({
       borderRadius: "var(--radius-md)",
       padding: "8px 12px",
       pointerEvents: "none",
-      zIndex: 5,
+      zIndex: 9999,
       minWidth: 96
     }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontSize: "var(--text-mini)", fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, letterSpacing: "var(--tracking-wide)", textTransform: "uppercase" }, children: data[hover].x }),
@@ -4629,12 +4631,7 @@ function DonutChart({
   });
   const legendSeries = data.map((d, i) => ({ label: d.label, color: d.color || CHART_PALETTE[i % CHART_PALETTE.length] }));
   const [hover, setHover] = React.useState(null);
-  const tipPos = (() => {
-    if (hover == null || !segs[hover]) return null;
-    const midFrac = (segs[hover].offset + segs[hover].len / 2) / circ;
-    const a = midFrac * 2 * Math.PI;
-    return { x: cx + r * Math.sin(a), y: cy - r * Math.cos(a) };
-  })();
+  const [pos, setPos] = React.useState({ x: 0, y: 0 });
   return /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: "var(--space-6)", flexWrap: "wrap", fontFamily: "var(--font-ui)", ...style }, ...rest, children: [
     /* @__PURE__ */ jsxs("div", { style: { position: "relative", width: size, height: size, flex: "none" }, children: [
       /* @__PURE__ */ jsxs("svg", { width: size, height: size, viewBox: `0 0 ${size} ${size}`, style: { transform: "rotate(-90deg)", animation: morph ? "agus-liquid var(--dur-liquid) var(--ease-inout) infinite" : "none", overflow: "visible" }, children: [
@@ -4654,7 +4651,8 @@ function DonutChart({
             opacity: hover == null || hover === s.i ? 1 : 0.4,
             style: { cursor: "pointer", transition: "opacity var(--dur-fast) var(--ease-out), stroke-width var(--dur-fast) var(--ease-out)" },
             onMouseEnter: () => setHover(s.i),
-            onMouseLeave: () => setHover(null)
+            onMouseLeave: () => setHover(null),
+            onMouseMove: (e) => setPos({ x: e.clientX, y: e.clientY })
           },
           s.i
         ))
@@ -4663,11 +4661,11 @@ function DonutChart({
         centerValue != null && /* @__PURE__ */ jsx("span", { style: { fontFamily: "var(--font-display)", fontWeight: 800, fontSize: Math.round(size * 0.2), color: "var(--text)", lineHeight: 1 }, children: centerValue }),
         centerLabel && /* @__PURE__ */ jsx("span", { style: { fontSize: "var(--text-caption)", color: "var(--text-muted)", marginTop: 2 }, children: centerLabel })
       ] }),
-      hover != null && tipPos && /* @__PURE__ */ jsx("div", { style: {
-        position: "absolute",
-        left: tipPos.x,
-        top: tipPos.y,
-        transform: `translate(${tipPos.x > cx ? "8px" : "-108%"}, -50%)`,
+      hover != null && /* @__PURE__ */ jsx("div", { style: {
+        position: "fixed",
+        left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+        top: pos.y - 32,
+        transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
         background: "var(--chart-tooltip-bg)",
         WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
         backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -4677,7 +4675,7 @@ function DonutChart({
         borderRadius: "var(--radius-md)",
         padding: "7px 11px",
         pointerEvents: "none",
-        zIndex: 5,
+        zIndex: 9999,
         whiteSpace: "nowrap"
       }, children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
         /* @__PURE__ */ jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: segs[hover].color, flex: "none" } }),
@@ -4695,6 +4693,7 @@ function DonutChart({
       {
         onMouseEnter: () => setHover(i),
         onMouseLeave: () => setHover(null),
+        onMouseMove: (e) => setPos({ x: e.clientX, y: e.clientY }),
         style: { display: "flex", alignItems: "center", gap: 8, cursor: "default", opacity: hover == null || hover === i ? 1 : 0.5, transition: "opacity var(--dur-fast) var(--ease-out)" },
         children: [
           /* @__PURE__ */ jsx("span", { style: { width: 10, height: 10, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: legendSeries[i].color, flex: "none" } }),

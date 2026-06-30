@@ -39,6 +39,7 @@ export function LineChart({
   const ref = React.useRef(null);
   const [w, setW] = React.useState(640);
   const [hover, setHover] = React.useState(null);
+  const [pos, setPos] = React.useState({ x: 0, y: 0 });
 
   React.useEffect(() => {
     if (!ref.current) return;
@@ -91,6 +92,7 @@ export function LineChart({
     let nearest = 0, min = Infinity;
     data.forEach((_, i) => { const d = Math.abs(xAt(i) - x); if (d < min) { min = d; nearest = i; } });
     setHover(nearest);
+    setPos({ x: e.clientX, y: e.clientY });
   };
 
   return (
@@ -154,14 +156,15 @@ export function LineChart({
       {/* Glass tooltip */}
       {hover != null && (
         <div style={{
-          position: 'absolute', top: 0,
-          left: `${(xAt(hover) / w) * 100}%`,
-          transform: `translateX(${xAt(hover) > w / 2 ? '-108%' : '8%'})`,
+          position: 'fixed',
+          left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+          top: pos.y - 32,
+          transform: pos.x > window.innerWidth * 0.65 ? 'translateX(-100%)' : undefined,
           background: 'var(--chart-tooltip-bg)',
           WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
           border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
           boxShadow: 'var(--shadow-glass)', borderRadius: 'var(--radius-md)',
-          padding: '8px 12px', pointerEvents: 'none', zIndex: 5, minWidth: 96,
+          padding: '8px 12px', pointerEvents: 'none', zIndex: 9999, minWidth: 96,
         }}>
           <div style={{ fontSize: 'var(--text-mini)', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 4, letterSpacing: 'var(--tracking-wide)', textTransform: 'uppercase' }}>{data[hover].x}</div>
           {series.map((s, i) => (

@@ -39,14 +39,7 @@ export function DonutChart({
 
   const legendSeries = data.map((d, i) => ({ label: d.label, color: d.color || CHART_PALETTE[i % CHART_PALETTE.length] }));
   const [hover, setHover] = React.useState(null);
-
-  // Tooltip anchor: midpoint of the hovered segment on the ring (top = 0°, clockwise)
-  const tipPos = (() => {
-    if (hover == null || !segs[hover]) return null;
-    const midFrac = (segs[hover].offset + segs[hover].len / 2) / circ;
-    const a = midFrac * 2 * Math.PI;
-    return { x: cx + r * Math.sin(a), y: cy - r * Math.cos(a) };
-  })();
+  const [pos, setPos] = React.useState({ x: 0, y: 0 });
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)', flexWrap: 'wrap', fontFamily: 'var(--font-ui)', ...style }} {...rest}>
@@ -63,7 +56,8 @@ export function DonutChart({
               opacity={hover == null || hover === s.i ? 1 : 0.4}
               style={{ cursor: 'pointer', transition: 'opacity var(--dur-fast) var(--ease-out), stroke-width var(--dur-fast) var(--ease-out)' }}
               onMouseEnter={() => setHover(s.i)}
-              onMouseLeave={() => setHover(null)} />
+              onMouseLeave={() => setHover(null)}
+              onMouseMove={(e) => setPos({ x: e.clientX, y: e.clientY })} />
           ))}
         </svg>
         {(centerValue != null || centerLabel) && (
@@ -73,15 +67,17 @@ export function DonutChart({
           </div>
         )}
         {/* Glass tooltip — hovered segment */}
-        {hover != null && tipPos && (
+        {hover != null && (
           <div style={{
-            position: 'absolute', left: tipPos.x, top: tipPos.y,
-            transform: `translate(${tipPos.x > cx ? '8px' : '-108%'}, -50%)`,
+            position: 'fixed',
+            left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+            top: pos.y - 32,
+            transform: pos.x > window.innerWidth * 0.65 ? 'translateX(-100%)' : undefined,
             background: 'var(--chart-tooltip-bg)',
             WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
             border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
             boxShadow: 'var(--shadow-glass)', borderRadius: 'var(--radius-md)',
-            padding: '7px 11px', pointerEvents: 'none', zIndex: 5, whiteSpace: 'nowrap',
+            padding: '7px 11px', pointerEvents: 'none', zIndex: 9999, whiteSpace: 'nowrap',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 'var(--text-body-sm)' }}>
               <span style={{ width: 8, height: 8, borderRadius: '42% 58% 63% 37% / 41% 44% 56% 59%', background: segs[hover].color, flex: 'none' }} />
@@ -96,7 +92,7 @@ export function DonutChart({
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
           {data.map((d, i) => (
             <div key={i}
-              onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}
+              onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} onMouseMove={(e) => setPos({ x: e.clientX, y: e.clientY })}
               style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'default', opacity: hover == null || hover === i ? 1 : 0.5, transition: 'opacity var(--dur-fast) var(--ease-out)' }}>
               <span style={{ width: 10, height: 10, borderRadius: '42% 58% 63% 37% / 41% 44% 56% 59%', background: legendSeries[i].color, flex: 'none' }} />
               <span style={{ fontSize: 'var(--text-body-sm)', color: 'var(--text-muted)', flex: 1 }}>{d.label}</span>

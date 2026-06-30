@@ -24,6 +24,7 @@ export function BarChart({
   const ref = React.useRef(null);
   const [w, setW] = React.useState(640);
   const [hover, setHover] = React.useState(null);
+  const [pos, setPos] = React.useState({ x: 0, y: 0 });
 
   React.useEffect(() => {
     if (!ref.current) return;
@@ -48,7 +49,7 @@ export function BarChart({
   const bw = stacked ? groupW * (1 - barGap) : (groupW * (1 - barGap)) / series.length;
 
   return (
-    <div ref={ref} style={{ width: '100%', fontFamily: 'var(--font-ui)', position: 'relative', ...style }} {...rest}>
+    <div ref={ref} onMouseMove={(e) => setPos({ x: e.clientX, y: e.clientY })} style={{ width: '100%', fontFamily: 'var(--font-ui)', position: 'relative', ...style }} {...rest}>
       <svg width="100%" height={height} viewBox={`0 0 ${w} ${height}`} style={{ display: 'block', overflow: 'visible' }}>
         <defs>
           <linearGradient id="aqus-bar-gloss" x1="0" y1="0" x2="0" y2="1">
@@ -122,18 +123,18 @@ export function BarChart({
 
       {/* Glass tooltip — hovered group */}
       {hover != null && (() => {
-        const cxp = (padL + hover * groupW + groupW / 2) / w;
         const total = stacked ? series.reduce((a, s) => a + (+data[hover][s.key] || 0), 0) : null;
         return (
           <div style={{
-            position: 'absolute', top: padT,
-            left: `${cxp * 100}%`,
-            transform: `translateX(${cxp > 0.5 ? '-108%' : '8%'})`,
+            position: 'fixed',
+            left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+            top: pos.y - 32,
+            transform: pos.x > window.innerWidth * 0.65 ? 'translateX(-100%)' : undefined,
             background: 'var(--chart-tooltip-bg)',
             WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
             border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
             boxShadow: 'var(--shadow-glass)', borderRadius: 'var(--radius-md)',
-            padding: '8px 12px', pointerEvents: 'none', zIndex: 5, minWidth: 104,
+            padding: '8px 12px', pointerEvents: 'none', zIndex: 9999, minWidth: 104,
           }}>
             <div style={{ fontSize: 'var(--text-mini)', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 4, letterSpacing: 'var(--tracking-wide)', textTransform: 'uppercase' }}>{data[hover].x}</div>
             {series.map((s, i) => (
