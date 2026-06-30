@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Section, Container, Card, Stack, Badge, Divider, LiquidBubble, Button,
+  Section, Container, Card, Stack, Badge, Divider, LiquidBubble,
 } from '@agustin/aqus'
 
 const RULES = [

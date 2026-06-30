@@ -6,8 +6,8 @@ import { JournalExample } from '../examples/JournalExample.jsx'
 
 const VIEWS = {
   dashboard: { label: 'Dashboard', node: <DashboardExample /> },
-  profile:   { label: 'Profile',   node: <ProfileExample /> },
   journal:   { label: 'Journal',   node: <JournalExample /> },
+  profile:   { label: 'Profile',   node: <ProfileExample /> },
 }
 
 function darkAccentVars(h) {
