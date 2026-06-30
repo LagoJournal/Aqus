@@ -14,8 +14,9 @@ const CSS_IMPORT = `// app root: main.jsx / _app.tsx / layout.tsx
 import '@agustin/aqus/styles.css'`
 
 const ACCENT = `:root {
-  /* Override all 9 tokens to set your brand accent.
+  /* One hue → nine tokens. --accent-h drives the chart palette.
      Constraints: L 0.55–0.72, C 0.12–0.24. */
+  --accent-h:      250;
   --accent:        oklch(0.65 0.20 250);
   --accent-hover:  oklch(0.59 0.22 250);
   --accent-light:  oklch(0.92 0.07 250);
