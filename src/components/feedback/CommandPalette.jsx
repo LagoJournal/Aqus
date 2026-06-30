@@ -1,5 +1,6 @@
 import React from 'react';
 import { LiquidBubble } from '../core/LiquidBubble.jsx';
+import { Portal } from '../../internal/floating.jsx';
 
 /**
  * Aqus — CommandPalette
@@ -51,13 +52,14 @@ export function CommandPalette({
   let itemIndex = -1;
 
   return (
+    <Portal>
     <div
       role="dialog"
       aria-modal="true"
       aria-label="Command palette"
       onKeyDown={onKey}
       style={{
-        position: 'fixed', inset: 0, zIndex: 200,
+        position: 'fixed', inset: 0, zIndex: 1000,
         display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
         paddingTop: '14vh',
         background: 'rgba(0,0,0,0.32)',
@@ -159,5 +161,6 @@ export function CommandPalette({
         )}
       </div>
     </div>
+    </Portal>
   );
 }

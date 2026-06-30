@@ -6,6 +6,7 @@ import React from 'react';
  * Selected row marked with a small liquid bubble.
  */
 import { LiquidBubble } from '../core/LiquidBubble.jsx';
+import { Portal, useAnchoredFloating } from '../../internal/floating.jsx';
 
 export function Select({
   options = [],
@@ -19,20 +20,15 @@ export function Select({
 }) {
   const items = options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o));
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
   const inputId = id || React.useId();
   const current = items.find((o) => o.value === value);
-
-  React.useEffect(() => {
-    const onDoc = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, []);
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
 
   return (
-    <div ref={ref} style={{ position: 'relative', fontFamily: 'var(--font-ui)', display: 'flex', flexDirection: 'column', gap: 6, ...style }}>
+    <div style={{ position: 'relative', fontFamily: 'var(--font-ui)', display: 'flex', flexDirection: 'column', gap: 6, ...style }}>
       {label && <label htmlFor={inputId} style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--weight-medium)', color: 'var(--text)' }}>{label}</label>}
       <button
+        ref={anchorRef}
         type="button" id={inputId} disabled={disabled}
         aria-haspopup="listbox" aria-expanded={open}
         onClick={() => !disabled && setOpen((o) => !o)}
@@ -55,10 +51,11 @@ export function Select({
           marginTop: open ? 4 : -2,
         }} />
       </button>
-      {open && (
-        <div role="listbox" style={{
-          position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 40,
-          padding: 6, borderRadius: 'var(--radius-md)',
+      {open && rect && (
+        <Portal>
+        <div ref={panelRef} role="listbox" style={{
+          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 1000,
+          padding: 6, borderRadius: 'var(--radius-md)', boxSizing: 'border-box',
           background: 'var(--glass-surface)',
           WebkitBackdropFilter: 'blur(18px) saturate(1.6)', backdropFilter: 'blur(18px) saturate(1.6)',
           border: '1px solid var(--glass-border-light)', boxShadow: 'var(--shadow-md)',
@@ -85,6 +82,7 @@ export function Select({
             );
           })}
         </div>
+        </Portal>
       )}
     </div>
   );

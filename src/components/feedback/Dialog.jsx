@@ -1,4 +1,5 @@
 import React from 'react';
+import { Portal } from '../../internal/floating.jsx';
 
 /**
  * Aqus — Dialog
@@ -23,10 +24,11 @@ export function Dialog({
 
   if (!open) return null;
   return (
+    <Portal>
     <div
       onMouseDown={(e) => { if (e.target === e.currentTarget && onClose) onClose(); }}
       style={{
-        position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 24, background: 'rgba(20,28,42,0.32)',
         WebkitBackdropFilter: 'blur(6px)', backdropFilter: 'blur(6px)',
         animation: 'agus-enter var(--dur-fast) var(--ease-out)',
@@ -51,5 +53,6 @@ export function Dialog({
         </div>
       </div>
     </div>
+    </Portal>
   );
 }

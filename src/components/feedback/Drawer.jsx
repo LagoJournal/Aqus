@@ -1,4 +1,5 @@
 import React from 'react';
+import { Portal } from '../../internal/floating.jsx';
 
 /**
  * Aqus — Drawer
@@ -30,8 +31,9 @@ export function Drawer({
     : { left: 0, right: 0, [side]: 0, height: width, width: '100%' };
 
   return (
+    <Portal>
     <div aria-hidden={!open} style={{
-      position: 'fixed', inset: 0, zIndex: 200,
+      position: 'fixed', inset: 0, zIndex: 1000,
       pointerEvents: open ? 'auto' : 'none',
     }}>
       {/* Backdrop */}
@@ -73,5 +75,6 @@ export function Drawer({
         <div style={{ padding: 'var(--space-5)', overflowY: 'auto', flex: 1 }}>{children}</div>
       </div>
     </div>
+    </Portal>
   );
 }

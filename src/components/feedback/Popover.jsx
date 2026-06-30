@@ -1,4 +1,5 @@
 import React from 'react';
+import { Portal, useAnchoredFloating, placeAround } from '../../internal/floating.jsx';
 
 /**
  * Aqus — Popover
@@ -15,34 +16,20 @@ export function Popover({
   ...rest
 }) {
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    if (open) document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
-
-  const placements = {
-    bottom: { top: '100%', left: '50%', transform: 'translateX(-50%)' },
-    top:    { bottom: '100%', left: '50%', transform: 'translateX(-50%)' },
-    left:   { right: '100%', top: '50%', transform: 'translateY(-50%)' },
-    right:  { left: '100%', top: '50%', transform: 'translateY(-50%)' },
-  };
-  const pos = placements[placement] || placements.bottom;
-  const offsetKey = placement === 'bottom' ? 'marginTop' : placement === 'top' ? 'marginBottom' : placement === 'left' ? 'marginRight' : 'marginLeft';
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
 
   return (
-    <div ref={ref} style={{ position: 'relative', display: 'inline-flex' }}>
-      <div onClick={() => setOpen(o => !o)} style={{ display: 'inline-flex' }}>
+    <div style={{ position: 'relative', display: 'inline-flex' }}>
+      <div ref={anchorRef} onClick={() => setOpen(o => !o)} style={{ display: 'inline-flex' }}>
         {trigger}
       </div>
-      {open && (
+      {open && rect && (
+        <Portal>
         <div
+          ref={panelRef}
           role="dialog"
           style={{
-            position: 'absolute', zIndex: 100, [offsetKey]: offset,
-            ...pos,
+            ...placeAround(rect, placement, offset, 'center'), zIndex: 1000,
             background: 'var(--glass-surface)',
             WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
             backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
@@ -64,6 +51,7 @@ export function Popover({
           }} />
           <div style={{ position: 'relative' }}>{children}</div>
         </div>
+        </Portal>
       )}
     </div>
   );

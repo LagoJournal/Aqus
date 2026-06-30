@@ -1,5 +1,6 @@
 import React from 'react';
 import { LiquidBubble, LIQUID_BLOB } from '../core/LiquidBubble.jsx';
+import { Portal, useAnchoredFloating } from '../../internal/floating.jsx';
 
 /**
  * Aqus — DatePicker
@@ -17,13 +18,7 @@ export function DatePicker({
 }) {
   const [open, setOpen] = React.useState(false);
   const [view, setView] = React.useState(() => value ? new Date(value) : new Date());
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    if (open) document.addEventListener('mousedown', close);
-    return () => document.removeEventListener('mousedown', close);
-  }, [open]);
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
 
   const today = new Date(); today.setHours(0,0,0,0);
   const sel = value ? new Date(value) : null;
@@ -50,9 +45,9 @@ export function DatePicker({
   );
 
   return (
-    <div ref={ref} style={{ display: 'inline-flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--font-ui)', position: 'relative', ...style }} {...rest}>
+    <div style={{ display: 'inline-flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--font-ui)', position: 'relative', ...style }} {...rest}>
       {label && <label style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--weight-medium)', color: 'var(--text)' }}>{label}</label>}
-      <button onClick={() => setOpen(o => !o)} style={{
+      <button ref={anchorRef} onClick={() => setOpen(o => !o)} style={{
         display: 'flex', alignItems: 'center', gap: 10, minWidth: 200,
         padding: '0 12px', height: 40, borderRadius: 'var(--radius-sm)',
         border: `${open ? 'var(--border-focus)' : 'var(--border-hairline)'} solid ${open ? 'var(--accent)' : 'var(--border)'}`,
@@ -66,9 +61,10 @@ export function DatePicker({
         <span style={{ flex: 1, textAlign: 'left' }}>{sel ? fmt(sel) : placeholder}</span>
       </button>
 
-      {open && (
-        <div style={{
-          position: 'absolute', top: '100%', marginTop: 8, zIndex: 100,
+      {open && rect && (
+        <Portal>
+        <div ref={panelRef} style={{
+          position: 'fixed', top: rect.bottom + 8, left: rect.left, zIndex: 1000,
           background: 'var(--glass-surface)',
           WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
           border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
@@ -109,6 +105,7 @@ export function DatePicker({
             })}
           </div>
         </div>
+        </Portal>
       )}
     </div>
   );

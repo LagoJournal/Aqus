@@ -1,5 +1,6 @@
 import React from 'react';
 import { LiquidBubble } from '../core/LiquidBubble.jsx';
+import { Portal, useAnchoredFloating } from '../../internal/floating.jsx';
 
 /**
  * Aqus — MultiSelect
@@ -16,22 +17,17 @@ export function MultiSelect({
   ...rest
 }) {
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    if (open) document.addEventListener('mousedown', close);
-    return () => document.removeEventListener('mousedown', close);
-  }, [open]);
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
 
   const norm = (o) => typeof o === 'string' ? { value: o, label: o } : o;
   const opts = options.map(norm);
   const toggle = (v) => onChange?.(value.includes(v) ? value.filter(x => x !== v) : [...value, v]);
 
   return (
-    <div ref={ref} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--font-ui)', position: 'relative', minWidth: 240, ...style }} {...rest}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--font-ui)', position: 'relative', minWidth: 240, ...style }} {...rest}>
       {label && <label style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--weight-medium)', color: 'var(--text)' }}>{label}</label>}
       <div
+        ref={anchorRef}
         onClick={() => setOpen(o => !o)}
         style={{
           display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', minHeight: 40, padding: '5px 10px',
@@ -59,9 +55,10 @@ export function MultiSelect({
         <i className="ph ph-caret-down" style={{ fontSize: 14, color: 'var(--text-muted)', marginLeft: 'auto', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform var(--dur-fast)' }} />
       </div>
 
-      {open && (
-        <div style={{
-          position: 'absolute', top: '100%', insetInline: 0, marginTop: 6, zIndex: 100,
+      {open && rect && (
+        <Portal>
+        <div ref={panelRef} style={{
+          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 1000, boxSizing: 'border-box',
           background: 'var(--glass-surface)',
           WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
           border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
@@ -87,6 +84,7 @@ export function MultiSelect({
             );
           })}
         </div>
+        </Portal>
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { LiquidBubble } from '../core/LiquidBubble.jsx';
+import { Portal, useAnchoredFloating } from '../../internal/floating.jsx';
 
 /**
  * Aqus — Combobox
@@ -18,13 +19,7 @@ export function Combobox({
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState('');
   const [active, setActive] = React.useState(0);
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    if (open) document.addEventListener('mousedown', close);
-    return () => document.removeEventListener('mousedown', close);
-  }, [open]);
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
 
   const norm = (o) => typeof o === 'string' ? { value: o, label: o } : o;
   const opts = options.map(norm);
@@ -41,9 +36,10 @@ export function Combobox({
   };
 
   return (
-    <div ref={ref} style={{ display: 'flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--font-ui)', position: 'relative', minWidth: 220, ...style }} {...rest}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontFamily: 'var(--font-ui)', position: 'relative', minWidth: 220, ...style }} {...rest}>
       {label && <label style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--weight-medium)', color: 'var(--text)' }}>{label}</label>}
       <div
+        ref={anchorRef}
         onClick={() => setOpen(true)}
         style={{
           display: 'flex', alignItems: 'center', gap: 8, height: 40, padding: '0 12px',
@@ -67,9 +63,10 @@ export function Combobox({
         <i className="ph ph-caret-down" style={{ fontSize: 14, color: 'var(--text-muted)', flex: 'none', transition: 'transform var(--dur-fast)', transform: open ? 'rotate(180deg)' : 'none' }} />
       </div>
 
-      {open && (
-        <div style={{
-          position: 'absolute', top: '100%', insetInline: 0, marginTop: 6, zIndex: 100,
+      {open && rect && (
+        <Portal>
+        <div ref={panelRef} style={{
+          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 1000, boxSizing: 'border-box',
           background: 'var(--glass-surface)',
           WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
           border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
@@ -98,6 +95,7 @@ export function Combobox({
             );
           })}
         </div>
+        </Portal>
       )}
     </div>
   );

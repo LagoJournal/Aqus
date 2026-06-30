@@ -1,4 +1,5 @@
 import React from 'react';
+import { Portal, useAnchoredFloating, placeAround } from '../../internal/floating.jsx';
 
 /**
  * Aqus — Menu
@@ -7,20 +8,15 @@ import React from 'react';
  */
 export function Menu({ trigger, items = [], align = 'left', style = {} }) {
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    const onDoc = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, []);
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
 
   return (
-    <div ref={ref} style={{ position: 'relative', display: 'inline-flex', ...style }}>
-      <span onClick={() => setOpen((o) => !o)} style={{ display: 'inline-flex', cursor: 'pointer' }}>{trigger}</span>
-      {open && (
-        <div role="menu" style={{
-          position: 'absolute', top: 'calc(100% + 6px)', [align]: 0, zIndex: 50, minWidth: 180,
+    <div style={{ position: 'relative', display: 'inline-flex', ...style }}>
+      <span ref={anchorRef} onClick={() => setOpen((o) => !o)} style={{ display: 'inline-flex', cursor: 'pointer' }}>{trigger}</span>
+      {open && rect && (
+        <Portal>
+        <div ref={panelRef} role="menu" style={{
+          ...placeAround(rect, 'bottom', 6, align === 'right' ? 'end' : 'start'), zIndex: 1000, minWidth: 180,
           padding: 6, borderRadius: 'var(--radius-md)',
           background: 'var(--glass-surface)',
           WebkitBackdropFilter: 'blur(18px) saturate(1.6)', backdropFilter: 'blur(18px) saturate(1.6)',
@@ -46,6 +42,7 @@ export function Menu({ trigger, items = [], align = 'left', style = {} }) {
             </button>
           ))}
         </div>
+        </Portal>
       )}
     </div>
   );
