@@ -1,45 +1,55 @@
 ---
 name: aqus-design
-description: Use this skill to generate well-branded interfaces and assets with the Aqus design system — a Retro-Aero × Modern UI language (glass, gloss, depth, and a signature liquid-bubble identity). For production code or throwaway prototypes/mocks. Contains design guidelines, color/type/spacing tokens, self-hosted fonts, and a full React component library ready to ship new UIs.
+description: Use this skill to generate well-branded interfaces and assets with the Aqus design system — a Retro-Aero × Modern UI language (glass, gloss, depth, liquid-bubble identity). For production code or prototypes/mocks. 71 React components, CSS design tokens, self-hosted fonts. Invoke whenever composing a view, page, or UI section for any project using @agustin/aqus.
 user-invocable: true
 ---
 
 # Aqus design system
 
-Read `README.md` for the full guide, then explore the other files. When the user invokes this skill without specifics, ask what they want to build, ask a few focused questions, then act as an expert designer who outputs either HTML artifacts or production code.
+## For view composition (agents)
 
-- **Visual artifacts** (slides, mocks, throwaway prototypes): copy the assets/fonts you need into the output and ship static HTML so the user can view it offline.
-- **Production code**: copy the token CSS + components into the project and follow the rules here to design natively in the brand.
+Read `docs/AGENT_GUIDE.md` before composing any view. It contains:
+- Full component catalog (71 components — when to use, key props, examples)
+- View recipes (landing, dashboard, settings, auth, empty states)
+- Page anatomy
+- Hard constraints and anti-patterns
+- 8-step composition process
 
-## Quick start
+**Workflow:** load AGENT_GUIDE → find matching View Recipe → adapt → output complete JSX.
 
-1. **Tokens & global CSS** — link `styles.css`. Override the 9 `--accent-*` tokens in your own `:root {}` block to set your brand color (the recipe and a worked example are in `tokens/colors.css`). Set `data-theme="dark"` on a root element for the dark elevation ramp.
-2. **Components** — compiled to `_ds_bundle.js`. Load it, then read components off `window.AqusNamespace` (the exact namespace is `AgusDesignSystem_492a6f` — auto-derived and stable). Each component has a `.prompt.md` with a one-line "what & when" plus a usage example, and a `.d.ts` props contract.
-3. **Fonts** — Nunito (display), Plus Jakarta Sans (UI/body), JetBrains Mono (code) are self-hosted in `assets/fonts/`.
+## For design/branding questions
 
-## Library at a glance (79 components)
+Read `README.md` for the full system guide. Read `docs/brand-guide.md` for visual/brand specifics.
 
-- **core** — Button, IconButton, GlassPanel, Card, Badge, Tag, Input, Switch, SegmentedControl, ToggleGroup, Spinner, LiquidBubble, Kbd.
-- **forms** — Checkbox, Radio, Select, Combobox, MultiSelect, Textarea, Slider, NumberInput, DatePicker, ColorPicker, OTPInput, SearchInput, FileDropzone.
-- **feedback** — Alert, Banner, Progress, ProgressCircle, Skeleton, LoadingOverlay, Toast, Tooltip, Popover, Dialog, Drawer, EmptyState, CommandPalette.
-- **navigation** — Tabs, Breadcrumb, Menu, ContextMenu, Accordion, Pagination, Stepper.
-- **data** — Avatar, Divider, Table, Timeline, TreeView, CodeBlock, DescriptionList.
-- **layout** — Container, Stack, Section, Prose, PageHeader, HeroSection, NavBar, Footer.
-- **content** — StatCard, FeatureCard, FilterBar, TestimonialCard, BlogCard, MediaCard, NotificationItem, Carousel.
-- **brand** — Monogram (liquid drop), Wordmark (liquid-s).
+## Install
 
-The `ui_kits/` (portfolio, dashboard) show the system composed into real product screens.
+```bash
+npm install github:agustinlago/aqus#v0.1.0
+```
 
-## Rules of thumb
+```js
+import '@agustin/aqus/styles.css'
+import { Button, Card, NavBar, ... } from '@agustin/aqus'
+```
 
-- **One accent, set in CSS — within constraints.** Override `--accent-*` in `:root {}`. L: 0.55–0.72; C: 0.12–0.24; keep the derivation formula in `tokens/colors.css`. Never a second color; never a literal hex.
-- **Glass is structural only** — nav, modals, drawers, popovers, hero. Content stays flat on `surface`.
-- **Round = liquid** — use `LiquidBubble` / the `LIQUID_BLOB` radius instead of `border-radius: 50%`.
-- **Reference tokens, never literals.** Depth is earned; light comes from above.
-- **Icons:** Phosphor (`<i class="ph ph-<name>">`) for UI, color inherited from the palette; Aqua-illustrative for app icons. No emoji in chrome.
-- **Motion conveys physics** — spring entrances, hover lift, glassy fades; data views get micro-interactions only.
-- **Copy** — sentence case, terse, honest; no emoji, no hype.
+## Library at a glance (71 components)
 
-## Shipping a new UI (Claude Code)
+- **core** — Button, IconButton, GlassPanel, Card, Badge, Tag, Input, Switch, SegmentedControl, ToggleGroup, Spinner, LiquidBubble, Kbd
+- **forms** — Checkbox, Radio, Select, Combobox, MultiSelect, Textarea, Slider, NumberInput, DatePicker, ColorPicker, OTPInput, SearchInput, FileDropzone
+- **feedback** — Alert, Banner, Progress, ProgressCircle, Skeleton, LoadingOverlay, Toast, Tooltip, Popover, Dialog, Drawer, EmptyState, CommandPalette
+- **navigation** — Tabs, Breadcrumb, Menu, ContextMenu, Accordion, Pagination, Stepper
+- **data** — Avatar, Divider, Table, Timeline, TreeView, CodeBlock, DescriptionList
+- **layout** — Container, Stack, Section, Prose, PageHeader, HeroSection, NavBar, Footer
+- **content** — StatCard, FeatureCard, FilterBar, TestimonialCard, BlogCard, MediaCard, NotificationItem, Carousel
+- **brand** — Monogram, Wordmark
 
-To build a new interface: link `styles.css`, load `_ds_bundle.js`, choose an accent + theme on the root, then compose screens from the primitives (don't re-style raw elements). Match the composition patterns in `ui_kits/`. Copy any fonts/assets the output references into the project so it runs standalone.
+## Rules
+
+- **One accent in CSS** — override 9 `--accent-*` tokens in `:root {}`. L: 0.55–0.72, C: 0.12–0.24. No second color. No hex.
+- **Glass = structural** — NavBar, Dialog, Drawer, GlassPanel. Not content.
+- **Round = LiquidBubble** — never `border-radius: 50%`.
+- **Tokens, not literals.** Depth is earned.
+- **Compose from primitives** — never re-style raw HTML.
+- **Icons:** Phosphor (`<i class="ph ph-<name>">`) — no emoji in chrome.
+- **Motion:** physics-based springs. Data surfaces: micro-interactions only.
+- **Copy:** sentence case, terse, honest. No emoji. No hype.
