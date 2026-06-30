@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { ChartLegend, CHART_PALETTE } from './ChartLegend.jsx';
 
 /**
@@ -121,39 +122,43 @@ export function BarChart({
         })}
       </svg>
 
-      {/* Glass tooltip — hovered group */}
-      {hover != null && (() => {
-        const total = stacked ? series.reduce((a, s) => a + (+data[hover][s.key] || 0), 0) : null;
-        return (
-          <div style={{
-            position: 'fixed',
-            left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
-            top: pos.y - 32,
-            transform: pos.x > window.innerWidth * 0.65 ? 'translateX(-100%)' : undefined,
-            background: 'var(--chart-tooltip-bg)',
-            WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
-            border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
-            boxShadow: 'var(--shadow-glass)', borderRadius: 'var(--radius-md)',
-            padding: '8px 12px', pointerEvents: 'none', zIndex: 9999, minWidth: 104,
-          }}>
-            <div style={{ fontSize: 'var(--text-mini)', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 4, letterSpacing: 'var(--tracking-wide)', textTransform: 'uppercase' }}>{data[hover].x}</div>
-            {series.map((s, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 'var(--text-body-sm)' }}>
-                <span style={{ width: 8, height: 8, borderRadius: '42% 58% 63% 37% / 41% 44% 56% 59%', background: colorOf(s, i), flex: 'none' }} />
-                <span style={{ color: 'var(--text-muted)', flex: 1 }}>{s.label}</span>
-                <span style={{ color: 'var(--text)', fontWeight: 600 }}>{valueFormat(+data[hover][s.key] || 0)}</span>
-              </div>
-            ))}
-            {stacked && series.length > 1 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 'var(--text-body-sm)', marginTop: 4, paddingTop: 4, borderTop: '1px solid var(--border)' }}>
-                <span style={{ width: 8, flex: 'none' }} />
-                <span style={{ color: 'var(--text-muted)', flex: 1, fontWeight: 600 }}>Total</span>
-                <span style={{ color: 'var(--text)', fontWeight: 700 }}>{valueFormat(total)}</span>
-              </div>
-            )}
-          </div>
-        );
-      })()}
+      {/* Glass tooltip — portalled to body to escape overflow:hidden and transform ancestors */}
+      {hover != null && ReactDOM.createPortal(
+        (() => {
+          const total = stacked ? series.reduce((a, s) => a + (+data[hover][s.key] || 0), 0) : null;
+          return (
+            <div style={{
+              position: 'fixed',
+              left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+              top: pos.y - 32,
+              transform: pos.x > window.innerWidth * 0.65 ? 'translateX(-100%)' : undefined,
+              background: 'var(--chart-tooltip-bg)',
+              WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
+              border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
+              boxShadow: 'var(--shadow-glass)', borderRadius: 'var(--radius-md)',
+              padding: '8px 12px', pointerEvents: 'none', zIndex: 9999, minWidth: 104,
+              fontFamily: 'var(--font-ui)',
+            }}>
+              <div style={{ fontSize: 'var(--text-mini)', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 4, letterSpacing: 'var(--tracking-wide)', textTransform: 'uppercase' }}>{data[hover].x}</div>
+              {series.map((s, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 'var(--text-body-sm)' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '42% 58% 63% 37% / 41% 44% 56% 59%', background: colorOf(s, i), flex: 'none' }} />
+                  <span style={{ color: 'var(--text-muted)', flex: 1 }}>{s.label}</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 600 }}>{valueFormat(+data[hover][s.key] || 0)}</span>
+                </div>
+              ))}
+              {stacked && series.length > 1 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 'var(--text-body-sm)', marginTop: 4, paddingTop: 4, borderTop: '1px solid var(--border)' }}>
+                  <span style={{ width: 8, flex: 'none' }} />
+                  <span style={{ color: 'var(--text-muted)', flex: 1, fontWeight: 600 }}>Total</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 700 }}>{valueFormat(total)}</span>
+                </div>
+              )}
+            </div>
+          );
+        })(),
+        document.body
+      )}
       {showLegend && series.length > 1 && (
         <ChartLegend series={series} style={{ marginTop: 'var(--space-3)', paddingLeft: padL }} />
       )}

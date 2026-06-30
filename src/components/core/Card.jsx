@@ -43,7 +43,7 @@ export function Card({
         borderRadius: 'var(--radius-md)',
         padding: 'var(--space-5)',
         transition: 'var(--transition-hover)',
-        transform: lift ? 'translateY(-2px)' : 'translateY(0)',
+        transform: lift ? 'translateY(-2px)' : undefined,
         cursor: interactive ? 'pointer' : 'default',
         overflow: 'hidden',
         ...variants[variant],

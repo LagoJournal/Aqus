@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { ChartLegend, CHART_PALETTE } from './ChartLegend.jsx';
 
 // Small organic liquid-blob path centered at (cx,cy), ~radius r.
@@ -153,8 +154,8 @@ export function LineChart({
         ))}
       </svg>
 
-      {/* Glass tooltip */}
-      {hover != null && (
+      {/* Glass tooltip — portalled to body to escape overflow:hidden and transform ancestors */}
+      {hover != null && ReactDOM.createPortal(
         <div style={{
           position: 'fixed',
           left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
@@ -165,6 +166,7 @@ export function LineChart({
           border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
           boxShadow: 'var(--shadow-glass)', borderRadius: 'var(--radius-md)',
           padding: '8px 12px', pointerEvents: 'none', zIndex: 9999, minWidth: 96,
+          fontFamily: 'var(--font-ui)',
         }}>
           <div style={{ fontSize: 'var(--text-mini)', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 4, letterSpacing: 'var(--tracking-wide)', textTransform: 'uppercase' }}>{data[hover].x}</div>
           {series.map((s, i) => (
@@ -174,7 +176,8 @@ export function LineChart({
               <span style={{ color: 'var(--text)', fontWeight: 600 }}>{valueFormat(+data[hover][s.key] || 0)}</span>
             </div>
           ))}
-        </div>
+        </div>,
+        document.body
       )}
 
       {showLegend && series.length > 0 && (

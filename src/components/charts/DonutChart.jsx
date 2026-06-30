@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { ChartLegend, CHART_PALETTE } from './ChartLegend.jsx';
 
 /**
@@ -66,8 +67,8 @@ export function DonutChart({
             {centerLabel && <span style={{ fontSize: 'var(--text-caption)', color: 'var(--text-muted)', marginTop: 2 }}>{centerLabel}</span>}
           </div>
         )}
-        {/* Glass tooltip — hovered segment */}
-        {hover != null && (
+        {/* Glass tooltip — portalled to body to escape overflow:hidden and transform ancestors */}
+        {hover != null && ReactDOM.createPortal(
           <div style={{
             position: 'fixed',
             left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
@@ -78,6 +79,7 @@ export function DonutChart({
             border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
             boxShadow: 'var(--shadow-glass)', borderRadius: 'var(--radius-md)',
             padding: '7px 11px', pointerEvents: 'none', zIndex: 9999, whiteSpace: 'nowrap',
+            fontFamily: 'var(--font-ui)',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 'var(--text-body-sm)' }}>
               <span style={{ width: 8, height: 8, borderRadius: '42% 58% 63% 37% / 41% 44% 56% 59%', background: segs[hover].color, flex: 'none' }} />
@@ -85,7 +87,8 @@ export function DonutChart({
               <span style={{ color: 'var(--text)', fontWeight: 700 }}>{valueFormat(+data[hover].value || 0)}</span>
               <span style={{ color: 'var(--text-muted)', fontSize: 'var(--text-caption)' }}>· {Math.round(((+data[hover].value || 0) / total) * 100)}%</span>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
       {showLegend && (

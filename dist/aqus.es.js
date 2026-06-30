@@ -1,6 +1,6 @@
 import { jsxs, jsx, Fragment } from "react/jsx-runtime";
 import React from "react";
-import { createPortal } from "react-dom";
+import ReactDOM, { createPortal } from "react-dom";
 function Button({
   variant = "primary",
   size = "md",
@@ -300,7 +300,7 @@ function Card({
         borderRadius: "var(--radius-md)",
         padding: "var(--space-5)",
         transition: "var(--transition-hover)",
-        transform: lift ? "translateY(-2px)" : "translateY(0)",
+        transform: lift ? "translateY(-2px)" : void 0,
         cursor: interactive ? "pointer" : "default",
         overflow: "hidden",
         ...variants[variant],
@@ -4442,38 +4442,42 @@ function BarChart({
         ] }, gi);
       })
     ] }),
-    hover != null && (() => {
-      const total = stacked ? series.reduce((a, s) => a + (+data[hover][s.key] || 0), 0) : null;
-      return /* @__PURE__ */ jsxs("div", { style: {
-        position: "fixed",
-        left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
-        top: pos.y - 32,
-        transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
-        background: "var(--chart-tooltip-bg)",
-        WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
-        backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
-        border: "1px solid var(--glass-border-light)",
-        borderBottomColor: "var(--glass-border-dark)",
-        boxShadow: "var(--shadow-glass)",
-        borderRadius: "var(--radius-md)",
-        padding: "8px 12px",
-        pointerEvents: "none",
-        zIndex: 9999,
-        minWidth: 104
-      }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: "var(--text-mini)", fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, letterSpacing: "var(--tracking-wide)", textTransform: "uppercase" }, children: data[hover].x }),
-        series.map((s, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
-          /* @__PURE__ */ jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: colorOf(s, i), flex: "none" } }),
-          /* @__PURE__ */ jsx("span", { style: { color: "var(--text-muted)", flex: 1 }, children: s.label }),
-          /* @__PURE__ */ jsx("span", { style: { color: "var(--text)", fontWeight: 600 }, children: valueFormat(+data[hover][s.key] || 0) })
-        ] }, i)),
-        stacked && series.length > 1 && /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)", marginTop: 4, paddingTop: 4, borderTop: "1px solid var(--border)" }, children: [
-          /* @__PURE__ */ jsx("span", { style: { width: 8, flex: "none" } }),
-          /* @__PURE__ */ jsx("span", { style: { color: "var(--text-muted)", flex: 1, fontWeight: 600 }, children: "Total" }),
-          /* @__PURE__ */ jsx("span", { style: { color: "var(--text)", fontWeight: 700 }, children: valueFormat(total) })
-        ] })
-      ] });
-    })(),
+    hover != null && ReactDOM.createPortal(
+      (() => {
+        const total = stacked ? series.reduce((a, s) => a + (+data[hover][s.key] || 0), 0) : null;
+        return /* @__PURE__ */ jsxs("div", { style: {
+          position: "fixed",
+          left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+          top: pos.y - 32,
+          transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
+          background: "var(--chart-tooltip-bg)",
+          WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+          backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+          border: "1px solid var(--glass-border-light)",
+          borderBottomColor: "var(--glass-border-dark)",
+          boxShadow: "var(--shadow-glass)",
+          borderRadius: "var(--radius-md)",
+          padding: "8px 12px",
+          pointerEvents: "none",
+          zIndex: 9999,
+          minWidth: 104,
+          fontFamily: "var(--font-ui)"
+        }, children: [
+          /* @__PURE__ */ jsx("div", { style: { fontSize: "var(--text-mini)", fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, letterSpacing: "var(--tracking-wide)", textTransform: "uppercase" }, children: data[hover].x }),
+          series.map((s, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
+            /* @__PURE__ */ jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: colorOf(s, i), flex: "none" } }),
+            /* @__PURE__ */ jsx("span", { style: { color: "var(--text-muted)", flex: 1 }, children: s.label }),
+            /* @__PURE__ */ jsx("span", { style: { color: "var(--text)", fontWeight: 600 }, children: valueFormat(+data[hover][s.key] || 0) })
+          ] }, i)),
+          stacked && series.length > 1 && /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)", marginTop: 4, paddingTop: 4, borderTop: "1px solid var(--border)" }, children: [
+            /* @__PURE__ */ jsx("span", { style: { width: 8, flex: "none" } }),
+            /* @__PURE__ */ jsx("span", { style: { color: "var(--text-muted)", flex: 1, fontWeight: 600 }, children: "Total" }),
+            /* @__PURE__ */ jsx("span", { style: { color: "var(--text)", fontWeight: 700 }, children: valueFormat(total) })
+          ] })
+        ] });
+      })(),
+      document.body
+    ),
     showLegend && series.length > 1 && /* @__PURE__ */ jsx(ChartLegend, { series, style: { marginTop: "var(--space-3)", paddingLeft: padL } })
   ] });
 }
@@ -4576,30 +4580,34 @@ function LineChart({
       hover != null && /* @__PURE__ */ jsx("line", { x1: xAt(hover), y1: padT, x2: xAt(hover), y2: padT + innerH, stroke: "var(--accent)", strokeWidth: "1", opacity: "0.4" }),
       hover != null && series.map((s, i) => /* @__PURE__ */ jsx("circle", { cx: xAt(hover), cy: yAt(+data[hover][s.key] || 0), r: "4.5", fill: "var(--surface)", stroke: colorOf(s, i), strokeWidth: "2.5" }, `p${i}`))
     ] }),
-    hover != null && /* @__PURE__ */ jsxs("div", { style: {
-      position: "fixed",
-      left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
-      top: pos.y - 32,
-      transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
-      background: "var(--chart-tooltip-bg)",
-      WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
-      backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
-      border: "1px solid var(--glass-border-light)",
-      borderBottomColor: "var(--glass-border-dark)",
-      boxShadow: "var(--shadow-glass)",
-      borderRadius: "var(--radius-md)",
-      padding: "8px 12px",
-      pointerEvents: "none",
-      zIndex: 9999,
-      minWidth: 96
-    }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontSize: "var(--text-mini)", fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, letterSpacing: "var(--tracking-wide)", textTransform: "uppercase" }, children: data[hover].x }),
-      series.map((s, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
-        /* @__PURE__ */ jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: colorOf(s, i), flex: "none" } }),
-        /* @__PURE__ */ jsx("span", { style: { color: "var(--text-muted)", flex: 1 }, children: s.label }),
-        /* @__PURE__ */ jsx("span", { style: { color: "var(--text)", fontWeight: 600 }, children: valueFormat(+data[hover][s.key] || 0) })
-      ] }, i))
-    ] }),
+    hover != null && ReactDOM.createPortal(
+      /* @__PURE__ */ jsxs("div", { style: {
+        position: "fixed",
+        left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+        top: pos.y - 32,
+        transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
+        background: "var(--chart-tooltip-bg)",
+        WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+        backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+        border: "1px solid var(--glass-border-light)",
+        borderBottomColor: "var(--glass-border-dark)",
+        boxShadow: "var(--shadow-glass)",
+        borderRadius: "var(--radius-md)",
+        padding: "8px 12px",
+        pointerEvents: "none",
+        zIndex: 9999,
+        minWidth: 96,
+        fontFamily: "var(--font-ui)"
+      }, children: [
+        /* @__PURE__ */ jsx("div", { style: { fontSize: "var(--text-mini)", fontWeight: 700, color: "var(--text-muted)", marginBottom: 4, letterSpacing: "var(--tracking-wide)", textTransform: "uppercase" }, children: data[hover].x }),
+        series.map((s, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
+          /* @__PURE__ */ jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: colorOf(s, i), flex: "none" } }),
+          /* @__PURE__ */ jsx("span", { style: { color: "var(--text-muted)", flex: 1 }, children: s.label }),
+          /* @__PURE__ */ jsx("span", { style: { color: "var(--text)", fontWeight: 600 }, children: valueFormat(+data[hover][s.key] || 0) })
+        ] }, i))
+      ] }),
+      document.body
+    ),
     showLegend && series.length > 0 && /* @__PURE__ */ jsx(ChartLegend, { series, style: { marginTop: "var(--space-3)", paddingLeft: padL } })
   ] });
 }
@@ -4661,32 +4669,36 @@ function DonutChart({
         centerValue != null && /* @__PURE__ */ jsx("span", { style: { fontFamily: "var(--font-display)", fontWeight: 800, fontSize: Math.round(size * 0.2), color: "var(--text)", lineHeight: 1 }, children: centerValue }),
         centerLabel && /* @__PURE__ */ jsx("span", { style: { fontSize: "var(--text-caption)", color: "var(--text-muted)", marginTop: 2 }, children: centerLabel })
       ] }),
-      hover != null && /* @__PURE__ */ jsx("div", { style: {
-        position: "fixed",
-        left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
-        top: pos.y - 32,
-        transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
-        background: "var(--chart-tooltip-bg)",
-        WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
-        backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
-        border: "1px solid var(--glass-border-light)",
-        borderBottomColor: "var(--glass-border-dark)",
-        boxShadow: "var(--shadow-glass)",
-        borderRadius: "var(--radius-md)",
-        padding: "7px 11px",
-        pointerEvents: "none",
-        zIndex: 9999,
-        whiteSpace: "nowrap"
-      }, children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
-        /* @__PURE__ */ jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: segs[hover].color, flex: "none" } }),
-        /* @__PURE__ */ jsx("span", { style: { color: "var(--text-muted)" }, children: data[hover].label }),
-        /* @__PURE__ */ jsx("span", { style: { color: "var(--text)", fontWeight: 700 }, children: valueFormat(+data[hover].value || 0) }),
-        /* @__PURE__ */ jsxs("span", { style: { color: "var(--text-muted)", fontSize: "var(--text-caption)" }, children: [
-          "· ",
-          Math.round((+data[hover].value || 0) / total * 100),
-          "%"
-        ] })
-      ] }) })
+      hover != null && ReactDOM.createPortal(
+        /* @__PURE__ */ jsx("div", { style: {
+          position: "fixed",
+          left: pos.x + (pos.x > window.innerWidth * 0.65 ? -12 : 14),
+          top: pos.y - 32,
+          transform: pos.x > window.innerWidth * 0.65 ? "translateX(-100%)" : void 0,
+          background: "var(--chart-tooltip-bg)",
+          WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+          backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+          border: "1px solid var(--glass-border-light)",
+          borderBottomColor: "var(--glass-border-dark)",
+          boxShadow: "var(--shadow-glass)",
+          borderRadius: "var(--radius-md)",
+          padding: "7px 11px",
+          pointerEvents: "none",
+          zIndex: 9999,
+          whiteSpace: "nowrap",
+          fontFamily: "var(--font-ui)"
+        }, children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: "var(--text-body-sm)" }, children: [
+          /* @__PURE__ */ jsx("span", { style: { width: 8, height: 8, borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%", background: segs[hover].color, flex: "none" } }),
+          /* @__PURE__ */ jsx("span", { style: { color: "var(--text-muted)" }, children: data[hover].label }),
+          /* @__PURE__ */ jsx("span", { style: { color: "var(--text)", fontWeight: 700 }, children: valueFormat(+data[hover].value || 0) }),
+          /* @__PURE__ */ jsxs("span", { style: { color: "var(--text-muted)", fontSize: "var(--text-caption)" }, children: [
+            "· ",
+            Math.round((+data[hover].value || 0) / total * 100),
+            "%"
+          ] })
+        ] }) }),
+        document.body
+      )
     ] }),
     showLegend && /* @__PURE__ */ jsx("div", { style: { display: "flex", flexDirection: "column", gap: "var(--space-2)" }, children: data.map((d, i) => /* @__PURE__ */ jsxs(
       "div",
