@@ -15,13 +15,14 @@ export function Skeleton({
   style = {},
   ...rest
 }) {
+  const dim = circle ? (typeof width === 'number' ? width : height) : undefined
   return (
     <span
       aria-hidden="true"
       style={{
         display: 'block',
-        width: circle ? height : width,
-        height,
+        width: circle ? dim : width,
+        height: circle ? dim : height,
         borderRadius: circle ? LIQUID_BLOB : radius,
         background: 'linear-gradient(100deg, var(--skeleton-base) 30%, var(--skeleton-shine) 50%, var(--skeleton-base) 70%)',
         backgroundSize: '320% 100%',
