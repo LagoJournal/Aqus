@@ -27,7 +27,7 @@ export function StatCard({
       {/* top sheen */}
       <span aria-hidden="true" style={{ position: 'absolute', insetInline: 0, top: 0, height: '35%', background: 'var(--gloss-card)', pointerEvents: 'none' }} />
       <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-        <div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--weight-medium)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>{label}</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'var(--text-display-lg)', lineHeight: 1, color: 'var(--text)' }}>{value}</span>

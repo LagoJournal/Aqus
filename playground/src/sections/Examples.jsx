@@ -10,7 +10,21 @@ const VIEWS = {
   profile: { label: 'User profile', node: <ProfileExample /> },
 }
 
-export function Examples() {
+function darkAccentVars(h) {
+  return {
+    '--accent':       `oklch(0.72 0.19 ${h})`,
+    '--accent-hover': `oklch(0.78 0.17 ${h})`,
+    '--accent-light': `oklch(0.305 0.055 ${h})`,
+    '--accent-mid':   `oklch(0.42 0.10 ${h})`,
+    '--accent-text':  `oklch(0.86 0.07 ${h})`,
+    '--accent-glow':  `oklch(0.72 0.19 ${h} / 0.28)`,
+    '--accent-glass': `oklch(0.72 0.19 ${h} / 0.12)`,
+    '--focus-ring':   `oklch(0.72 0.22 ${h} / 0.75)`,
+    '--on-accent':    `oklch(0.15 0.02 ${h})`,
+  }
+}
+
+export function Examples({ hue = 250 }) {
   const [view, setView] = React.useState('dashboard')
   const [theme, setTheme] = React.useState('light')
 
@@ -38,7 +52,7 @@ export function Examples() {
           />
         </Stack>
 
-        <div className="sc-frame" data-theme={theme}>
+        <div className="sc-frame" data-theme={theme} style={theme === 'dark' ? darkAccentVars(hue) : undefined}>
           <div className="sc-frame-bar">
             <span className="sc-dot" /><span className="sc-dot" /><span className="sc-dot" />
             <span className="sc-foot-note" style={{ marginLeft: 8 }}>

@@ -73,7 +73,7 @@ export function Select({
                   color: sel ? 'var(--accent-text)' : 'var(--text)', fontFamily: 'inherit', fontSize: 'var(--text-body-sm)',
                   fontWeight: sel ? 600 : 400,
                 }}
-                onMouseEnter={(e) => { if (!sel) e.currentTarget.style.background = 'var(--bone)'; }}
+                onMouseEnter={(e) => { if (!sel) e.currentTarget.style.background = 'var(--surface-raised)'; }}
                 onMouseLeave={(e) => { if (!sel) e.currentTarget.style.background = 'transparent'; }}
               >
                 <span style={{ width: 10, display: 'inline-flex' }}>{sel && <LiquidBubble size={9} />}</span>

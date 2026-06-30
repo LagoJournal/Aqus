@@ -1056,7 +1056,7 @@ function Select({
             fontWeight: sel ? 600 : 400
           },
           onMouseEnter: (e) => {
-            if (!sel) e.currentTarget.style.background = "var(--bone)";
+            if (!sel) e.currentTarget.style.background = "var(--surface-raised)";
           },
           onMouseLeave: (e) => {
             if (!sel) e.currentTarget.style.background = "transparent";
@@ -2812,7 +2812,7 @@ function Menu({ trigger, items = [], align = "left", style = {} }) {
           fontSize: "var(--text-body-sm)",
           color: it.danger ? "var(--danger)" : "var(--text)"
         },
-        onMouseEnter: (e) => e.currentTarget.style.background = it.danger ? "var(--danger-light)" : "var(--bone)",
+        onMouseEnter: (e) => e.currentTarget.style.background = it.danger ? "var(--danger-light)" : "var(--surface-raised)",
         onMouseLeave: (e) => e.currentTarget.style.background = "transparent",
         children: [
           it.icon && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { display: "inline-flex", flex: "none" }, children: it.icon }),
@@ -3111,7 +3111,6 @@ function Stepper({
           height: horizontal ? 2 : 24,
           marginInline: horizontal ? 6 : 0,
           marginTop: horizontal ? 0 : 4,
-          marginLeft: horizontal ? 0 : 7,
           background: i < current ? "var(--accent)" : "var(--border)",
           transition: "background var(--dur-ui) var(--ease-out)"
         } })
@@ -3767,7 +3766,7 @@ function StatCard({
   }, ...rest, children: [
     /* @__PURE__ */ jsxRuntime.jsx("span", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, top: 0, height: "35%", background: "var(--gloss-card)", pointerEvents: "none" } }),
     /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }, children: [
-      /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { flex: 1, minWidth: 0 }, children: [
         /* @__PURE__ */ jsxRuntime.jsx("div", { style: { fontSize: "var(--text-label)", fontWeight: "var(--weight-medium)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }, children: label }),
         /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "baseline", gap: 10 }, children: [
           /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "var(--text-display-lg)", lineHeight: 1, color: "var(--text)" }, children: value }),

@@ -34,7 +34,7 @@ export function Menu({ trigger, items = [], align = 'left', style = {} }) {
                 background: 'transparent', fontFamily: 'inherit', fontSize: 'var(--text-body-sm)',
                 color: it.danger ? 'var(--danger)' : 'var(--text)',
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = it.danger ? 'var(--danger-light)' : 'var(--bone)'}
+              onMouseEnter={(e) => e.currentTarget.style.background = it.danger ? 'var(--danger-light)' : 'var(--surface-raised)'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
             >
               {it.icon && <span style={{ display: 'inline-flex', flex: 'none' }}>{it.icon}</span>}

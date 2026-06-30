@@ -46,7 +46,6 @@ export function Stepper({
                   height: horizontal ? 2 : 24,
                   marginInline: horizontal ? 6 : 0,
                   marginTop: horizontal ? 0 : 4,
-                  marginLeft: horizontal ? 0 : 7,
                   background: i < current ? 'var(--accent)' : 'var(--border)',
                   transition: 'background var(--dur-ui) var(--ease-out)',
                 }} />
