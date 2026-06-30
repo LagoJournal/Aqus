@@ -287,62 +287,85 @@ function GlossaryItem({ name, cat, desc, preview }) {
   )
 }
 
+const ALL_CATS = ['All', ...CATALOG.map(([cat]) => cat)]
+
 export function Glossary() {
-  const [q, setQ] = React.useState('')
+  const [q, setQ]     = React.useState('')
+  const [cat, setCat] = React.useState('All')
   const query = q.trim().toLowerCase()
 
   const total = CATALOG.reduce((n, [, items]) => n + items.length, 0)
-  const filteredTotal = CATALOG.reduce((n, [cat, items]) => n + items.filter(([name, desc]) =>
-    !query ||
-    name.toLowerCase().includes(query) ||
-    cat.toLowerCase().includes(query) ||
-    desc.toLowerCase().includes(query)
-  ).length, 0)
+
+  const visible = CATALOG
+    .filter(([c]) => cat === 'All' || c === cat)
+    .map(([c, items]) => [
+      c,
+      items.filter(([name, desc]) =>
+        !query ||
+        name.toLowerCase().includes(query) ||
+        c.toLowerCase().includes(query) ||
+        desc.toLowerCase().includes(query)
+      ),
+    ])
+    .filter(([, items]) => items.length > 0)
+
+  const filteredTotal = visible.reduce((n, [, items]) => n + items.length, 0)
+  const noResults = (query || cat !== 'All') && filteredTotal === 0
 
   return (
     <Section id="glossary" size="md" className="anchor">
       <Container>
-        <p className="sc-eyebrow">Reference</p>
-        <h2 className="sc-section-title">Component glossary</h2>
+        <p className="sc-eyebrow">Components</p>
+        <h2 className="sc-section-title">{total} components, one import</h2>
         <p className="sc-section-lede">
-          All {total} components, live. Every preview below is the real component rendered from the
-          library — search by name or category.
+          Every preview below is the real component rendered from the library.
+          Search by name or filter by category.
         </p>
 
-        <div style={{ maxWidth: 420, marginBottom: 12 }}>
-          <SearchInput value={q} onChange={setQ} placeholder="Search components…" count={query ? filteredTotal : undefined} />
-        </div>
+        {/* Search + category filter */}
+        <Stack direction="row" gap={3} align="flex-end" wrap style={{ marginBottom: 20 }}>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <SearchInput
+              value={q}
+              onChange={setQ}
+              placeholder="Search components…"
+              count={query ? filteredTotal : undefined}
+            />
+          </div>
+          <div style={{ minWidth: 160 }}>
+            <Select
+              label=""
+              value={cat}
+              onChange={setCat}
+              options={ALL_CATS.map((c) => ({ value: c, label: c === 'All' ? 'All categories' : c }))}
+            />
+          </div>
+        </Stack>
 
-        {CATALOG.map(([cat, items]) => {
-          const filtered = items.filter(
-            ([name, desc]) =>
-              !query ||
-              name.toLowerCase().includes(query) ||
-              cat.toLowerCase().includes(query) ||
-              desc.toLowerCase().includes(query)
-          )
-          if (!filtered.length) return null
-          return (
-            <div key={cat}>
-              <h3 className="sc-cat-heading">
-                {cat}
-                <span className="sc-cat-count">{filtered.length}</span>
-              </h3>
-              <div className="sc-grid" style={{ marginTop: 16 }}>
-                {filtered.map(([name, desc, preview]) => (
-                  <GlossaryItem key={name} name={name} cat={cat} desc={desc} preview={preview} />
-                ))}
-              </div>
+        {visible.map(([c, items]) => (
+          <div key={c}>
+            <h3 className="sc-cat-heading">
+              {c}
+              <span className="sc-cat-count">{items.length}</span>
+            </h3>
+            <div className="sc-grid" style={{ marginTop: 16 }}>
+              {items.map(([name, desc, preview]) => (
+                <GlossaryItem key={name} name={name} cat={c} desc={desc} preview={preview} />
+              ))}
             </div>
-          )
-        })}
+          </div>
+        ))}
 
-        {query && filteredTotal === 0 && (
+        {noResults && (
           <EmptyState
             icon={<i className="ph ph-magnifying-glass" />}
             title="No components found"
-            description={`Nothing matches "${q.trim()}".`}
-            action={<Button variant="secondary" onClick={() => setQ('')}>Clear search</Button>}
+            description={query ? `Nothing matches "${q.trim()}".` : `No components in this category.`}
+            action={
+              <Button variant="secondary" onClick={() => { setQ(''); setCat('All') }}>
+                Clear filters
+              </Button>
+            }
           />
         )}
       </Container>

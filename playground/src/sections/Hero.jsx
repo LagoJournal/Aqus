@@ -1,7 +1,6 @@
 import React from 'react'
 import {
-  Section, Container, HeroSection, Button, Badge, Stack,
-  Monogram, LiquidBubble,
+  Section, Container, HeroSection, Button, Badge, Stack, LiquidBubble,
 } from '@agustin/aqus'
 
 export function Hero({ onPrimary, onSecondary }) {
@@ -10,20 +9,15 @@ export function Hero({ onPrimary, onSecondary }) {
       <Container>
         <HeroSection
           align="center"
-          eyebrow="Retro-Aero × Modern · 76 components + charts"
-          headline={
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Monogram size={56} letter="A" />
-              <span>Aqus</span>
-            </span>
-          }
-          sub="A self-contained React component library. Glass and gloss on structural chrome; flat, honest content everywhere else. Every round element is a slowly-morphing liquid bubble — never a perfect circle."
+          eyebrow="Retro-Aero × Modern"
+          headline="Interfaces with depth, material, and craft."
+          sub="76 components. Glass chrome on structural surfaces, flat honesty on content. One accent, nine derived tokens — a liquid identity that morphs, not spins."
           cta={
             <Stack direction="row" gap={3} justify="center" wrap>
-              <Button variant="primary" size="lg" pulse icon={<i className="ph ph-rocket-launch" />} onClick={onPrimary}>
+              <Button variant="primary" size="lg" pulse onClick={onPrimary}>
                 Get started
               </Button>
-              <Button variant="secondary" size="lg" icon={<i className="ph ph-squares-four" />} onClick={onSecondary}>
+              <Button variant="secondary" size="lg" onClick={onSecondary}>
                 Browse components
               </Button>
             </Stack>
@@ -31,20 +25,19 @@ export function Hero({ onPrimary, onSecondary }) {
         />
 
         <Stack direction="row" gap={2} justify="center" wrap style={{ marginTop: 8 }}>
-          <Badge tone="accent" dot>76 components</Badge>
-          <Badge tone="success" dot>Light + dark</Badge>
+          <Badge tone="neutral" dot>76 components</Badge>
+          <Badge tone="neutral" dot>Light + dark</Badge>
           <Badge tone="neutral" dot>OKLCH tokens</Badge>
-          <Badge tone="warning" dot>Self-hosted fonts</Badge>
-          <Badge tone="accent" dot>TypeScript contracts</Badge>
         </Stack>
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 18, marginTop: 40, opacity: 0.9 }}>
-          <LiquidBubble size={28} color="var(--accent)" />
-          <LiquidBubble size={20} variant="outline" color="var(--accent-mid)" />
-          <LiquidBubble size={32} variant="spinner" color="var(--accent)" />
-          <LiquidBubble size={20} variant="outline" color="var(--accent-mid)" />
-          <LiquidBubble size={28} color="var(--accent)" />
-        </div>
+        {/* LiquidBubble pyramid — ascending size, center accent */}
+        <Stack direction="row" gap={16} justify="center" align="center" style={{ marginTop: 48 }}>
+          <LiquidBubble size={10} variant="outline" color="var(--accent-mid)" />
+          <LiquidBubble size={18} variant="outline" color="var(--accent-mid)" />
+          <LiquidBubble size={36} color="var(--accent)" />
+          <LiquidBubble size={18} variant="outline" color="var(--accent-mid)" />
+          <LiquidBubble size={10} variant="outline" color="var(--accent-mid)" />
+        </Stack>
       </Container>
     </Section>
   )

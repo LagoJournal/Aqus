@@ -1,20 +1,16 @@
 import React from 'react'
 import {
-  Section, Container, Card, Stack, CodeBlock, Badge,
-  SegmentedControl, Alert,
+  Section, Container, Stack, Accordion, CodeBlock, Alert, Badge,
 } from '@agustin/aqus'
 
-const INSTALL = {
-  pin: 'npm install github:LagoJournal/aqus#v0.1.0',
-  latest: 'npm install github:LagoJournal/aqus',
-  local: 'npm install file:../aqus',
-}
+const INSTALL = `npm install github:LagoJournal/aqus#v0.2.0`
 
-const CSS_IMPORT = `// app root: main.jsx / _app.tsx / layout.tsx
+const CSS_IMPORT = `// main.jsx / _app.tsx / layout.tsx
 import '@agustin/aqus/styles.css'`
 
 const ACCENT = `:root {
-  /* One hue → nine tokens. --accent-h drives the chart palette.
+  /* One hue drives all nine tokens.
+     --accent-h also drives the chart palette via CSS calc().
      Constraints: L 0.55–0.72, C 0.12–0.24. */
   --accent-h:      250;
   --accent:        oklch(0.65 0.20 250);
@@ -34,14 +30,17 @@ export function Landing() {
   return (
     <>
       <NavBar
-        links={[{ href: '/', label: 'Home' }, { href: '/work', label: 'Work' }]}
+        links={[
+          { href: '#work', label: 'Work' },
+          { href: '#about', label: 'About' },
+        ]}
         action={<Button variant="primary" size="sm">Get in touch</Button>}
       />
       <Section horizon>
         <Container>
           <HeroSection
             eyebrow="Available for work"
-            headline="Build branded UIs fast"
+            headline="Build branded UIs fast."
             sub="Compose screens from the primitives — never re-style raw elements."
             cta={<Button variant="primary" pulse>View work</Button>}
           />
@@ -51,77 +50,90 @@ export function Landing() {
   )
 }`
 
-export function Usage() {
-  const [tab, setTab] = React.useState('pin')
+const STEPS = [
+  {
+    id: 'install',
+    title: (
+      <Stack direction="row" gap={2} align="center">
+        <Badge tone="accent" pill>1</Badge>
+        <span>Install</span>
+      </Stack>
+    ),
+    content: (
+      <Stack gap={3}>
+        <p className="sc-item-desc">Pin to a version to lock components and docs together.</p>
+        <CodeBlock language="bash" code={INSTALL} />
+      </Stack>
+    ),
+  },
+  {
+    id: 'import',
+    title: (
+      <Stack direction="row" gap={2} align="center">
+        <Badge tone="accent" pill>2</Badge>
+        <span>Import the global CSS</span>
+      </Stack>
+    ),
+    content: (
+      <Stack gap={3}>
+        <p className="sc-item-desc">Loads every token: color, type, spacing, elevation, motion.</p>
+        <CodeBlock language="tsx" code={CSS_IMPORT} />
+        <Alert tone="accent" title="Dark mode">
+          Set <code>data-theme="dark"</code> on any ancestor element to activate the dark elevation ramp.
+        </Alert>
+      </Stack>
+    ),
+  },
+  {
+    id: 'accent',
+    title: (
+      <Stack direction="row" gap={2} align="center">
+        <Badge tone="accent" pill>3</Badge>
+        <span>Set your accent</span>
+      </Stack>
+    ),
+    content: (
+      <Stack gap={3}>
+        <p className="sc-item-desc">
+          Override the 9 accent tokens in your own <code>:root</code>. OKLCH only.
+          The chart palette derives automatically from <code>--accent-h</code>.
+        </p>
+        <CodeBlock language="css" code={ACCENT} />
+      </Stack>
+    ),
+  },
+  {
+    id: 'compose',
+    title: (
+      <Stack direction="row" gap={2} align="center">
+        <Badge tone="accent" pill>4</Badge>
+        <span>Compose</span>
+      </Stack>
+    ),
+    content: (
+      <Stack gap={3}>
+        <p className="sc-item-desc">
+          Build screens from primitives. Match the example views below.
+          Never re-style raw HTML elements — always use the components.
+        </p>
+        <CodeBlock language="tsx" code={COMPOSE} />
+      </Stack>
+    ),
+  },
+]
 
+export function Usage() {
   return (
     <Section id="usage" size="md" className="anchor">
       <Container>
         <p className="sc-eyebrow">Quick start</p>
-        <h2 className="sc-section-title">Drop it into any project</h2>
+        <h2 className="sc-section-title">Start in four steps</h2>
         <p className="sc-section-lede">
-          One CSS import, one accent, then compose. The same install works for personal projects
-          and for the Claude agent that builds views from this library.
+          Install, import, configure your accent, compose. The same setup works for personal
+          projects and for the Claude agent that builds views from this library.
         </p>
 
-        <div className="sc-grid sc-grid-2">
-          <Card variant="resting" style={{ padding: 24 }}>
-            <Stack gap={3}>
-              <Stack direction="row" gap={2} align="center">
-                <Badge tone="accent" pill>1</Badge>
-                <h3 style={{ margin: 0, fontSize: 'var(--text-body-lg)', fontWeight: 'var(--weight-bold)' }}>Install</h3>
-              </Stack>
-              <p className="sc-item-desc">Pin a version to lock components and docs together.</p>
-              <SegmentedControl
-                size="sm"
-                value={tab}
-                onChange={setTab}
-                options={[
-                  { value: 'pin', label: 'Pinned' },
-                  { value: 'latest', label: 'Latest' },
-                  { value: 'local', label: 'Local' },
-                ]}
-              />
-              <CodeBlock language="bash" code={INSTALL[tab]} />
-            </Stack>
-          </Card>
-
-          <Card variant="resting" style={{ padding: 24 }}>
-            <Stack gap={3}>
-              <Stack direction="row" gap={2} align="center">
-                <Badge tone="accent" pill>2</Badge>
-                <h3 style={{ margin: 0, fontSize: 'var(--text-body-lg)', fontWeight: 'var(--weight-bold)' }}>Import the global CSS</h3>
-              </Stack>
-              <p className="sc-item-desc">Loads every token: color, type, spacing, elevation, motion.</p>
-              <CodeBlock language="tsx" code={CSS_IMPORT} />
-              <Alert tone="accent" title="Dark mode">
-                Set <code>data-theme="dark"</code> on a root element for the dark elevation ramp.
-              </Alert>
-            </Stack>
-          </Card>
-
-          <Card variant="resting" style={{ padding: 24 }}>
-            <Stack gap={3}>
-              <Stack direction="row" gap={2} align="center">
-                <Badge tone="accent" pill>3</Badge>
-                <h3 style={{ margin: 0, fontSize: 'var(--text-body-lg)', fontWeight: 'var(--weight-bold)' }}>Set your accent</h3>
-              </Stack>
-              <p className="sc-item-desc">Override the 9 accent tokens in your own <code>:root</code>. OKLCH only.</p>
-              <CodeBlock language="css" code={ACCENT} />
-            </Stack>
-          </Card>
-
-          <Card variant="resting" style={{ padding: 24 }}>
-            <Stack gap={3}>
-              <Stack direction="row" gap={2} align="center">
-                <Badge tone="accent" pill>4</Badge>
-                <h3 style={{ margin: 0, fontSize: 'var(--text-body-lg)', fontWeight: 'var(--weight-bold)' }}>Compose</h3>
-              </Stack>
-              <p className="sc-item-desc">Build screens from primitives. Match the example views below.</p>
-              <CodeBlock language="tsx" code={COMPOSE} />
-            </Stack>
-          </Card>
-        </div>
+        <Accordion items={STEPS} />
       </Container>
     </Section>
   )
