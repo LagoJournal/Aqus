@@ -4214,7 +4214,23 @@ function Carousel({
       ),
       showArrows && navBtn(1)
     ] }),
-    showDots && items.length > 1 && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { display: "flex", justifyContent: "center", gap: 8, marginTop: 14 }, children: items.map((_, i) => /* @__PURE__ */ jsxRuntime.jsx("button", { "aria-label": `Go to slide ${i + 1}`, onClick: () => scrollTo(i), style: { border: "none", background: "transparent", cursor: "pointer", padding: 2, display: "inline-flex" }, children: /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: i === active ? 11 : 8, variant: i === active ? "filled" : "outline", animate: i === active, thickness: 1.5 }) }, i)) })
+    showDots && items.length > 1 && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { display: "flex", justifyContent: "center", gap: 6, marginTop: 14 }, children: items.map((_, i) => /* @__PURE__ */ jsxRuntime.jsx(
+      "button",
+      {
+        "aria-label": `Go to slide ${i + 1}`,
+        onClick: () => scrollTo(i),
+        style: { border: "none", background: "transparent", cursor: "pointer", padding: 3, display: "inline-flex", alignItems: "center" },
+        children: /* @__PURE__ */ jsxRuntime.jsx("span", { style: {
+          display: "inline-block",
+          width: i === active ? 20 : 6,
+          height: 6,
+          borderRadius: 999,
+          background: i === active ? "var(--accent)" : "var(--border)",
+          transition: "width var(--dur-ui) var(--ease-spring), background var(--dur-fast) var(--ease-out)"
+        } })
+      },
+      i
+    )) })
   ] });
 }
 function Monogram({

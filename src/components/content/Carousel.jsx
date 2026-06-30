@@ -1,5 +1,4 @@
 import React from 'react';
-import { LiquidBubble } from '../core/LiquidBubble.jsx';
 
 /**
  * Aqus — Carousel
@@ -74,10 +73,18 @@ export function Carousel({
         {showArrows && navBtn(1)}
       </div>
       {showDots && items.length > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 14 }}>
           {items.map((_, i) => (
-            <button key={i} aria-label={`Go to slide ${i + 1}`} onClick={() => scrollTo(i)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: 2, display: 'inline-flex' }}>
-              <LiquidBubble size={i === active ? 11 : 8} variant={i === active ? 'filled' : 'outline'} animate={i === active} thickness={1.5} />
+            <button key={i} aria-label={`Go to slide ${i + 1}`} onClick={() => scrollTo(i)}
+              style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: 3, display: 'inline-flex', alignItems: 'center' }}>
+              <span style={{
+                display: 'inline-block',
+                width: i === active ? 20 : 6,
+                height: 6,
+                borderRadius: 999,
+                background: i === active ? 'var(--accent)' : 'var(--border)',
+                transition: 'width var(--dur-ui) var(--ease-spring), background var(--dur-fast) var(--ease-out)',
+              }} />
             </button>
           ))}
         </div>
