@@ -13,9 +13,11 @@ Read `docs/AGENT_GUIDE.md` before composing any view. It contains:
 - View recipes (landing, dashboard, settings, auth, analytics/charts, empty states)
 - Page anatomy
 - Hard constraints and anti-patterns
-- 8-step composition process
+- 10-step composition process + UX laws checklist
 
-**Workflow:** load AGENT_GUIDE → find matching View Recipe → adapt → output complete JSX.
+Read `docs/ux-laws.md` for the UX decision layer — 10 Laws of UX (Jakob, Fitts, Hick, Miller, Postel, Peak–End, Aesthetic–Usability, Von Restorff, Tesler, Doherty) translated into concrete Aqus rules: which component to use when, how to stage complexity, where to place emphasis, how to make every interaction feel fast. Required reading for any non-trivial view.
+
+**Workflow:** load AGENT_GUIDE + ux-laws → find matching View Recipe → adapt → output complete JSX → run UX laws checklist.
 
 ## For design/branding questions
 
@@ -51,6 +53,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 - **Mobile-first flag required** — before planning any view, confirm viewport target (mobile / desktop / responsive). If not stated in the prompt, ASK before writing any JSX.
 - **Plan layout before coding** — wireframe blocks → spacing rhythm → visual hierarchy → fill with components. No fixed pixel column widths. Use `minmax(0, 1fr)` and `auto-fit`. Add `wrap` to every `Stack direction="row"` with 3+ items.
 - **Eye rules** — one dominant element per surface (size → weight → colour → position). Equal-height cards in a grid; action buttons go *inside* the card pinned to the bottom, never as a sibling below. `minWidth: 0` on text children to stop overflow slivers. See AGENT_GUIDE "Layout & visual composition".
+- **UX laws** — one primary action per view (Hick); content chunked 5–9 (Miller); targets ≥ 44px spaced ≥ 8px (Fitts); all four states designed: empty/loading/error/success (Postel); delight at peak and end only (Peak–End); one emphasized element per region (Von Restorff); visible feedback < 400ms (Doherty). Full rules: `docs/ux-laws.md`.
 - **Z-index** — floating layer (menus, selects, tooltips, popovers) is z 600, above the modal tier (Dialog/Drawer 500); the library handles this, don't hand-lower it.
 - **Glass = structural** — NavBar, Dialog, Drawer, GlassPanel. Not content.
 - **Round = LiquidBubble** — never `border-radius: 50%`.

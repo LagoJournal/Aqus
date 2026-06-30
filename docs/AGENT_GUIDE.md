@@ -12,6 +12,8 @@
 4. Apply all Constraints — they are hard limits
 5. Output complete, importable JSX — no stubs or TODOs
 
+**UX decision layer:** `docs/ux-laws.md` translates the 10 Laws of UX into concrete Aqus rules — when to use which component, how to stage complexity, how to place emphasis, and how to make every interaction feel fast. Read it alongside this guide for any non-trivial view.
+
 ---
 
 ## Setup boilerplate
@@ -744,6 +746,14 @@ style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
 
 ## Layout & visual composition
 
+> Full UX laws reference with per-component rules: `docs/ux-laws.md`. The sections below summarize the structural decisions — see ux-laws for the *why* behind each rule.
+
+**Non-negotiables (from ux-laws.md):**
+1. Convention over novelty — liquid shapes, familiar behavior. Never repurpose components.
+2. One accent per surface — emphasis is scarce; one primary action per view.
+3. Reduce, then absorb — cut choices first; let the system carry what remains.
+4. Speed is a feature — visible feedback under 400ms, always.
+
 Layout is decided *before* component choice. A view that uses every right component but spaces them wrong reads as broken. Work in this order: **wireframe → rhythm → hierarchy → component fill.**
 
 ### 1. Wireframe first (blocks, not components)
@@ -883,3 +893,16 @@ background: 'linear-gradient(...gloss...), linear-gradient(var(--accent-glass), 
 8. **Handle all states.** Loading → Skeleton/LoadingOverlay. Empty → EmptyState. Error → Alert/EmptyState.
 9. **Check constraints.** One primary Button, glass = structural, tokens not literals, `--accent-h` set if using charts, no fixed pixel grid columns, `wrap` on row Stacks.
 10. **Output complete component.** Full imports, complete JSX, no stubs.
+
+### UX laws checklist (run before shipping any view)
+
+- [ ] Conventional patterns; liquid shapes don't change behavior *(Jakob)*
+- [ ] Targets ≥ 44px, spaced ≥ 8px; primary action reachable *(Fitts)*
+- [ ] One primary action per view; choices minimized or staged *(Hick)*
+- [ ] Body chunked into groups of 5–9 with `Card`/`Divider`/whitespace boundaries *(Miller)*
+- [ ] Forgiving input (trim/normalize); empty + loading + error + success states all designed *(Postel)*
+- [ ] Delight concentrated at the peak moment and the final confirmation; middle is calm *(Peak–End)*
+- [ ] Visual bar held everywhere; beauty doesn't mask a broken flow *(Aesthetic–Usability)*
+- [ ] Exactly one emphasized element per region; emphasis pairs color with icon/weight *(Von Restorff)*
+- [ ] Irreducible complexity absorbed by the system (smart defaults, filters, CommandPalette) *(Tesler)*
+- [ ] Every action has visible feedback < 400ms; latency covered by Skeleton/Spinner/optimistic UI *(Doherty)*
