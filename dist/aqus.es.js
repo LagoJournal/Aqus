@@ -4212,23 +4212,19 @@ function Carousel({
       ),
       showArrows && navBtn(1)
     ] }),
-    showDots && items.length > 1 && /* @__PURE__ */ jsx("div", { style: { display: "flex", justifyContent: "center", gap: 6, marginTop: 14 }, children: items.map((_, i) => /* @__PURE__ */ jsx(
-      "button",
+    showDots && items.length > 1 && /* @__PURE__ */ jsx("div", { style: { display: "flex", justifyContent: "center", gap: 8, marginTop: 14 }, children: items.map((_, i) => /* @__PURE__ */ jsx("button", { "aria-label": `Go to slide ${i + 1}`, onClick: () => scrollTo(i), style: { border: "none", background: "transparent", cursor: "pointer", padding: 2, display: "inline-flex" }, children: /* @__PURE__ */ jsx(
+      LiquidBubble,
       {
-        "aria-label": `Go to slide ${i + 1}`,
-        onClick: () => scrollTo(i),
-        style: { border: "none", background: "transparent", cursor: "pointer", padding: 3, display: "inline-flex", alignItems: "center" },
-        children: /* @__PURE__ */ jsx("span", { style: {
-          display: "inline-block",
-          width: i === active ? 20 : 6,
-          height: 6,
-          borderRadius: 999,
-          background: i === active ? "var(--accent)" : "var(--border)",
-          transition: "width var(--dur-ui) var(--ease-spring), background var(--dur-fast) var(--ease-out)"
-        } })
-      },
-      i
-    )) })
+        size: i === active ? 11 : 8,
+        variant: "filled",
+        color: i === active ? void 0 : "var(--border)",
+        animate: i === active,
+        thickness: 1.5,
+        style: {
+          transition: "width var(--dur-fast) var(--ease-spring), height var(--dur-fast) var(--ease-spring), background var(--dur-fast) var(--ease-out)"
+        }
+      }
+    ) }, i)) })
   ] });
 }
 function Monogram({
