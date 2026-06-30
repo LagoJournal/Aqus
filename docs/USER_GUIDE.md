@@ -434,6 +434,16 @@ import { NavBar, Button } from '@agustin/aqus'
 />
 ```
 
+The NavBar uses the **dense 48px blur** (`--glass-blur-dense`) so it reads as solid chrome over scrolling content. The glass blur scale is tokenised — override to retheme:
+
+```css
+:root {
+  --glass-blur-thin:  4px;   /* barely frosted */
+  --glass-blur:       18px;  /* frosted — default chrome */
+  --glass-blur-dense: 48px;  /* dense — NavBar bar */
+}
+```
+
 > **Floating layer z-index:** dropdowns, menus, selects, tooltips and popovers render at z-index 600 — above the modal tier (Dialog/Drawer at 500) — so a Select opened inside a Dialog is never hidden. Mount your own toast stacks at z-index 9999.
 
 #### HeroSection

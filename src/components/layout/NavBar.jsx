@@ -61,8 +61,9 @@ export function NavBar({
       gap: 'var(--space-3)', padding: '10px 14px', margin: '12px',
       borderRadius: 'var(--radius-pill)',
       background: 'var(--glass-surface)',
-      WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
-      backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
+      // Dense 48px blur — the NavBar reads as solid chrome over scrolling content.
+      WebkitBackdropFilter: 'blur(var(--glass-blur-dense)) saturate(1.6)',
+      backdropFilter: 'blur(var(--glass-blur-dense)) saturate(1.6)',
       border: '1px solid var(--glass-border-light)',
       borderBottomColor: 'var(--glass-border-dark)',
       boxShadow: 'var(--shadow-glass)',
@@ -126,8 +127,8 @@ export function NavBar({
           // Full glass recipe — inner gloss + accent tint over the glass surface,
           // matching Select / Dialog / the bar itself (not a flat surface).
           background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
-          WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
-          backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
+          WebkitBackdropFilter: 'blur(var(--glass-blur-dense)) saturate(1.6)',
+          backdropFilter: 'blur(var(--glass-blur-dense)) saturate(1.6)',
           border: '1px solid var(--glass-border-light)',
           borderBottomColor: 'var(--glass-border-dark)',
           boxShadow: 'var(--shadow-glass)',

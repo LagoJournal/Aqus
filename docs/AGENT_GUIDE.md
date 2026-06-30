@@ -127,7 +127,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
-| `NavBar` | Top navigation, glass chrome. Once per page. Renders Wordmark itself. Mobile-first: links auto-collapse behind a hamburger + glass dropdown below `compactAt` px (default 720). The `action` slot stays inline — keep it to 1–2 controls so it fits beside the hamburger on phones. | `links` ({href,label}[]), `action`, `activeHref`, `onLinkClick`, `compactAt` | See View Recipes |
+| `NavBar` | Top navigation, glass chrome. Once per page. Renders Wordmark itself. Uses the dense 48px blur (`--glass-blur-dense`) so it reads as solid over scrolling content. Mobile-first: links auto-collapse behind a hamburger + glass dropdown below `compactAt` px (default 720). The `action` slot stays inline — keep it to 1–2 controls so it fits beside the hamburger on phones. | `links` ({href,label}[]), `action`, `activeHref`, `onLinkClick`, `compactAt` | See View Recipes |
 | `Footer` | Page footer. Renders Wordmark itself. | `columns` ({title,links}[]), `copyright` | `<Footer columns={cols} copyright="© 2026"/>` |
 | `HeroSection` | Landing/portfolio hero. | `eyebrow`, `headline`, `sub`, `cta`, `align` | See View Recipes |
 | `Section` | Page section with rhythm. | `size` (sm/md/lg), `horizon` | `<Section size="lg">…</Section>` |

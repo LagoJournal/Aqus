@@ -40,7 +40,10 @@
   ); /* @kind other */
 
   /* ---- Glass recipe layers ---- */
-  --glass-blur: 18px;
+  /* Blur scale: thin (barely frosted) · frosted (default) · dense (near-opaque). */
+  --glass-blur-thin:  4px;
+  --glass-blur:       18px;  /* frosted — default for most chrome */
+  --glass-blur-dense: 48px;  /* dense — used by the NavBar bar */
   --glass-surface: rgba(255,255,255,0.62);  /* base surface @ ~62% */
   --glass-border-light: rgba(255,255,255,0.30);
   --glass-border-dark:  rgba(0,0,0,0.10);
