@@ -18,7 +18,7 @@ export function Menu({ trigger, items = [], align = 'left', style = {} }) {
         <div ref={panelRef} role="menu" style={{
           ...placeAround(rect, 'bottom', 6, align === 'right' ? 'end' : 'start'), zIndex: 1000, minWidth: 180,
           padding: 6, borderRadius: 'var(--radius-md)',
-          background: 'var(--glass-surface)',
+          background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
           WebkitBackdropFilter: 'blur(18px) saturate(1.6)', backdropFilter: 'blur(18px) saturate(1.6)',
           border: '1px solid var(--glass-border-light)', boxShadow: 'var(--shadow-md)',
           fontFamily: 'var(--font-ui)', animation: 'agus-enter var(--dur-ui) var(--ease-spring)',
