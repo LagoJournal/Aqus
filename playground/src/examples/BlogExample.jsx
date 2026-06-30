@@ -83,7 +83,7 @@ export function BlogExample() {
                       <Avatar name="Agustin Lago" size={44} status="online" />
                       <div>
                         <strong>Agustin Lago</strong>
-                        <div className="sc-item-desc">Product engineer & designer</div>
+                        <div className="sc-item-desc">Software engineer</div>
                       </div>
                     </Stack>
                     <p className="sc-item-desc" style={{ margin: 0 }}>I write about building branded, production-quality interfaces fast.</p>

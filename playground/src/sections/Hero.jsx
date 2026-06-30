@@ -1,13 +1,24 @@
 import React from 'react'
 import {
   Section, Container, HeroSection, Button, Badge, Stack,
-  Monogram, LiquidBubble,
+  Monogram, LiquidBubble, Avatar,
 } from '@agustin/aqus'
 
-export function Hero() {
+export function Hero({ onPrimary, onSecondary }) {
   return (
     <Section id="overview" size="lg" horizon className="anchor">
       <Container>
+        <Stack gap={3} align="center" style={{ marginBottom: 8 }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 12px 5px 6px',
+            borderRadius: 'var(--radius-pill)', background: 'var(--surface)',
+            border: '1px solid var(--border)', fontSize: 'var(--text-caption)', color: 'var(--text-muted)',
+          }}>
+            <Avatar name="Agustin Lago" size={22} />
+            By Agustin Lago · Software engineer
+          </span>
+        </Stack>
+
         <HeroSection
           align="center"
           eyebrow="Retro-Aero × Modern · 71 components"
@@ -20,12 +31,10 @@ export function Hero() {
           sub="A self-contained React component library. Glass and gloss on structural chrome; flat, honest content everywhere else. Every round element is a slowly-morphing liquid bubble — never a perfect circle."
           cta={
             <Stack direction="row" gap={3} justify="center" wrap>
-              <Button variant="primary" size="lg" pulse icon={<i className="ph ph-rocket-launch" />}
-                onClick={() => document.getElementById('usage')?.scrollIntoView()}>
+              <Button variant="primary" size="lg" pulse icon={<i className="ph ph-rocket-launch" />} onClick={onPrimary}>
                 Get started
               </Button>
-              <Button variant="secondary" size="lg" icon={<i className="ph ph-squares-four" />}
-                onClick={() => document.getElementById('glossary')?.scrollIntoView()}>
+              <Button variant="secondary" size="lg" icon={<i className="ph ph-squares-four" />} onClick={onSecondary}>
                 Browse components
               </Button>
             </Stack>

@@ -54,7 +54,7 @@ function RadioDemo() {
 function SelectDemo() {
   const [v, setV] = React.useState('personal')
   return <Select label="Workspace" value={v} onChange={setV}
-    options={[{ value: 'personal', label: 'Personal' }, { value: 'studio', label: 'Aqus Studio' }]} />
+    options={[{ value: 'personal', label: 'Personal' }, { value: 'studio', label: 'Studio' }]} />
 }
 function ComboboxDemo() {
   const [v, setV] = React.useState('')
@@ -156,7 +156,7 @@ const CATALOG = [
     ['Tag', 'Removable metadata label for filters and chips.',
       <Stack direction="row" gap={2}><Tag tone="accent" onRemove={() => {}}>React</Tag><Tag onRemove={() => {}}>TypeScript</Tag></Stack>],
     ['Input', 'Text field with label, hint, icon and error states.',
-      <Input label="Email" placeholder="you@aqus.dev" icon={<i className="ph ph-envelope-simple" />} />],
+      <Input label="Email" placeholder="you@example.com" icon={<i className="ph ph-envelope-simple" />} />],
     ['Switch', 'Boolean toggle with a liquid-bubble knob.', <SwitchDemo />],
     ['SegmentedControl', 'Two to four mutually-exclusive options, inline.', <SegmentedDemo />],
     ['ToggleGroup', 'Single or multi-select toggle buttons.', <ToggleDemo />],
@@ -199,19 +199,19 @@ const CATALOG = [
   ]],
   ['Navigation', [
     ['Tabs', 'Underline tabs with a sliding accent indicator.', <TabsDemo />],
-    ['Breadcrumb', 'Page hierarchy trail.', <Breadcrumb items={['Home', 'Projects', 'Aqus Studio']} />],
+    ['Breadcrumb', 'Page hierarchy trail.', <Breadcrumb items={['Home', 'Projects', 'Settings']} />],
     ['Menu', 'Dropdown action menu.', <Menu trigger={<Button variant="secondary" iconRight={<i className="ph ph-caret-down" />}>Actions</Button>} items={[{ label: 'Rename', icon: <i className="ph ph-pencil" /> }, { label: 'Duplicate', icon: <i className="ph ph-copy" /> }, { divider: true }, { label: 'Delete', icon: <i className="ph ph-trash" />, danger: true }]} />],
     ['ContextMenu', 'Right-click menu on any surface.',
       <ContextMenu items={[{ label: 'Cut', shortcut: '⌘X' }, { label: 'Copy', shortcut: '⌘C' }, { divider: true }, { label: 'Delete', tone: 'danger' }]}>
         <div style={{ padding: '18px 22px', border: '1px dashed var(--border)', borderRadius: 12, color: 'var(--text-muted)', fontSize: 14 }}>Right-click here</div>
       </ContextMenu>],
-    ['Accordion', 'Collapsible sections.', <div style={{ width: '100%' }}><Accordion items={[{ title: 'What is Aqus?', content: 'A Retro-Aero × Modern design system.' }, { title: 'How do I install it?', content: 'npm install github:agustinlago/aqus#v0.1.0' }]} /></div>],
+    ['Accordion', 'Collapsible sections.', <div style={{ width: '100%' }}><Accordion items={[{ title: 'What is Aqus?', content: 'A Retro-Aero × Modern design system.' }, { title: 'How do I install it?', content: 'npm install github:LagoJournal/aqus#v0.1.0' }]} /></div>],
     ['Pagination', 'Page navigation with bubble markers.', <PaginationDemo />],
     ['Stepper', 'Multi-step flow indicator.', <div style={{ width: '100%' }}><Stepper current={1} steps={[{ label: 'Account' }, { label: 'Profile' }, { label: 'Review' }]} /></div>],
   ]],
   ['Data', [
     ['Avatar', 'User image or initials; liquid-blob shape + status.',
-      <Stack direction="row" gap={2} align="center"><Avatar name="Agustin Lago" status="online" /><Avatar name="Aqus Studio" /><Avatar name="JS" shape="circle" status="busy" /></Stack>],
+      <Stack direction="row" gap={2} align="center"><Avatar name="Agustin Lago" status="online" /><Avatar name="Maya Chen" /><Avatar name="JS" shape="circle" status="busy" /></Stack>],
     ['Divider', 'Labeled separator.', <div style={{ width: '100%' }}><Divider label="or continue with" /></div>],
     ['Table', 'Tabular data with sortable columns.',
       <div style={{ width: '100%' }}><Table columns={[{ key: 'name', label: 'Project' }, { key: 'status', label: 'Status' }]} rows={[{ name: 'Aero Mail', status: <Badge tone="success" dot>Live</Badge> }, { name: 'Portfolio', status: <Badge tone="neutral" dot>Draft</Badge> }]} /></div>],

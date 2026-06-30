@@ -5,8 +5,8 @@ import {
 } from '@agustin/aqus'
 
 const INSTALL = {
-  pin: 'npm install github:agustinlago/aqus#v0.1.0',
-  latest: 'npm install github:agustinlago/aqus',
+  pin: 'npm install github:LagoJournal/aqus#v0.1.0',
+  latest: 'npm install github:LagoJournal/aqus',
   local: 'npm install file:../aqus',
 }
 

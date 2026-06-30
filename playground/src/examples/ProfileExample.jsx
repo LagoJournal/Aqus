@@ -43,7 +43,7 @@ export function ProfileExample() {
                       <Badge tone="accent" dot>Pro</Badge>
                       <Badge tone="success" pill>Verified</Badge>
                     </Stack>
-                    <span className="sc-item-desc">Product engineer & designer · Buenos Aires</span>
+                    <span className="sc-item-desc">Software engineer</span>
                     <Stack direction="row" gap={2} wrap>
                       <Tag tone="neutral">React</Tag><Tag tone="neutral">Design systems</Tag><Tag tone="neutral">OKLCH</Tag>
                     </Stack>
@@ -64,10 +64,10 @@ export function ProfileExample() {
                     <strong>Details</strong>
                     <Divider />
                     <DescriptionList items={[
-                      { term: 'Role', value: 'Staff Engineer' },
-                      { term: 'Team', value: 'Aqus Studio' },
-                      { term: 'Joined', value: 'Mar 2024' },
-                      { term: 'Email', value: 'agustin@aqus.dev' },
+                      { term: 'Title', value: 'Software engineer' },
+                      { term: 'Focus', value: 'Design systems' },
+                      { term: 'Joined', value: '2024' },
+                      { term: 'GitHub', value: 'LagoJournal' },
                     ]} />
                   </Stack>
                 </Card>
