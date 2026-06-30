@@ -1,23 +1,19 @@
 import React from 'react'
 import { NavBar, Button, IconButton, Container, Footer, Popover, ColorPicker, Stack } from '@agustin/aqus'
 import { Hero } from './sections/Hero.jsx'
-import { DesignRules } from './sections/DesignRules.jsx'
+import { Brandbook } from './sections/Brandbook.jsx'
 import { Materials } from './sections/Materials.jsx'
-import { Animations } from './sections/Animations.jsx'
-import { Charts } from './sections/Charts.jsx'
 import { Usage } from './sections/Usage.jsx'
 import { Glossary } from './sections/Glossary.jsx'
 import { Examples } from './sections/Examples.jsx'
 
 const NAV_LINKS = [
-  { href: '#overview', label: 'Overview' },
-  { href: '#rules', label: 'Design rules' },
-  { href: '#materials', label: 'Glass' },
-  { href: '#animations', label: 'Motion' },
-  { href: '#usage', label: 'Usage' },
-  { href: '#glossary', label: 'Components' },
-  { href: '#charts', label: 'Charts' },
-  { href: '#examples', label: 'Examples' },
+  { href: '#overview',   label: 'Overview' },
+  { href: '#brand',      label: 'Brand' },
+  { href: '#materials',  label: 'Glass' },
+  { href: '#usage',      label: 'Usage' },
+  { href: '#glossary',   label: 'Components' },
+  { href: '#examples',   label: 'Examples' },
 ]
 
 // Accent presets — one hue each; the nine tokens are derived per theme.
@@ -142,12 +138,10 @@ export function App() {
 
       <main>
         <Hero onPrimary={() => scrollTo('usage')} onSecondary={() => scrollTo('glossary')} />
-        <DesignRules />
+        <Brandbook />
         <Materials />
-        <Animations />
         <Usage />
         <Glossary />
-        <Charts />
         <Examples hue={hue} theme={theme} />
       </main>
 
@@ -158,10 +152,9 @@ export function App() {
             title: 'Library',
             links: [
               { label: 'Overview', href: '#overview' },
-              { label: 'Design rules', href: '#rules' },
+              { label: 'Brand', href: '#brand' },
               { label: 'Glass', href: '#materials' },
-              { label: 'Motion', href: '#animations' },
-              { label: 'Charts', href: '#charts' },
+              { label: 'Usage', href: '#usage' },
             ],
           },
           {
