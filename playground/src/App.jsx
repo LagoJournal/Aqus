@@ -143,7 +143,7 @@ export function App() {
         <Animations />
         <Usage />
         <Glossary />
-        <Examples hue={hue} />
+        <Examples hue={hue} theme={theme} />
       </main>
 
       <Footer

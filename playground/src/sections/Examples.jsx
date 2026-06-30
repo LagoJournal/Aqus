@@ -1,5 +1,5 @@
 import React from 'react'
-import { Section, Container, SegmentedControl, Stack, Badge } from '@agustin/aqus'
+import { Section, Container, SegmentedControl, Badge } from '@agustin/aqus'
 import { DashboardExample } from '../examples/DashboardExample.jsx'
 import { BlogExample } from '../examples/BlogExample.jsx'
 import { ProfileExample } from '../examples/ProfileExample.jsx'
@@ -24,9 +24,8 @@ function darkAccentVars(h) {
   }
 }
 
-export function Examples({ hue = 250 }) {
+export function Examples({ hue = 250, theme = 'light' }) {
   const [view, setView] = React.useState('dashboard')
-  const [theme, setTheme] = React.useState('light')
 
   return (
     <Section id="examples" size="md" className="anchor">
@@ -38,19 +37,13 @@ export function Examples({ hue = 250 }) {
           Aqus agent follows when it builds a view for one of your projects.
         </p>
 
-        <Stack direction="row" gap={3} align="center" justify="space-between" wrap style={{ marginBottom: 16 }}>
+        <div style={{ marginBottom: 16 }}>
           <SegmentedControl
             value={view}
             onChange={setView}
             options={Object.entries(VIEWS).map(([value, v]) => ({ value, label: v.label }))}
           />
-          <SegmentedControl
-            size="sm"
-            value={theme}
-            onChange={setTheme}
-            options={[{ value: 'light', label: '☀ Light' }, { value: 'dark', label: '☾ Dark' }]}
-          />
-        </Stack>
+        </div>
 
         <div className="sc-frame" data-theme={theme} style={theme === 'dark' ? darkAccentVars(hue) : undefined}>
           <div className="sc-frame-bar">
@@ -66,7 +59,7 @@ export function Examples({ hue = 250 }) {
         </div>
 
         <p className="sc-foot-note" style={{ marginTop: 12, textAlign: 'center' }}>
-          Toggle the theme to see the dark elevation ramp — same components, no code change.
+          Theme follows the global toggle — same components, no code change.
         </p>
       </Container>
     </Section>
