@@ -1,0 +1,138 @@
+<!-- @dsCard group="Components" viewport="700x1060" name="Forms" subtitle="Checkbox, Radio, Select, Combobox, MultiSelect, OTPInput, SearchInput, Slider, NumberInput, DatePicker, ColorPicker, FileDropzone" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<script src="../../_theme-toggle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+<style>
+  html,body{margin:0}
+  body{font-family:var(--font-ui);color:var(--text);
+    background:radial-gradient(120% 80% at 100% -10%,var(--accent-light),transparent 55%),var(--bg);padding:24px}
+  .wrap{display:flex;flex-direction:column;gap:16px;max-width:652px}
+  .eyebrow{font-size:var(--text-mini);font-weight:700;letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--text-muted);margin:0 0 8px}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:12px}
+  .row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .col{display:flex;flex-direction:column;gap:10px}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { Checkbox, Radio, RadioGroup, Select, Textarea, Slider, NumberInput, Input, FileDropzone, DatePicker, ColorPicker, Combobox, MultiSelect, OTPInput, SearchInput } = window.AgusDesignSystem_492a6f;
+
+  function Demo() {
+    const [checked, setChecked] = React.useState(true);
+    const [radio, setRadio] = React.useState('b');
+    const [slider, setSlider] = React.useState(60);
+    const [num, setNum] = React.useState(16);
+    const [date, setDate] = React.useState(null);
+    const [accent, setAccent] = React.useState('#2A6FDB');
+    const [combo, setCombo] = React.useState('');
+    const [multi, setMulti] = React.useState(['react']);
+    const [otp, setOtp] = React.useState('');
+    const [search, setSearch] = React.useState('');
+
+    return (
+      <div className="wrap">
+        {/* Text inputs */}
+        <div className="panel">
+          <p className="eyebrow">Input</p>
+          <div className="row" style={{alignItems:'flex-start'}}>
+            <div style={{flex:1,minWidth:200}}>
+              <Input label="Email" icon={<i className="ph ph-envelope-simple" style={{fontSize:16}}/>} placeholder="you@aqus.dev" />
+            </div>
+            <div style={{flex:1,minWidth:200}}>
+              <Input label="Handle" error="Already taken" defaultValue="aqus" />
+            </div>
+          </div>
+        </div>
+
+        {/* Checkbox + Radio */}
+        <div className="panel">
+          <p className="eyebrow">Checkbox · Radio</p>
+          <div className="row" style={{alignItems:'flex-start'}}>
+            <div className="col">
+              <Checkbox checked={checked} onChange={setChecked} label="Enable notifications" />
+              <Checkbox checked={true} onChange={()=>{}} label="Auto-save" />
+              <Checkbox checked={false} indeterminate onChange={()=>{}} label="Mixed selection" />
+              <Checkbox checked={false} disabled onChange={()=>{}} label="Disabled" />
+            </div>
+            <div className="col">
+              {['Light','Dark','System'].map(opt => (
+                <Radio key={opt} checked={radio===opt.toLowerCase()} onChange={()=>setRadio(opt.toLowerCase())} label={opt} value={opt.toLowerCase()} name="theme" />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Select + Textarea */}
+        <div className="panel">
+          <p className="eyebrow">Select · Textarea</p>
+          <div className="row" style={{alignItems:'flex-start'}}>
+            <div style={{flex:1,minWidth:180}}>
+              <Select label="Accent" options={['Portfolio · amber','Profile · gold','Blog · green','Universal · cobalt']} />
+            </div>
+            <div style={{flex:1,minWidth:180}}>
+              <Textarea label="Bio" rows={3} placeholder="A designer-engineer…" />
+            </div>
+          </div>
+        </div>
+
+        {/* Slider + NumberInput */}
+        <div className="panel">
+          <p className="eyebrow">Slider · NumberInput</p>
+          <Slider label="Blur intensity" value={slider} onChange={setSlider} min={0} max={100} unit="%" />
+          <div className="row">
+            <NumberInput label="Font size" value={num} onChange={setNum} min={8} max={96} step={2} unit="px" />
+            <NumberInput label="Columns" value={3} onChange={()=>{}} min={1} max={12} />
+          </div>
+        </div>
+
+        {/* FileDropzone */}
+        <div className="panel">
+          <p className="eyebrow">FileDropzone · liquid blob on drag</p>
+          <FileDropzone
+            label="Drop files here or click to browse"
+            sublabel="PNG, JPG, PDF up to 10 MB"
+            multiple
+            style={{minHeight:120}}
+          />
+        </div>
+        {/* Combobox + MultiSelect + SearchInput + OTPInput */}
+        <div className="panel">
+          <p className="eyebrow">Combobox · MultiSelect · SearchInput</p>
+          <div className="row" style={{alignItems:'flex-end',gap:16,flexWrap:'wrap'}}>
+            <Combobox label="Country" value={combo} onChange={setCombo} placeholder="Search…" options={['Argentina','Brazil','Chile','Colombia','Mexico','Uruguay']} />
+            <MultiSelect label="Skills" value={multi} onChange={setMulti} options={['react','figma','css','oklch','motion','typescript']} />
+            <div style={{flex:1,minWidth:200}}><SearchInput value={search} onChange={setSearch} placeholder="Search projects…" count={search ? 3 : undefined} shortcut="⌘K" /></div>
+          </div>
+        </div>
+        <div className="panel">
+          <p className="eyebrow">OTPInput · liquid-blob digit cells</p>
+          <OTPInput length={6} value={otp} onChange={setOtp} onComplete={v => console.log('code:', v)} />
+        </div>
+        <div className="panel">
+          <p className="eyebrow">DatePicker · ColorPicker</p>
+          <div className="row" style={{alignItems:'flex-end',gap:24}}>
+            <DatePicker label="Due date" value={date} onChange={setDate} />
+            <ColorPicker label="Accent" value={accent} onChange={setAccent} options={[
+              {color:'#2A6FDB',name:'Cobalt'},
+              {color:'#D97757',name:'Amber'},
+              {color:'#1F8A5B',name:'Forest'},
+              {color:'#B0883B',name:'Gold'},
+            ]} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

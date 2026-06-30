@@ -1,0 +1,201 @@
+<!-- @dsCard group="Components" viewport="700x1200" name="Core" subtitle="Buttons, surfaces, Tag, IconButton, ToggleGroup, Kbd & the liquid bubble" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="../../styles.css" />
+<script src="../../_theme-toggle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+<style>
+  html, body { margin: 0; }
+  body {
+    font-family: var(--font-ui);
+    color: var(--text);
+    background:
+      radial-gradient(120% 80% at 12% -10%, var(--accent-light), transparent 55%),
+      radial-gradient(90% 70% at 100% 0%, var(--accent-mid), transparent 50%),
+      linear-gradient(160deg, var(--surface-raised), var(--bg));
+    padding: 24px;
+  }
+  .wrap { display: flex; flex-direction: column; gap: 16px; max-width: 652px; }
+  .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .panel {
+    background: var(--surface); backdrop-filter: blur(2px);
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    padding: 16px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .eyebrow {
+    font-size: var(--text-mini); font-weight: 700; letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--text-muted); margin: 0;
+  }
+  .lbl { font-size: var(--text-caption); color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { Button, GlassPanel, Card, Badge, Input, Switch, SegmentedControl, Spinner, LiquidBubble,
+          Tag, IconButton, Kbd, KbdShortcut, ToggleGroup } =
+    window.AgusDesignSystem_492a6f;
+
+  function Demo() {
+    const [on, setOn] = React.useState(true);
+    const [on2, setOn2] = React.useState(false);
+    const [view, setView] = React.useState('grid');
+    const [fmt, setFmt] = React.useState(['bold']);
+    return (
+      <div className="wrap">
+        {/* Buttons */}
+        <div className="panel">
+          <p className="eyebrow">Buttons</p>
+          <div className="row">
+            <Button variant="primary">Primary</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Button variant="ghost">Ghost</Button>
+            <Button variant="destructive">Delete</Button>
+            <Button variant="primary" pulse>Get started</Button>
+          </div>
+          <div className="row">
+            <Button variant="primary" size="sm" icon={<i className="ph ph-plus" style={{fontSize:14}} />}>New</Button>
+            <Button variant="secondary" size="md" icon={<i className="ph ph-folder" style={{fontSize:16}} />}>Open</Button>
+            <Button variant="primary" size="lg">Large</Button>
+            <Button variant="primary" disabled>Disabled</Button>
+            <Button variant="primary" disabled icon={<Spinner size={15} />}>Saving…</Button>
+          </div>
+        </div>
+
+        {/* Glass panel + badges */}
+        <GlassPanel style={{ padding: 16 }}>
+          <p className="eyebrow" style={{ margin: '0 0 10px' }}>Glass panel · Aero chrome · badges</p>
+          <div className="row">
+            <Badge>New</Badge>
+            <Badge tone="success" pill dot>Live</Badge>
+            <Badge tone="warning" pill dot>Draft</Badge>
+            <Badge tone="danger" pill dot>Failed</Badge>
+            <Badge tone="accent" pill dot>Syncing</Badge>
+            <Badge tone="neutral">v2.1</Badge>
+          </div>
+        </GlassPanel>
+
+        {/* Cards */}
+        <div className="row" style={{ alignItems: 'stretch' }}>
+          <Card style={{ flex: 1, minWidth: 150 }}>
+            <strong>Resting</strong>
+            <div className="lbl">Level 1 surface</div>
+          </Card>
+          <Card variant="raised" style={{ flex: 1, minWidth: 150 }}>
+            <strong>Raised</strong>
+            <div className="lbl">Level 2 · popover</div>
+          </Card>
+          <Card variant="featured" interactive style={{ flex: 1, minWidth: 150 }}>
+            <strong>Featured</strong>
+            <div className="lbl">Accent glow · liquid drop</div>
+          </Card>
+        </div>
+
+        {/* Controls */}
+        <div className="panel">
+          <div className="row" style={{ justifyContent: 'space-between' }}>
+            <SegmentedControl value={view} onChange={setView}
+              options={[{value:'grid',label:'Grid'},{value:'list',label:'List'},{value:'board',label:'Board'}]} />
+            <div className="row">
+              <Switch checked={on} onChange={setOn} />
+              <Switch checked={on2} onChange={setOn2} size="sm" />
+              <Switch checked={true} disabled onChange={()=>{}} />
+            </div>
+          </div>
+          <div className="row" style={{ alignItems: 'flex-start' }}>
+            <div style={{ flex: 1, minWidth: 180 }}>
+              <Input label="Email" icon={<i className="ph ph-envelope-simple" style={{fontSize:16}} />} placeholder="you@aqus.dev" />
+            </div>
+            <div style={{ flex: 1, minWidth: 180 }}>
+              <Input label="Handle" error="Already taken" defaultValue="aqus" />
+            </div>
+          </div>
+        </div>
+
+        {/* Tag */}
+        <div className="panel">
+          <p className="eyebrow">Tag · interactive chip with liquid-bubble X</p>
+          <div className="row">
+            {['Design systems','Figma','React','OKLCH'].map(t => (
+              <Tag key={t} onRemove={() => {}}>{t}</Tag>
+            ))}
+            <Tag tone="success" onRemove={() =>{}}>Live</Tag>
+            <Tag tone="neutral" size="sm" onRemove={() =>{}}>v2.4</Tag>
+            <Tag tone="warning" onClick={() => {}}>Filter</Tag>
+          </div>
+        </div>
+
+        {/* IconButton + Kbd */}
+        <div className="panel">
+          <p className="eyebrow">IconButton · liquid-blob shape · Kbd</p>
+          <div className="row">
+            <IconButton label="Search"><i className="ph ph-magnifying-glass" style={{fontSize:18}} /></IconButton>
+            <IconButton variant="soft" label="Settings"><i className="ph ph-gear" style={{fontSize:18}} /></IconButton>
+            <IconButton variant="filled" label="Add"><i className="ph ph-plus" style={{fontSize:20}} /></IconButton>
+            <IconButton label="Close" size="sm"><i className="ph ph-x" style={{fontSize:14}} /></IconButton>
+            <IconButton label="More" size="lg" variant="soft"><i className="ph ph-dots-three" style={{fontSize:22}} /></IconButton>
+            <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:8}}>
+              <Kbd>⌘</Kbd>
+              <KbdShortcut keys={['⌘','K']} />
+              <KbdShortcut keys={['Ctrl','Shift','P']} />
+            </div>
+          </div>
+        </div>
+
+        {/* Liquid bubble — the shared primitive */}
+        <div className="panel" style={{ background: 'var(--accent-glass)', borderColor: 'var(--accent-mid)' }}>
+          <p className="eyebrow">Liquid bubble · the shared round primitive</p>
+          <div className="row" style={{ gap: 28 }}>
+            <div className="row" style={{ gap: 10 }}>
+              <LiquidBubble size={10} />
+              <LiquidBubble size={16} />
+              <LiquidBubble size={24} />
+              <LiquidBubble size={34} />
+              <span className="lbl">filled</span>
+            </div>
+            <div className="row" style={{ gap: 12 }}>
+              <LiquidBubble variant="outline" size={18} />
+              <LiquidBubble variant="outline" size={26} />
+              <span className="lbl">outline</span>
+            </div>
+            <div className="row" style={{ gap: 12 }}>
+              <Spinner size={18} />
+              <Spinner size={26} />
+              <span className="lbl">spinner</span>
+            </div>
+            <LiquidBubble size={26} color="linear-gradient(to bottom,#fff,#ECECEC)" glossy />
+          </div>
+          <div className="lbl" style={{ marginTop: 2 }}>
+            Every round element — badge dots, the switch knob, the spinner, active markers — is one
+            <code> &lt;LiquidBubble&gt;</code>, so the identity stays consistent and duplication-free.
+          </div>
+        </div>
+        {/* ToggleGroup */}
+        <div className="panel">
+          <p className="eyebrow">ToggleGroup · single & multi</p>
+          <div className="row">
+            <ToggleGroup value={view} onChange={setView}
+              options={[{value:'grid',icon:<i className="ph ph-squares-four" style={{fontSize:16}}/>,label:'Grid'},{value:'list',icon:<i className="ph ph-list" style={{fontSize:16}}/>,label:'List'},{value:'board',icon:<i className="ph ph-kanban" style={{fontSize:16}}/>,label:'Board'}]} />
+            <ToggleGroup multiple value={fmt} onChange={setFmt} size="sm"
+              options={[
+                {value:'bold',icon:<i className="ph ph-text-b" style={{fontSize:14}}/>},
+                {value:'italic',icon:<i className="ph ph-text-italic" style={{fontSize:14}}/>},
+                {value:'underline',icon:<i className="ph ph-text-underline" style={{fontSize:14}}/>},
+              ]} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+/* ============================================================
+   Agus — Color System
+   ------------------------------------------------------------
+   Three-tier system:
+   1. Base neutrals (fixed, never change) — warm light / cool-navy dark
+   2. Per-project accent (one decision per surface)
+   3. Derived semantic tokens (OKLCH formulas, baked here)
+
+   Rule: no color is arbitrary. Everything except the base
+   palette is derived from the active accent.
+   ============================================================ */
+
+:root {
+  /* ---- Tier 1 · Base Neutrals — Light (default) ---- */
+  --cream:        oklch(0.97 0.013 85);   /* #FAF7F2 canvas / background */
+  --bone:         oklch(0.93 0.018 80);   /* #F0EBE1 surface elevation   */
+  --bone-raised:  oklch(0.955 0.015 82);  /* slightly lifted bone        */
+  --amber:        oklch(0.72 0.070 72);   /* #C9A87A warm mid-tone        */
+  --ink:          oklch(0.16 0.015 75);   /* #1C1A17 text primary         */
+  --ink-soft:     oklch(0.46 0.025 70);   /* #6B6259 text secondary       */
+  --edge:         oklch(0.85 0.020 78);   /* #DDD5C9 border / divider     */
+
+  /* Semantic neutral aliases (light) */
+  --bg:            var(--cream);
+  --surface:       var(--bone);
+  --surface-raised:var(--bone-raised);
+  --text:          var(--ink);
+  --text-muted:    var(--ink-soft);
+  --border:        var(--edge);
+
+  /* ---- Tier 2 · Active accent (Universal default — cobalt) ---- */
+  /* Override --accent-L/C/H on a scope and re-derive, or use a
+     pre-baked accent recipe. Raw channels exposed so
+     consumers can rebuild glows at runtime. */
+  --accent-l: 0.65; /* @kind other */
+  --accent-c: 0.20; /* @kind other */
+  --accent-h: 250;  /* @kind other */
+
+  /* ---- Tier 3 · Derived semantic accent tokens ---- */
+  /* HOW TO SET YOUR ACCENT
+     Override the 9 variables below in your own :root block.
+     Follow the constraints in tokens/ACCENT.md:
+       L  0.55-0.72, C  0.12-0.24, contrast DeltaL >= 0.65.
+     The cobalt values below are the default. ============================ */
+  --accent:       oklch(0.65 0.20 250);                /* primary interactive   */
+  --accent-hover: oklch(0.59 0.22 250);                /* hover / pressed        */
+  --accent-light: oklch(0.92 0.07 250);                /* tinted background wash */
+  --accent-mid:   oklch(0.78 0.11 250);                /* subtle fills, tags     */
+  --accent-text:  oklch(0.25 0.05 250);                /* text on light accent   */
+  --accent-glow:  oklch(0.65 0.20 250 / 0.25);         /* aero halo / glow       */
+  --accent-glass: oklch(0.65 0.20 250 / 0.12);         /* glass tint layer       */
+  --focus-ring:   oklch(0.65 0.24 250 / 0.80);         /* keyboard focus ring    */
+  --on-accent:    oklch(0.99 0.005 250);               /* text/icon on accent    */
+
+  /* ---- Status / semantic (red family + supportive) ---- */
+  /* Skeleton shimmer — subtle, sits on a surface without glowing */
+  --skeleton-base:  oklch(0.89 0.014 80);
+  --skeleton-shine: oklch(0.95 0.012 82);
+
+  --danger:        oklch(0.58 0.20 25);
+  --danger-hover:  oklch(0.52 0.22 25);
+  --danger-light:  oklch(0.92 0.07 25);
+  --success:       oklch(0.60 0.14 150);
+  --success-light: oklch(0.92 0.06 150);
+  --warning:       oklch(0.78 0.13 75);
+  --warning-light: oklch(0.93 0.06 75);
+}
+
+/* ============================================================
+   Dark mode — cool navy.
+   ------------------------------------------------------------
+   ELEVATION FORMULA (perceptual, OKLCH lightness):
+     Surfaces rise in even steps so each layer is readable on the
+     one beneath it. Light mode steps DOWN from the canvas
+     (cream 0.97 → bone 0.93, Δ≈0.045); dark mode steps UP from the
+     canvas by the same magnitude:
+        E0 bg      = 0.165
+        E1 surface = E0 + 0.050 = 0.215
+        E2 raised  = E1 + 0.050 = 0.265
+        border     = E2 + 0.055 = 0.320
+     Chroma rises gently with elevation (0.018 → 0.030) so lifted
+     surfaces feel slightly "cooler-lit", hue fixed at 256 (cobalt).
+     TEXT readability (ΔL vs bg 0.165):
+        text  0.940  → ΔL 0.775  (AAA)
+        muted 0.690  → ΔL 0.525  (AA, secondary)
+   Activate with [data-theme="dark"] on any ancestor.
+   ============================================================ */
+[data-theme="dark"] {
+  --navy-deep:   oklch(0.165 0.018 256);  /* E0 canvas              */
+  --navy-mid:    oklch(0.215 0.024 256);  /* E1 surface  (+0.050)   */
+  --navy-light:  oklch(0.265 0.028 256);  /* E2 raised   (+0.050)   */
+  --bone-cool:   oklch(0.940 0.008 90);   /* text primary  ΔL 0.775 */
+  --bone-muted:  oklch(0.690 0.013 85);   /* text muted    ΔL 0.525 */
+  --navy-edge:   oklch(0.320 0.030 256);  /* border / divider       */
+
+  --bg:            var(--navy-deep);
+  --surface:       var(--navy-mid);
+  --surface-raised:var(--navy-light);
+  --text:          var(--bone-cool);
+  --text-muted:    var(--bone-muted);
+  --border:        var(--navy-edge);
+
+  /* Accent: brightened for dark (L 0.72). Derived tints keep the
+     same perceptual gaps as light mode, lifted onto the dark ramp. */
+  --accent-l: 0.72; /* @kind other */
+  --accent:       oklch(0.72 0.19 256);
+  --accent-hover: oklch(0.78 0.17 256);                /* brighter on press   */
+  --accent-light: oklch(0.305 0.055 256);              /* E1+ tinted wash     */
+  --accent-mid:   oklch(0.42 0.10 256);                /* fills, tags         */
+  --accent-text:  oklch(0.86 0.07 256);                /* text on accent-light*/
+  --accent-glow:  oklch(0.72 0.19 256 / 0.28);
+  --accent-glass: oklch(0.72 0.19 256 / 0.12);
+  --focus-ring:   oklch(0.72 0.22 256 / 0.75);
+  --on-accent:    oklch(0.15 0.02 256);
+
+  /* Status solids brightened so they read on the dark ramp */
+  --danger:        oklch(0.66 0.19 25);
+  --success:       oklch(0.70 0.15 150);
+  --warning:       oklch(0.80 0.13 75);
+  --danger-light:  oklch(0.32 0.075 25);
+  --success-light: oklch(0.32 0.060 150);
+  --warning-light: oklch(0.34 0.060 75);
+
+  /* Skeleton on the dark ramp: just above surface, no bright glow */
+  --skeleton-base:  oklch(0.255 0.022 256);
+  --skeleton-shine: oklch(0.305 0.026 256);
+}
+
+/* ============================================================
+   Custom accent scopes
+   "One accent, one project." Add [data-accent="<name>"] to any
+   root element to swap the accent ramp for that surface.
+
+   Recipe — override these 9 tokens with your OKLCH values.
+   Keep L/C/H consistent across the derived tints so the ramp
+   scales predictably. Example (cobalt → amber, hue 42):
+
+   [data-accent="brand-name"] {
+     --accent:       oklch(0.62 0.22 42);
+     --accent-hover: oklch(0.56 0.24 42);
+     --accent-light: oklch(0.92 0.077 42);
+     --accent-mid:   oklch(0.78 0.121 42);
+     --accent-text:  oklch(0.25 0.055 42);
+     --accent-glow:  oklch(0.62 0.22 42 / 0.25);
+     --accent-glass: oklch(0.62 0.22 42 / 0.12);
+     --focus-ring:   oklch(0.62 0.26 42 / 0.80);
+     --on-accent:    oklch(0.99 0.005 42);
+   }
+
+   For dark mode, lift L by ~+0.08 and adjust accent-light/mid
+   to sit above the dark surface ramp (see [data-theme="dark"]
+   accent block above for the pattern).
+   ============================================================ */

@@ -1,0 +1,93 @@
+/* ============================================================
+   Agus — Material Utilities
+   ------------------------------------------------------------
+   Reusable recipes that can't live as single custom properties:
+   the glass stack, the gloss overlay, the liquid blob.
+   Components reference these or rebuild them inline.
+   ============================================================ */
+
+/* ---- Glass surface (Vista Aero frosted chrome) ---- */
+.agus-glass {
+  position: relative;
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: var(--border-hairline) solid var(--glass-border-light);
+  border-bottom-color: var(--glass-border-dark);
+  border-right-color: var(--glass-border-dark);
+  box-shadow: var(--shadow-glass);
+  border-radius: var(--radius-lg);
+}
+/* Accent-tinted glass film + top inner gloss stripe */
+.agus-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom,
+      var(--glass-inner-gloss) 0%,
+      rgba(255,255,255,0) 42%),
+    var(--accent-glass);
+}
+
+/* ---- Aqua gloss overlay (apply to a ::before-less wrapper) ---- */
+.agus-gloss { position: relative; }
+.agus-gloss::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--gloss-card);
+}
+
+/* ---- Pinstripe texture (Aqua) — very low contrast ---- */
+.agus-pinstripe {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.018) 0px,
+    rgba(0,0,0,0.018) 1px,
+    rgba(255,255,255,0.02) 1px,
+    rgba(255,255,255,0.02) 2px
+  );
+}
+
+/* ---- Brushed metal (horizontal low-contrast bands) ---- */
+.agus-brushed {
+  background:
+    linear-gradient(to bottom,
+      oklch(0.96 0.005 80), oklch(0.88 0.008 80)),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.02) 0px,
+      rgba(0,0,0,0.02) 1px,
+      rgba(255,255,255,0.5) 1px,
+      rgba(255,255,255,0.5) 2px);
+  background-blend-mode: multiply;
+}
+
+/* ---- Liquid blob (Sony Ericsson organic texture) ---- */
+.agus-liquid {
+  background: var(--accent-glass);
+  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
+  filter: blur(2px);
+}
+
+/* ---- Windows-Live warm horizon gradient ---- */
+.agus-horizon {
+  background:
+    radial-gradient(140% 90% at 50% 0%,
+      var(--accent-light) 0%,
+      transparent 55%),
+    linear-gradient(to bottom, var(--surface-raised), var(--bg));
+}
+
+/* ---- Focus ring (keyboard) ---- */
+.agus-focusable:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--border-focus) var(--accent),
+              0 0 0 6px var(--focus-ring);
+}

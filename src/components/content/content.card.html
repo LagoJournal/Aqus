@@ -1,0 +1,111 @@
+<!-- @dsCard group="Components" viewport="700x940" name="Content" subtitle="StatCard, FeatureCard, FilterBar, TestimonialCard, BlogCard, NotificationItem, MediaCard, Carousel" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+<script src="../../_theme-toggle.js"></script>
+<style>
+  html,body{margin:0}
+  body{font-family:var(--font-ui);color:var(--text);background:radial-gradient(120% 80% at 50% -10%,var(--accent-light),transparent 55%),var(--bg);padding:24px;transition:background 200ms}
+  .wrap{display:flex;flex-direction:column;gap:16px;max-width:652px}
+  .eyebrow{font-size:var(--text-mini);font-weight:700;letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--text-muted);margin:0 0 10px}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { StatCard, FeatureCard, FilterBar, Stack, TestimonialCard, BlogCard, NotificationItem, MediaCard, Card, Badge, Carousel } = window.AgusDesignSystem_492a6f;
+  function Demo() {
+    const [filters, setFilters] = React.useState([
+      {id:1,label:'Design systems'},{id:2,label:'React',tone:'neutral'},{id:3,label:'2025',tone:'neutral'},
+    ]);
+    return (
+      <div className="wrap">
+        <div>
+          <p className="eyebrow">StatCard · KPI tiles</p>
+          <Stack direction="row" gap={4} wrap>
+            <StatCard label="Active projects" value="5" delta="+2" up icon={<i className="ph ph-folder"/>} style={{flex:1,minWidth:120}} />
+            <StatCard label="Hours / week" value="34" delta="+12%" up icon={<i className="ph ph-clock"/>} style={{flex:1,minWidth:120}} />
+            <StatCard label="Open tasks" value="18" delta="−3" up={false} icon={<i className="ph ph-check-square"/>} style={{flex:1,minWidth:120}} />
+            <StatCard label="Shipped" value="27" delta="+4" up style={{flex:1,minWidth:120}} />
+          </Stack>
+        </div>
+        <div>
+          <p className="eyebrow">FeatureCard · liquid blob icon</p>
+          <Stack direction="row" gap={4} wrap>
+            <FeatureCard icon={<i className="ph ph-drop"/>} title="Liquid identity" description="Every round element morphs organically." style={{flex:1,minWidth:160}} />
+            <FeatureCard icon={<i className="ph ph-circles-three"/>} title="One accent" description="All tokens derive from one accent." style={{flex:1,minWidth:160}} />
+            <FeatureCard icon={<i className="ph ph-eye"/>} title="Glass chrome" description="Blur-behind depth for structural surfaces." style={{flex:1,minWidth:160}} />
+          </Stack>
+        </div>
+        <div>
+          <p className="eyebrow">FilterBar</p>
+          <FilterBar filters={filters} onRemove={f=>setFilters(fs=>fs.filter(x=>x.id!==f.id))} onClear={()=>setFilters([])} />
+        </div>
+        {/* TestimonialCard */}
+        <div>
+          <p className="eyebrow">TestimonialCard</p>
+          <TestimonialCard
+            quote="The liquid identity makes every interface feel alive — glass and depth without feeling dated. It's Aero for the 2020s."
+            name="Maria K."
+            role="Design lead, Horizon"
+            avatarInitials="MK"
+          />
+        </div>
+        {/* BlogCard */}
+        <div>
+          <p className="eyebrow">BlogCard</p>
+          <Stack direction="row" gap={4} wrap>
+            <BlogCard
+              title="Designing with OKLCH"
+              excerpt="A perceptual colour space that makes deriving tokens trivial — derive a full accent ramp from one number."
+              date="Jun 2026" readTime="5 min" tags={['Colour','CSS']}
+              featured style={{flex:1,minWidth:220}}
+            />
+            <BlogCard
+              title="Glass is back"
+              excerpt="Vista Aero, reimagined for 2025. Why frosted chrome belongs on structural surfaces and nowhere else."
+              date="May 2026" readTime="4 min" tags={['Design']}
+              style={{flex:1,minWidth:220}}
+            />
+          </Stack>
+        </div>
+        {/* NotificationItem + MediaCard */}
+        <div>
+          <p className="eyebrow">NotificationItem</p>
+          <Card gloss={false} style={{padding:6}}>
+            <NotificationItem icon={<i className="ph ph-git-pull-request" />} title="Maria merged your PR" body="Aero Mail · feat/glass-nav" time="2m" unread onClick={()=>{}} />
+            <NotificationItem icon={<i className="ph ph-chat-circle" />} title="New comment on Liquid OS" body="“Love the morph timing”" time="1h" tone="success" onClick={()=>{}} />
+            <NotificationItem icon={<i className="ph ph-warning" />} title="Build failed" body="Horizon · step 3" time="3h" tone="danger" onClick={()=>{}} />
+          </Card>
+        </div>
+        <div>
+          <p className="eyebrow">MediaCard · image-first, hover zoom</p>
+          <Stack direction="row" gap={4} wrap>
+            <MediaCard media="" badge={<Badge tone="accent" pill>New</Badge>} title="Project showcase" subtitle="Product design · 2026" style={{flex:1,minWidth:200}} onClick={()=>{}} />
+            <MediaCard media="" overlay={<i className="ph ph-play-circle" style={{fontSize:48,color:'#fff'}} />} title="Watch the demo" subtitle="2:14" style={{flex:1,minWidth:200}} onClick={()=>{}} />
+          </Stack>
+        </div>
+
+        {/* Carousel */}
+        <div>
+          <p className="eyebrow">Carousel · liquid-bubble page dots, blob nav</p>
+          <Carousel itemWidth="48%" gap={16}>
+            <Card variant="featured" style={{padding:20}}><strong>Slide one</strong><p style={{color:'var(--text-muted)',fontSize:13,margin:'6px 0 0'}}>Aqua Gel monogram concept</p></Card>
+            <Card style={{padding:20}}><strong>Slide two</strong><p style={{color:'var(--text-muted)',fontSize:13,margin:'6px 0 0'}}>Glass recipe in action</p></Card>
+            <Card style={{padding:20}}><strong>Slide three</strong><p style={{color:'var(--text-muted)',fontSize:13,margin:'6px 0 0'}}>Liquid morph identity</p></Card>
+          </Carousel>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!-- @dsCard group="Components" viewport="700x760" name="Layout" subtitle="NavBar, HeroSection, PageHeader, Stack, Container, Section, Prose" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+<script src="../../_theme-toggle.js"></script>
+<style>
+  html,body{margin:0}
+  body{font-family:var(--font-ui);color:var(--text);background:var(--bg);transition:background 200ms}
+  .wrap{display:flex;flex-direction:column;gap:20px;padding:0 0 24px}
+  .eyebrow{font-size:var(--text-mini);font-weight:700;letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--text-muted);margin:0 0 10px;padding:0 24px}
+  .inset{padding:0 24px}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { NavBar, HeroSection, PageHeader, Stack, Container, Section, Prose, ProseH2, ProseP, ProseA, Button, StatCard, FeatureCard, FilterBar } = window.AgusDesignSystem_492a6f;
+
+  function Demo() {
+    const [active, setActive] = React.useState('/work');
+    const [filters, setFilters] = React.useState([
+      {id:1,label:'Design systems',tone:'accent'},
+      {id:2,label:'React',tone:'neutral'},
+      {id:3,label:'2025',tone:'neutral'},
+    ]);
+
+    return (
+      <div className="wrap">
+        {/* NavBar */}
+        <div>
+          <p className="eyebrow">NavBar · glass pill, liquid active dot</p>
+          <NavBar
+            links={[{href:'/work',label:'Work'},{href:'/about',label:'About'},{href:'/writing',label:'Writing'}]}
+            activeHref={active}
+            onLinkClick={l => setActive(l.href)}
+            action={<Button size="sm" variant="primary">Let's talk</Button>}
+          />
+        </div>
+
+        {/* HeroSection */}
+        <div className="inset">
+          <p className="eyebrow">HeroSection · liquid blob background</p>
+          <HeroSection
+            eyebrow={<><i className="ph ph-sparkle" style={{fontSize:14}} /> Available for select work</>}
+            headline="Interfaces with depth, material, and craft."
+            sub="A designer-engineer building products that feel tactile and honest."
+            cta={<><Button variant="primary" size="lg">View work</Button><Button variant="secondary" size="lg">About me</Button></>}
+          />
+        </div>
+
+        {/* PageHeader */}
+        <div className="inset">
+          <p className="eyebrow">PageHeader · title + subtitle + action</p>
+          <PageHeader
+            eyebrow="Selected work"
+            title="Projects"
+            subtitle="Five active engagements across product design and design systems."
+            action={<Button variant="primary" icon={<i className="ph ph-plus" style={{fontSize:15}}/>}>New project</Button>}
+          />
+        </div>
+
+        {/* FilterBar + StatCards */}
+        <div className="inset">
+          <p className="eyebrow">FilterBar · StatCard</p>
+          <FilterBar filters={filters} onRemove={f => setFilters(fs => fs.filter(x => x.id !== f.id))} onClear={() => setFilters([])} style={{marginBottom:14}} />
+          <Stack direction="row" gap={4} wrap>
+            <StatCard label="Active projects" value="5" delta="+2" up style={{flex:1,minWidth:130}} icon={<i className="ph ph-folder"/>} />
+            <StatCard label="Hours / week" value="34" delta="+12%" up style={{flex:1,minWidth:130}} icon={<i className="ph ph-clock"/>} />
+            <StatCard label="Open tasks" value="18" delta="−3" up={false} style={{flex:1,minWidth:130}} icon={<i className="ph ph-check-square"/>} />
+          </Stack>
+        </div>
+
+        {/* FeatureCards */}
+        <div className="inset">
+          <p className="eyebrow">FeatureCard · liquid blob icon tile</p>
+          <Stack direction="row" gap={4} wrap>
+            {[
+              {icon:<i className="ph ph-drop"/>,title:'Liquid identity',desc:'Every round element morphs organically.'},
+              {icon:<i className="ph ph-circles-three"/>,title:'One accent',desc:'All tokens derive from a single accent.'},
+              {icon:<i className="ph ph-eye"/>,title:'Glass chrome',desc:'Blur-behind depth for structural surfaces only.'},
+            ].map(f => <FeatureCard key={f.title} icon={f.icon} title={f.title} description={f.desc} style={{flex:1,minWidth:160}} />)}
+          </Stack>
+        </div>
+
+        {/* Prose */}
+        <div className="inset" style={{borderTop:'1px solid var(--border)',paddingTop:20}}>
+          <p className="eyebrow">Prose · long-form reading container</p>
+          <Prose>
+            <ProseH2>Glass and restraint</ProseH2>
+            <ProseP>The Aqus language applies <strong>depth and material</strong> to structural chrome — glass, gloss, shadow — and reserves flat clarity for <ProseA href="#">content surfaces</ProseA>. Every shadow is earned.</ProseP>
+          </Prose>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!-- @dsCard group="Components" viewport="700x920" name="Data" subtitle="Avatar, Divider, Table, Timeline, CodeBlock, DescriptionList, TreeView" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<script src="../../_theme-toggle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+<style>
+  html,body{margin:0}
+  body{font-family:var(--font-ui);color:var(--text);
+    background:radial-gradient(120% 80% at 0% -10%,var(--accent-light),transparent 55%),var(--bg);padding:24px}
+  .wrap{display:flex;flex-direction:column;gap:20px;max-width:652px}
+  .eyebrow{font-size:var(--text-mini);font-weight:700;letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--text-muted);margin:0 0 10px}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px}
+  .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { Avatar, Divider, Table, Timeline, Badge, CodeBlock, DescriptionList, TreeView } = window.AgusDesignSystem_492a6f;
+
+  const cols = [
+    { key: 'name', label: 'Project', sortable: true },
+    { key: 'status', label: 'Status', render: (v) => <Badge tone={v==='active'?'success':v==='review'?'warning':'neutral'} pill dot>{v}</Badge> },
+    { key: 'prog', label: 'Progress', align: 'right', sortable: true, render: (v) => (
+      <span style={{display:'inline-flex',alignItems:'center',gap:6}}>
+        <span style={{width:60,height:5,borderRadius:'var(--radius-pill)',background:'var(--border)',overflow:'hidden',display:'inline-block'}}>
+          <span style={{width:v+'%',height:'100%',display:'block',background:'var(--accent)',borderRadius:'inherit'}}/>
+        </span>
+        <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--text-muted)'}}>{v}%</span>
+      </span>
+    )},
+    { key: 'updated', label: 'Updated', muted: true },
+  ];
+  const rows = [
+    {id:1,name:'Aero Mail',status:'active',prog:82,updated:'2h ago'},
+    {id:2,name:'Liquid OS',status:'active',prog:64,updated:'5h ago'},
+    {id:3,name:'Horizon',status:'review',prog:91,updated:'1d ago'},
+    {id:4,name:'Dock',status:'paused',prog:38,updated:'3d ago'},
+  ];
+
+  function Demo() {
+    const [sort, setSort] = React.useState({key:'name',dir:'asc'});
+    const sorted = [...rows].sort((a,b) => {
+      const d = a[sort.key] > b[sort.key] ? 1 : -1;
+      return sort.dir === 'asc' ? d : -d;
+    });
+
+    return (
+      <div className="wrap">
+        {/* Avatars */}
+        <div className="panel">
+          <p className="eyebrow">Avatar</p>
+          <div className="row">
+            <Avatar src={null} name="Agus Torres" size={48} status="online" />
+            <Avatar src={null} name="Maria K" size={40} status="busy" />
+            <Avatar src={null} name="JR" size={36} status="away" />
+            <Avatar src={null} name="?" size={32} />
+            <Divider orientation="vertical" style={{height:40}} />
+            <Avatar src={null} name="AG" size={28} />
+            <Avatar src={null} name="MK" size={24} />
+          </div>
+        </div>
+
+        {/* Table */}
+        <div>
+          <p className="eyebrow">Table · liquid sort bubbles</p>
+          <Table columns={cols} rows={sorted}
+            sortKey={sort.key} sortDir={sort.dir}
+            onSort={(k,d)=>setSort({key:k,dir:d})} />
+        </div>
+
+        {/* Timeline */}
+        <div className="panel">
+          <p className="eyebrow">Timeline · LiquidBubble status nodes</p>
+          <Timeline items={[
+            {title:'Design approved',time:'09:12',status:'done',description:'Figma handoff complete.'},
+            {title:'Build in progress',time:'11:45',status:'active'},
+            {title:'QA review',status:'pending'},
+            {title:'Ship to production',status:'pending'},
+          ]} />
+        </div>
+
+        {/* CodeBlock */}
+        <div>
+          <p className="eyebrow">CodeBlock · JetBrains Mono + copy</p>
+          <CodeBlock language="css" code={`--accent: oklch(0.65 0.20 250);
+--accent-glass: oklch(0.65 0.20 250 / 0.12);
+border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;`} showLineNumbers />
+        </div>
+
+        {/* DescriptionList */}
+        <div className="panel">
+          <p className="eyebrow">DescriptionList · key→value pairs</p>
+          <DescriptionList columns={2} items={[
+            {term:'Role',value:'Lead Designer'},
+            {term:'Duration',value:'8 months'},
+            {term:'Team',value:'4 people'},
+            {term:'Stack',value:'Figma · React · OKLCH'},
+          ]} />
+        </div>
+
+        {/* TreeView */}
+        <div className="panel">
+          <p className="eyebrow">TreeView · liquid bubble expand nodes</p>
+          <TreeView defaultExpanded={['comp']} nodes={[
+            {id:'src',label:'src',icon:<i className="ph ph-folder"/>,children:[
+              {id:'comp',label:'components',icon:<i className="ph ph-folder"/>,children:[
+                {id:'btn',label:'Button.jsx',icon:<i className="ph ph-file"/>,meta:'4kb'},
+                {id:'card',label:'Card.jsx',icon:<i className="ph ph-file"/>,meta:'3kb'},
+              ]},
+              {id:'app',label:'App.tsx',icon:<i className="ph ph-file"/>,meta:'2kb'},
+            ]},
+          ]} />
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

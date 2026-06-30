@@ -1,0 +1,18 @@
+/* ============================================================
+   Agus — Design System · Global entry point
+   ------------------------------------------------------------
+   Consumers link THIS file only. It is a manifest of @imports;
+   never add rules here directly.
+
+   Aesthetic: 50/50 Retro Aero (Apple Aqua + Vista glass +
+   Windows Live warmth + Sony Ericsson liquid identity) × Modern
+   restraint. A personal brand for "Agus".
+   ============================================================ */
+
+@import url("src/tokens/fonts.css");
+@import url("src/tokens/colors.css");
+@import url("src/tokens/typography.css");
+@import url("src/tokens/spacing.css");
+@import url("src/tokens/elevation.css");
+@import url("src/tokens/motion.css");
+@import url("src/tokens/materials.css");

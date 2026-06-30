@@ -1,0 +1,52 @@
+/* ============================================================
+   Agus — Typography
+   ------------------------------------------------------------
+   Humanist heirs of the Lucida Grande / Segoe UI era.
+   Scale: 8pt grid, 1.25 ratio. Anti-aliased at every size.
+   ============================================================ */
+
+:root {
+  /* ---- Families ---- */
+  --font-display: 'Nunito', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-ui:      'Plus Jakarta Sans', 'Lucida Grande', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ---- Type scale (px) ---- */
+  --text-display-xl: 56px;
+  --text-display-lg: 40px;
+  --text-h1:         32px;
+  --text-h2:         24px;
+  --text-h3:         20px;
+  --text-body-lg:    18px;
+  --text-body:       16px;
+  --text-body-sm:    14px;
+  --text-label:      13px;
+  --text-caption:    12px;
+  --text-mini:       11px;
+
+  /* ---- Weights ---- */
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-extra:    800;
+
+  /* ---- Line heights ---- */
+  --leading-tight:   1.1;   /* display headlines */
+  --leading-snug:    1.25;  /* headings          */
+  --leading-normal:  1.5;   /* UI body           */
+  --leading-relaxed: 1.7;   /* long-form reading */
+
+  /* ---- Tracking ---- */
+  --tracking-tight:  -0.02em;  /* large display */
+  --tracking-snug:   -0.01em;  /* headings      */
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;   /* labels, eyebrows */
+}
+
+/* Anti-aliasing is part of the brand — smooth at every scale. */
+:where(html) {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
