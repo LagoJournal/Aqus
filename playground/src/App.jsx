@@ -2,6 +2,7 @@ import React from 'react'
 import { NavBar, Button, IconButton, Container, Footer } from '@agustin/aqus'
 import { Hero } from './sections/Hero.jsx'
 import { DesignRules } from './sections/DesignRules.jsx'
+import { Materials } from './sections/Materials.jsx'
 import { Usage } from './sections/Usage.jsx'
 import { Glossary } from './sections/Glossary.jsx'
 import { Examples } from './sections/Examples.jsx'
@@ -9,6 +10,7 @@ import { Examples } from './sections/Examples.jsx'
 const NAV_LINKS = [
   { href: '#overview', label: 'Overview' },
   { href: '#rules', label: 'Design rules' },
+  { href: '#materials', label: 'Glass' },
   { href: '#usage', label: 'Usage' },
   { href: '#glossary', label: 'Components' },
   { href: '#examples', label: 'Examples' },
@@ -51,7 +53,11 @@ export function App() {
           <NavBar
             links={NAV_LINKS}
             activeHref={activeHref}
-            onLinkClick={(link) => setActiveHref(link.href)}
+            onLinkClick={(link) => {
+              const el = document.getElementById(link.href.slice(1))
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              setActiveHref(link.href)
+            }}
             action={
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <IconButton
@@ -78,6 +84,7 @@ export function App() {
       <main>
         <Hero />
         <DesignRules />
+        <Materials />
         <Usage />
         <Glossary />
         <Examples />
