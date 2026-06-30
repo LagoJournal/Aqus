@@ -212,7 +212,7 @@ export function ProfileExample() {
                           </Stack>
                         </Stack>
                         <Stack direction="row" align="center" gap={2}>
-                          <span style={{ fontSize: 'var(--text-body)', fontWeight: 700, fontFamily: 'var(--font-display)' }}>{fmt(a.balance)}</span>
+                          <span style={{ fontSize: 'var(--text-body)', fontWeight: 700, fontFamily: 'var(--font-display)', whiteSpace: 'nowrap' }}>{fmt(a.balance)}</span>
                           <Menu
                             align="right"
                             trigger={<IconButton variant="ghost" size="sm" label="Account actions"><i className="ph ph-dots-three" /></IconButton>}
@@ -262,11 +262,11 @@ export function ProfileExample() {
                       <strong>This month</strong>
                       <Divider />
                       <Stack gap={1}>
-                        <Stack direction="row" justify="space-between"><span className="sc-item-desc">Income</span><span className="sc-foot-note">$6,200</span></Stack>
+                        <Stack direction="row" justify="space-between"><span className="sc-item-desc">Income</span><span className="sc-foot-note" style={{ whiteSpace: 'nowrap' }}>$6,200</span></Stack>
                         <Progress value={100} />
                       </Stack>
                       <Stack gap={1}>
-                        <Stack direction="row" justify="space-between"><span className="sc-item-desc">Spent</span><span className="sc-foot-note">$3,840</span></Stack>
+                        <Stack direction="row" justify="space-between"><span className="sc-item-desc">Spent</span><span className="sc-foot-note" style={{ whiteSpace: 'nowrap' }}>$3,840</span></Stack>
                         <Progress value={62} />
                       </Stack>
                     </Stack>
@@ -285,15 +285,15 @@ export function ProfileExample() {
                       <strong>Preferences</strong>
                       <Divider />
                       <Stack direction="row" justify="space-between" align="center" gap={3}>
-                        <Stack gap={0}><span style={{ fontSize: 'var(--text-body-sm)', fontWeight: 600 }}>Price alerts</span><span className="sc-foot-note">Notify on big swings</span></Stack>
+                        <Stack gap={0} style={{ minWidth: 0 }}><span style={{ fontSize: 'var(--text-body-sm)', fontWeight: 600 }}>Price alerts</span><span className="sc-foot-note">Notify on big swings</span></Stack>
                         <Switch checked={alerts} onChange={setAlerts} />
                       </Stack>
                       <Stack direction="row" justify="space-between" align="center" gap={3}>
-                        <Stack gap={0}><span style={{ fontSize: 'var(--text-body-sm)', fontWeight: 600 }}>Two-factor auth</span><span className="sc-foot-note">Require a code at login</span></Stack>
+                        <Stack gap={0} style={{ minWidth: 0 }}><span style={{ fontSize: 'var(--text-body-sm)', fontWeight: 600 }}>Two-factor auth</span><span className="sc-foot-note">Require a code at login</span></Stack>
                         <Switch checked={twofa} onChange={setTwofa} />
                       </Stack>
                       <Stack direction="row" justify="space-between" align="center" gap={3}>
-                        <Stack gap={0}><span style={{ fontSize: 'var(--text-body-sm)', fontWeight: 600 }}>Marketing emails</span><span className="sc-foot-note">Product news and offers</span></Stack>
+                        <Stack gap={0} style={{ minWidth: 0 }}><span style={{ fontSize: 'var(--text-body-sm)', fontWeight: 600 }}>Marketing emails</span><span className="sc-foot-note">Product news and offers</span></Stack>
                         <Switch checked={marketing} onChange={setMarketing} />
                       </Stack>
                       <Button variant="secondary" size="sm" onClick={() => fireToast('Preferences saved.', 'success')}>Save changes</Button>
