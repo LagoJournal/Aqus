@@ -1,6 +1,6 @@
 ---
 name: aqus-design
-description: Use this skill to generate well-branded interfaces and assets with the Aqus design system — a Retro-Aero × Modern UI language (glass, gloss, depth, liquid-bubble identity). For production code or prototypes/mocks. 71 React components, CSS design tokens, self-hosted fonts. Invoke whenever composing a view, page, or UI section for any project using @agustin/aqus.
+description: Use this skill to generate well-branded interfaces and assets with the Aqus design system — a Retro-Aero × Modern UI language (glass, gloss, depth, liquid-bubble identity). For production code or prototypes/mocks. 76 React components + 5 pure-SVG chart components, CSS design tokens, self-hosted fonts. Invoke whenever composing a view, page, or UI section for any project using @agustin/aqus.
 user-invocable: true
 ---
 
@@ -9,8 +9,8 @@ user-invocable: true
 ## For view composition (agents)
 
 Read `docs/AGENT_GUIDE.md` before composing any view. It contains:
-- Full component catalog (71 components — when to use, key props, examples)
-- View recipes (landing, dashboard, settings, auth, empty states)
+- Full component catalog (76 components + charts — when to use, key props, examples)
+- View recipes (landing, dashboard, settings, auth, analytics/charts, empty states)
 - Page anatomy
 - Hard constraints and anti-patterns
 - 8-step composition process
@@ -24,7 +24,7 @@ Read `README.md` for the full system guide. Read `docs/brand-guide.md` for visua
 ## Install
 
 ```bash
-npm install github:LagoJournal/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.2.0
 ```
 
 ```js
@@ -32,7 +32,7 @@ import '@agustin/aqus/styles.css'
 import { Button, Card, NavBar, ... } from '@agustin/aqus'
 ```
 
-## Library at a glance (71 components)
+## Library at a glance (76 components + charts)
 
 - **core** — Button, IconButton, GlassPanel, Card, Badge, Tag, Input, Switch, SegmentedControl, ToggleGroup, Spinner, LiquidBubble, Kbd
 - **forms** — Checkbox, Radio, Select, Combobox, MultiSelect, Textarea, Slider, NumberInput, DatePicker, ColorPicker, OTPInput, SearchInput, FileDropzone
@@ -42,6 +42,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 - **layout** — Container, Stack, Section, Prose, PageHeader, HeroSection, NavBar, Footer
 - **content** — StatCard, FeatureCard, FilterBar, TestimonialCard, BlogCard, MediaCard, NotificationItem, Carousel
 - **brand** — Monogram, Wordmark
+- **charts** — BarChart, LineChart, DonutChart, Sparkline, ChartLegend · pure SVG, no deps · tooltips portal to body
 
 ## Rules
 
