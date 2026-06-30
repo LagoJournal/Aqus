@@ -38,6 +38,10 @@
     "type": "git",
     "url": "https://github.com/agustinlago/aqus.git"
   },
+  "author": "Agustin Lago <lagoagustindev@gmail.com>",
   "keywords": ["design-system", "react", "aqua", "retro-aero", "component-library"],
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
 }
