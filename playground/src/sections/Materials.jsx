@@ -28,7 +28,7 @@ const glassRecipe = {
 
 export function Materials() {
   return (
-    <Section id="materials" size="lg" className="anchor">
+    <Section id="materials" size="md" className="anchor">
       <Container>
         <p className="sc-eyebrow">Materials</p>
         <h2 className="sc-section-title">One glass recipe, everywhere</h2>

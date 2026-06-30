@@ -30,7 +30,6 @@ export function ColorPicker({
               type="button"
               aria-label={name || color}
               aria-pressed={active}
-              title={name || color}
               onClick={() => onChange?.(color)}
               style={{
                 width: size, height: size, flex: 'none',

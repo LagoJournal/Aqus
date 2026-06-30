@@ -46,7 +46,7 @@ const RULES = [
 
 export function DesignRules() {
   return (
-    <Section id="rules" size="lg" className="anchor">
+    <Section id="rules" size="md" className="anchor">
       <Container>
         <p className="sc-eyebrow">Foundations</p>
         <h2 className="sc-section-title">Eight rules that keep it coherent</h2>

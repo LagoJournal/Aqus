@@ -3,6 +3,7 @@ import { NavBar, Button, IconButton, Container, Footer, Popover, ColorPicker, St
 import { Hero } from './sections/Hero.jsx'
 import { DesignRules } from './sections/DesignRules.jsx'
 import { Materials } from './sections/Materials.jsx'
+import { Animations } from './sections/Animations.jsx'
 import { Usage } from './sections/Usage.jsx'
 import { Glossary } from './sections/Glossary.jsx'
 import { Examples } from './sections/Examples.jsx'
@@ -11,6 +12,7 @@ const NAV_LINKS = [
   { href: '#overview', label: 'Overview' },
   { href: '#rules', label: 'Design rules' },
   { href: '#materials', label: 'Glass' },
+  { href: '#animations', label: 'Motion' },
   { href: '#usage', label: 'Usage' },
   { href: '#glossary', label: 'Components' },
   { href: '#examples', label: 'Examples' },
@@ -100,6 +102,7 @@ export function App() {
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <Popover
                   placement="bottom"
+                  zIndex={400}
                   trigger={<IconButton variant="ghost" label="Change accent"><i className="ph ph-palette" /></IconButton>}
                 >
                   <Stack gap={2} style={{ minWidth: 220 }}>
@@ -137,6 +140,7 @@ export function App() {
         <Hero onPrimary={() => scrollTo('usage')} onSecondary={() => scrollTo('glossary')} />
         <DesignRules />
         <Materials />
+        <Animations />
         <Usage />
         <Glossary />
         <Examples />
@@ -151,6 +155,7 @@ export function App() {
               { label: 'Overview', href: '#overview' },
               { label: 'Design rules', href: '#rules' },
               { label: 'Glass', href: '#materials' },
+              { label: 'Motion', href: '#animations' },
             ],
           },
           {

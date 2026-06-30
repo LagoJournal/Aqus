@@ -15,7 +15,7 @@ export function Examples() {
   const [theme, setTheme] = React.useState('light')
 
   return (
-    <Section id="examples" size="lg" className="anchor">
+    <Section id="examples" size="md" className="anchor">
       <Container>
         <p className="sc-eyebrow">Composition</p>
         <h2 className="sc-section-title">Real views, built from the primitives</h2>

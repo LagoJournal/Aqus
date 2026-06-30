@@ -1,5 +1,6 @@
 import { jsxs, jsx, Fragment } from "react/jsx-runtime";
 import React from "react";
+import { createPortal } from "react-dom";
 function Button({
   variant = "primary",
   size = "md",
@@ -893,6 +894,63 @@ function Radio({
     label && /* @__PURE__ */ jsx("span", { children: label })
   ] });
 }
+function Portal({ children }) {
+  if (typeof document === "undefined") return null;
+  return createPortal(children, document.body);
+}
+function useAnchoredFloating(open, onDismiss) {
+  const anchorRef = React.useRef(null);
+  const panelRef = React.useRef(null);
+  const [rect, setRect] = React.useState(null);
+  React.useLayoutEffect(() => {
+    if (!open) {
+      setRect(null);
+      return;
+    }
+    const update = () => {
+      const el = anchorRef.current;
+      if (el) setRect(el.getBoundingClientRect());
+    };
+    update();
+    window.addEventListener("scroll", update, true);
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", update);
+    };
+  }, [open]);
+  React.useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => {
+      if (anchorRef.current && anchorRef.current.contains(e.target)) return;
+      if (panelRef.current && panelRef.current.contains(e.target)) return;
+      onDismiss && onDismiss();
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open, onDismiss]);
+  return { anchorRef, panelRef, rect };
+}
+function placeAround(rect, placement = "bottom", offset = 6, align = "start") {
+  if (!rect) return { position: "fixed", visibility: "hidden", top: -9999, left: -9999 };
+  const base = { position: "fixed", zIndex: 200 };
+  switch (placement) {
+    case "top":
+      return { ...base, bottom: window.innerHeight - rect.top + offset, ...crossX(rect, align) };
+    case "left":
+      return { ...base, right: window.innerWidth - rect.left + offset, top: rect.top + rect.height / 2, transform: "translateY(-50%)" };
+    case "right":
+      return { ...base, left: rect.right + offset, top: rect.top + rect.height / 2, transform: "translateY(-50%)" };
+    case "bottom":
+    default:
+      return { ...base, top: rect.bottom + offset, ...crossX(rect, align) };
+  }
+}
+function crossX(rect, align) {
+  if (align === "center") return { left: rect.left + rect.width / 2, transform: "translateX(-50%)" };
+  if (align === "end") return { left: rect.right, transform: "translateX(-100%)" };
+  return { left: rect.left };
+}
 function Select({
   options = [],
   value,
@@ -905,21 +963,15 @@ function Select({
 }) {
   const items = options.map((o) => typeof o === "string" ? { value: o, label: o } : o);
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
   const inputId = id || React.useId();
   const current = items.find((o) => o.value === value);
-  React.useEffect(() => {
-    const onDoc = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, []);
-  return /* @__PURE__ */ jsxs("div", { ref, style: { position: "relative", fontFamily: "var(--font-ui)", display: "flex", flexDirection: "column", gap: 6, ...style }, children: [
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
+  return /* @__PURE__ */ jsxs("div", { style: { position: "relative", fontFamily: "var(--font-ui)", display: "flex", flexDirection: "column", gap: 6, ...style }, children: [
     label && /* @__PURE__ */ jsx("label", { htmlFor: inputId, style: { fontSize: "var(--text-label)", fontWeight: "var(--weight-medium)", color: "var(--text)" }, children: label }),
     /* @__PURE__ */ jsxs(
       "button",
       {
+        ref: anchorRef,
         type: "button",
         id: inputId,
         disabled,
@@ -958,15 +1010,16 @@ function Select({
         ]
       }
     ),
-    open && /* @__PURE__ */ jsx("div", { role: "listbox", style: {
-      position: "absolute",
-      top: "calc(100% + 6px)",
-      left: 0,
-      right: 0,
-      zIndex: 40,
+    open && rect && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsx("div", { ref: panelRef, role: "listbox", style: {
+      position: "fixed",
+      top: rect.bottom + 6,
+      left: rect.left,
+      width: rect.width,
+      zIndex: 200,
       padding: 6,
       borderRadius: "var(--radius-md)",
-      background: "var(--glass-surface)",
+      boxSizing: "border-box",
+      background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(18px) saturate(1.6)",
       backdropFilter: "blur(18px) saturate(1.6)",
       border: "1px solid var(--glass-border-light)",
@@ -1013,7 +1066,7 @@ function Select({
         },
         o.value
       );
-    }) })
+    }) }) })
   ] });
 }
 function Combobox({
@@ -1028,14 +1081,7 @@ function Combobox({
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [active, setActive] = React.useState(0);
-  const ref = React.useRef(null);
-  React.useEffect(() => {
-    const close = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    if (open) document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, [open]);
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
   const norm = (o) => typeof o === "string" ? { value: o, label: o } : o;
   const opts = options.map(norm);
   const selected = opts.find((o) => o.value === value);
@@ -1061,11 +1107,12 @@ function Combobox({
     }
     if (e.key === "Escape") setOpen(false);
   };
-  return /* @__PURE__ */ jsxs("div", { ref, style: { display: "flex", flexDirection: "column", gap: 6, fontFamily: "var(--font-ui)", position: "relative", minWidth: 220, ...style }, ...rest, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 6, fontFamily: "var(--font-ui)", position: "relative", minWidth: 220, ...style }, ...rest, children: [
     label && /* @__PURE__ */ jsx("label", { style: { fontSize: "var(--text-label)", fontWeight: "var(--weight-medium)", color: "var(--text)" }, children: label }),
     /* @__PURE__ */ jsxs(
       "div",
       {
+        ref: anchorRef,
         onClick: () => setOpen(true),
         style: {
           display: "flex",
@@ -1101,13 +1148,14 @@ function Combobox({
         ]
       }
     ),
-    open && /* @__PURE__ */ jsxs("div", { style: {
-      position: "absolute",
-      top: "100%",
-      insetInline: 0,
-      marginTop: 6,
-      zIndex: 100,
-      background: "var(--glass-surface)",
+    open && rect && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs("div", { ref: panelRef, style: {
+      position: "fixed",
+      top: rect.bottom + 6,
+      left: rect.left,
+      width: rect.width,
+      zIndex: 200,
+      boxSizing: "border-box",
+      background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       border: "1px solid var(--glass-border-light)",
@@ -1152,7 +1200,7 @@ function Combobox({
           o.value
         );
       })
-    ] })
+    ] }) })
   ] });
 }
 function MultiSelect({
@@ -1165,22 +1213,16 @@ function MultiSelect({
   ...rest
 }) {
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
-  React.useEffect(() => {
-    const close = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    if (open) document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, [open]);
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
   const norm = (o) => typeof o === "string" ? { value: o, label: o } : o;
   const opts = options.map(norm);
   const toggle = (v) => onChange == null ? void 0 : onChange(value.includes(v) ? value.filter((x) => x !== v) : [...value, v]);
-  return /* @__PURE__ */ jsxs("div", { ref, style: { display: "flex", flexDirection: "column", gap: 6, fontFamily: "var(--font-ui)", position: "relative", minWidth: 240, ...style }, ...rest, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 6, fontFamily: "var(--font-ui)", position: "relative", minWidth: 240, ...style }, ...rest, children: [
     label && /* @__PURE__ */ jsx("label", { style: { fontSize: "var(--text-label)", fontWeight: "var(--weight-medium)", color: "var(--text)" }, children: label }),
     /* @__PURE__ */ jsxs(
       "div",
       {
+        ref: anchorRef,
         onClick: () => setOpen((o) => !o),
         style: {
           display: "flex",
@@ -1222,13 +1264,14 @@ function MultiSelect({
         ]
       }
     ),
-    open && /* @__PURE__ */ jsx("div", { style: {
-      position: "absolute",
-      top: "100%",
-      insetInline: 0,
-      marginTop: 6,
-      zIndex: 100,
-      background: "var(--glass-surface)",
+    open && rect && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsx("div", { ref: panelRef, style: {
+      position: "fixed",
+      top: rect.bottom + 6,
+      left: rect.left,
+      width: rect.width,
+      zIndex: 200,
+      boxSizing: "border-box",
+      background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       border: "1px solid var(--glass-border-light)",
@@ -1274,7 +1317,7 @@ function MultiSelect({
         },
         o.value
       );
-    }) })
+    }) }) })
   ] });
 }
 function Textarea({
@@ -1506,14 +1549,7 @@ function DatePicker({
 }) {
   const [open, setOpen] = React.useState(false);
   const [view, setView] = React.useState(() => value ? new Date(value) : /* @__PURE__ */ new Date());
-  const ref = React.useRef(null);
-  React.useEffect(() => {
-    const close = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    if (open) document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, [open]);
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
   const today = /* @__PURE__ */ new Date();
   today.setHours(0, 0, 0, 0);
   const sel = value ? new Date(value) : null;
@@ -1537,9 +1573,9 @@ function DatePicker({
       children: /* @__PURE__ */ jsx("i", { className: `ph ph-caret-${dir < 0 ? "left" : "right"}`, style: { fontSize: 15 } })
     }
   );
-  return /* @__PURE__ */ jsxs("div", { ref, style: { display: "inline-flex", flexDirection: "column", gap: 6, fontFamily: "var(--font-ui)", position: "relative", ...style }, ...rest, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { display: "inline-flex", flexDirection: "column", gap: 6, fontFamily: "var(--font-ui)", position: "relative", ...style }, ...rest, children: [
     label && /* @__PURE__ */ jsx("label", { style: { fontSize: "var(--text-label)", fontWeight: "var(--weight-medium)", color: "var(--text)" }, children: label }),
-    /* @__PURE__ */ jsxs("button", { onClick: () => setOpen((o) => !o), style: {
+    /* @__PURE__ */ jsxs("button", { ref: anchorRef, onClick: () => setOpen((o) => !o), style: {
       display: "flex",
       alignItems: "center",
       gap: 10,
@@ -1559,12 +1595,12 @@ function DatePicker({
       /* @__PURE__ */ jsx("i", { className: "ph ph-calendar-blank", style: { fontSize: 16, color: "var(--text-muted)" } }),
       /* @__PURE__ */ jsx("span", { style: { flex: 1, textAlign: "left" }, children: sel ? fmt(sel) : placeholder })
     ] }),
-    open && /* @__PURE__ */ jsxs("div", { style: {
-      position: "absolute",
-      top: "100%",
-      marginTop: 8,
-      zIndex: 100,
-      background: "var(--glass-surface)",
+    open && rect && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs("div", { ref: panelRef, style: {
+      position: "fixed",
+      top: rect.bottom + 8,
+      left: rect.left,
+      zIndex: 200,
+      background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       border: "1px solid var(--glass-border-light)",
@@ -1619,7 +1655,7 @@ function DatePicker({
           );
         })
       ] })
-    ] })
+    ] }) })
   ] });
 }
 function ColorPicker({
@@ -1643,7 +1679,6 @@ function ColorPicker({
           type: "button",
           "aria-label": name || color,
           "aria-pressed": active,
-          title: name || color,
           onClick: () => onChange == null ? void 0 : onChange(color),
           style: {
             width: size,
@@ -2200,15 +2235,11 @@ function Toast({
 }
 function Tooltip({ label, side = "top", children, style = {} }) {
   const [show, setShow] = React.useState(false);
-  const pos = {
-    top: { bottom: "100%", left: "50%", transform: "translate(-50%, -8px)" },
-    bottom: { top: "100%", left: "50%", transform: "translate(-50%, 8px)" },
-    left: { right: "100%", top: "50%", transform: "translate(-8px, -50%)" },
-    right: { left: "100%", top: "50%", transform: "translate(8px, -50%)" }
-  }[side];
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(show, () => setShow(false));
   return /* @__PURE__ */ jsxs(
     "span",
     {
+      ref: anchorRef,
       style: { position: "relative", display: "inline-flex" },
       onMouseEnter: () => setShow(true),
       onMouseLeave: () => setShow(false),
@@ -2216,10 +2247,9 @@ function Tooltip({ label, side = "top", children, style = {} }) {
       onBlur: () => setShow(false),
       children: [
         children,
-        show && /* @__PURE__ */ jsx("span", { role: "tooltip", style: {
-          position: "absolute",
-          zIndex: 60,
-          ...pos,
+        show && rect && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsx("span", { ref: panelRef, role: "tooltip", style: {
+          ...placeAround(rect, side, 8, "center"),
+          zIndex: 200,
           whiteSpace: "nowrap",
           pointerEvents: "none",
           padding: "6px 10px",
@@ -2234,7 +2264,7 @@ function Tooltip({ label, side = "top", children, style = {} }) {
           boxShadow: "var(--shadow-md)",
           animation: "agus-enter var(--dur-fast) var(--ease-spring)",
           ...style
-        }, children: label })
+        }, children: label }) })
       ]
     }
   );
@@ -2244,37 +2274,22 @@ function Popover({
   children,
   placement = "bottom",
   offset = 8,
+  zIndex = 200,
   style = {},
   ...rest
 }) {
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
-  React.useEffect(() => {
-    const handler = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    if (open) document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-  const placements = {
-    bottom: { top: "100%", left: "50%", transform: "translateX(-50%)" },
-    top: { bottom: "100%", left: "50%", transform: "translateX(-50%)" },
-    left: { right: "100%", top: "50%", transform: "translateY(-50%)" },
-    right: { left: "100%", top: "50%", transform: "translateY(-50%)" }
-  };
-  const pos = placements[placement] || placements.bottom;
-  const offsetKey = placement === "bottom" ? "marginTop" : placement === "top" ? "marginBottom" : placement === "left" ? "marginRight" : "marginLeft";
-  return /* @__PURE__ */ jsxs("div", { ref, style: { position: "relative", display: "inline-flex" }, children: [
-    /* @__PURE__ */ jsx("div", { onClick: () => setOpen((o) => !o), style: { display: "inline-flex" }, children: trigger }),
-    open && /* @__PURE__ */ jsxs(
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
+  return /* @__PURE__ */ jsxs("div", { style: { position: "relative", display: "inline-flex" }, children: [
+    /* @__PURE__ */ jsx("div", { ref: anchorRef, onClick: () => setOpen((o) => !o), style: { display: "inline-flex" }, children: trigger }),
+    open && rect && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs(
       "div",
       {
+        ref: panelRef,
         role: "dialog",
         style: {
-          position: "absolute",
-          zIndex: 100,
-          [offsetKey]: offset,
-          ...pos,
+          ...placeAround(rect, placement, offset, "center"),
+          zIndex,
           background: "var(--glass-surface)",
           WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
           backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -2300,7 +2315,7 @@ function Popover({
           /* @__PURE__ */ jsx("div", { style: { position: "relative" }, children })
         ]
       }
-    )
+    ) })
   ] });
 }
 function Dialog({
@@ -2320,7 +2335,7 @@ function Dialog({
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
   if (!open) return null;
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsx(
     "div",
     {
       onMouseDown: (e) => {
@@ -2329,7 +2344,7 @@ function Dialog({
       style: {
         position: "fixed",
         inset: 0,
-        zIndex: 100,
+        zIndex: 500,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -2367,7 +2382,7 @@ function Dialog({
         ] })
       ] })
     }
-  );
+  ) });
 }
 function Drawer({
   open = false,
@@ -2387,10 +2402,10 @@ function Drawer({
   const horizontal = side === "left" || side === "right";
   const hidden = { left: "translateX(-100%)", right: "translateX(100%)", top: "translateY(-100%)", bottom: "translateY(100%)" }[side];
   const edge = horizontal ? { top: 0, bottom: 0, [side]: 0, width, height: "100%" } : { left: 0, right: 0, [side]: 0, height: width, width: "100%" };
-  return /* @__PURE__ */ jsxs("div", { "aria-hidden": !open, style: {
+  return /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs("div", { "aria-hidden": !open, style: {
     position: "fixed",
     inset: 0,
-    zIndex: 200,
+    zIndex: 500,
     pointerEvents: open ? "auto" : "none"
   }, children: [
     /* @__PURE__ */ jsx("div", { onClick: onClose, style: {
@@ -2433,7 +2448,7 @@ function Drawer({
         ]
       }
     )
-  ] });
+  ] }) });
 }
 function EmptyState({
   title = "Nothing here yet",
@@ -2550,7 +2565,7 @@ function CommandPalette({
     return acc;
   }, {});
   let itemIndex = -1;
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsx(
     "div",
     {
       role: "dialog",
@@ -2560,7 +2575,7 @@ function CommandPalette({
       style: {
         position: "fixed",
         inset: 0,
-        zIndex: 200,
+        zIndex: 500,
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "center",
@@ -2661,7 +2676,7 @@ function CommandPalette({
         ] })
       ] })
     }
-  );
+  ) });
 }
 function Tabs({ tabs = [], value, onChange, style = {}, ...rest }) {
   const items = tabs.map((t) => typeof t === "string" ? { value: t, label: t } : t);
@@ -2756,25 +2771,16 @@ function Breadcrumb({ items = [], onNavigate, style = {}, ...rest }) {
 }
 function Menu({ trigger, items = [], align = "left", style = {} }) {
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
-  React.useEffect(() => {
-    const onDoc = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, []);
-  return /* @__PURE__ */ jsxs("div", { ref, style: { position: "relative", display: "inline-flex", ...style }, children: [
-    /* @__PURE__ */ jsx("span", { onClick: () => setOpen((o) => !o), style: { display: "inline-flex", cursor: "pointer" }, children: trigger }),
-    open && /* @__PURE__ */ jsx("div", { role: "menu", style: {
-      position: "absolute",
-      top: "calc(100% + 6px)",
-      [align]: 0,
-      zIndex: 50,
+  const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
+  return /* @__PURE__ */ jsxs("div", { style: { position: "relative", display: "inline-flex", ...style }, children: [
+    /* @__PURE__ */ jsx("span", { ref: anchorRef, onClick: () => setOpen((o) => !o), style: { display: "inline-flex", cursor: "pointer" }, children: trigger }),
+    open && rect && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsx("div", { ref: panelRef, role: "menu", style: {
+      ...placeAround(rect, "bottom", 6, align === "right" ? "end" : "start"),
+      zIndex: 200,
       minWidth: 180,
       padding: 6,
       borderRadius: "var(--radius-md)",
-      background: "var(--glass-surface)",
+      background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(18px) saturate(1.6)",
       backdropFilter: "blur(18px) saturate(1.6)",
       border: "1px solid var(--glass-border-light)",
@@ -2812,7 +2818,7 @@ function Menu({ trigger, items = [], align = "left", style = {} }) {
         ]
       },
       i
-    )) })
+    )) }) })
   ] });
 }
 function ContextMenu({
@@ -2842,7 +2848,7 @@ function ContextMenu({
   };
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx("div", { onContextMenu: onContext, style: { display: "contents" }, children }),
-    pos && /* @__PURE__ */ jsx(
+    pos && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsx(
       "div",
       {
         role: "menu",
@@ -2851,7 +2857,7 @@ function ContextMenu({
           position: "fixed",
           top: pos.y,
           left: pos.x,
-          zIndex: 300,
+          zIndex: 200,
           minWidth: 200,
           background: "var(--glass-surface)",
           WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -2906,7 +2912,7 @@ function ContextMenu({
           )
         )
       }
-    )
+    ) })
   ] });
 }
 function Accordion({
@@ -3084,7 +3090,7 @@ function Stepper({
     ...style
   }, ...rest, children: steps.map((step, i) => {
     const state = i < current ? "done" : i === current ? "current" : "upcoming";
-    const variant = state === "done" ? "filled" : state === "current" ? "spinner" : "outline";
+    const variant = state === "done" ? "filled" : "outline";
     const isLast = i === steps.length - 1;
     return /* @__PURE__ */ jsxs("div", { style: {
       display: "flex",
@@ -3625,6 +3631,8 @@ function NavBar({
   action,
   activeHref,
   onLinkClick,
+  homeHref = "/",
+  onBrandClick,
   style = {},
   ...rest
 }) {
@@ -3632,7 +3640,7 @@ function NavBar({
   return /* @__PURE__ */ jsxs("nav", { style: {
     position: "sticky",
     top: 0,
-    zIndex: 50,
+    zIndex: 300,
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -3656,7 +3664,18 @@ function NavBar({
       pointerEvents: "none",
       background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass)"
     } }),
-    /* @__PURE__ */ jsx("a", { href: "/", style: { position: "relative", display: "inline-flex", textDecoration: "none" }, children: /* @__PURE__ */ jsx(Wordmark2, { size: 22, animate: false }) }),
+    /* @__PURE__ */ jsx(
+      "a",
+      {
+        href: homeHref,
+        onClick: onBrandClick ? (e) => {
+          e.preventDefault();
+          onBrandClick(e);
+        } : void 0,
+        style: { position: "relative", display: "inline-flex", textDecoration: "none" },
+        children: /* @__PURE__ */ jsx(Wordmark2, { size: 22, animate: false })
+      }
+    ),
     links.length > 0 && /* @__PURE__ */ jsx("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 2 }, children: links.map((l) => {
       const active = activeHref === l.href;
       return /* @__PURE__ */ jsxs(

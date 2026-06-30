@@ -54,7 +54,7 @@ export function Usage() {
   const [tab, setTab] = React.useState('pin')
 
   return (
-    <Section id="usage" size="lg" className="anchor">
+    <Section id="usage" size="md" className="anchor">
       <Container>
         <p className="sc-eyebrow">Quick start</p>
         <h2 className="sc-section-title">Drop it into any project</h2>

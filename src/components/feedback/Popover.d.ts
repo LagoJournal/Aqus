@@ -7,6 +7,8 @@ export interface PopoverProps {
   placement?: 'bottom' | 'top' | 'left' | 'right';
   /** Gap between trigger and panel in px. Default 8. */
   offset?: number;
+  /** CSS z-index for the panel. Default 200. Pass 400 when trigger is inside a fixed navbar. */
+  zIndex?: number;
   style?: React.CSSProperties;
 }
 

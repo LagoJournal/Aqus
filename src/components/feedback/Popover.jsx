@@ -12,6 +12,7 @@ export function Popover({
   children,
   placement = 'bottom',
   offset = 8,
+  zIndex = 200,
   style = {},
   ...rest
 }) {
@@ -29,7 +30,7 @@ export function Popover({
           ref={panelRef}
           role="dialog"
           style={{
-            ...placeAround(rect, placement, offset, 'center'), zIndex: 200,
+            ...placeAround(rect, placement, offset, 'center'), zIndex,
             background: 'var(--glass-surface)',
             WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
             backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',

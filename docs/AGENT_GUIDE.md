@@ -86,7 +86,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | `Toast` | Floating notification. | `tone`, `title`, `message`, `onClose` | `<Toast tone="success" title="Saved" onClose={dismiss}/>` |
 | `Alert` | Inline contextual message. | `tone`, `title`, `children` | `<Alert tone="warning">Trial ends soon.</Alert>` |
 | `Tooltip` | On-hover hint. Wraps trigger. | `label`, `side`, `children` | `<Tooltip label="Delete"><IconButton …/></Tooltip>` |
-| `Popover` | Click-triggered floating panel. Holds interactive content. | `trigger`, `placement`, `children` | `<Popover trigger={<Button>Open</Button>}>…</Popover>` |
+| `Popover` | Click-triggered floating panel. Holds interactive content. Pass `zIndex={400}` when trigger lives inside a fixed NavBar so the panel clears the navbar layer (default 200). | `trigger`, `placement`, `offset`, `zIndex`, `children` | `<Popover trigger={<Button>Open</Button>}>…</Popover>` |
 | `Progress` | Linear progress. | `value` (0–100), `label` | `<Progress value={60}/>` |
 | `ProgressCircle` | Circular progress. | `value`, `size` | `<ProgressCircle value={75} size={48}/>` |
 | `Skeleton` | Loading placeholder. | `width`, `height`, `circle` (bool) | `<Skeleton width={200} height={20}/>` |

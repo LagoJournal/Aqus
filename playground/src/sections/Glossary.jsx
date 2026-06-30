@@ -252,7 +252,7 @@ const CATALOG = [
     ['NotificationItem', 'Inbox row; unread = tinted + bubble marker.',
       <div style={{ width: '100%' }}><NotificationItem icon={<i className="ph ph-bell" />} title="Build finished" body="Aero Mail deployed to production." time="2m" unread tone="success" /></div>],
     ['Carousel', 'Horizontal scroll-snap rail.',
-      <div style={{ width: '100%' }}><Carousel itemWidth="140px" gap={3}>{[1, 2, 3, 4].map((n) => <Card key={n} style={{ padding: 16, textAlign: 'center' }}>Slide {n}</Card>)}</Carousel></div>],
+      <div style={{ width: '100%' }}><Carousel itemWidth="140px" gap={12} showDots>{[1, 2, 3, 4].map((n) => <Card key={n} style={{ padding: 16, textAlign: 'center' }}>Slide {n}</Card>)}</Carousel></div>],
   ]],
   ['Brand', [
     ['Monogram', 'The liquid-drop mark.', <Monogram size={48} letter="A" />],
@@ -282,7 +282,7 @@ export function Glossary() {
   const total = CATALOG.reduce((n, [, items]) => n + items.length, 0)
 
   return (
-    <Section id="glossary" size="lg" className="anchor">
+    <Section id="glossary" size="md" className="anchor">
       <Container>
         <p className="sc-eyebrow">Reference</p>
         <h2 className="sc-section-title">Component glossary</h2>
