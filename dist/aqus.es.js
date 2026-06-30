@@ -3762,12 +3762,11 @@ function NavBar({
       padding: 8,
       borderRadius: "var(--radius-lg)",
       // Glass look (inner gloss + accent film) over an OPAQUE surface base.
-      // The panel is nested inside the bar, so its backdrop-filter can't frost
-      // the page behind it — an opaque base keeps the links readable instead of
-      // letting page content bleed through.
+      // The panel is nested inside the bar, whose own backdrop-filter prevents
+      // this child from frosting the page — so NO backdrop-filter here; the
+      // opaque base is what keeps the links readable. A translucent base would
+      // let page content bleed through (it can't be frosted).
       background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--surface)",
-      WebkitBackdropFilter: "blur(var(--glass-blur-dense)) saturate(1.6)",
-      backdropFilter: "blur(var(--glass-blur-dense)) saturate(1.6)",
       border: "1px solid var(--glass-border-light)",
       borderBottomColor: "var(--glass-border-dark)",
       boxShadow: "var(--shadow-glass)",
