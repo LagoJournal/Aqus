@@ -65,7 +65,7 @@ export function DatePicker({
         <Portal>
         <div ref={panelRef} style={{
           position: 'fixed', top: rect.bottom + 8, left: rect.left, zIndex: Z_FLOATING,
-          background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
+          background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), linear-gradient(var(--accent-glass), var(--accent-glass)), var(--glass-surface)',
           WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
           border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
           boxShadow: 'var(--shadow-glass)', borderRadius: 'var(--radius-md)',

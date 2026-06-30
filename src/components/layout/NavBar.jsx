@@ -129,7 +129,7 @@ export function NavBar({
           // this child from frosting the page — so NO backdrop-filter here; the
           // opaque base is what keeps the links readable. A translucent base would
           // let page content bleed through (it can't be frosted).
-          background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--surface)',
+          background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), linear-gradient(var(--accent-glass), var(--accent-glass)), var(--surface)',
           border: '1px solid var(--glass-border-light)',
           borderBottomColor: 'var(--glass-border-dark)',
           boxShadow: 'var(--shadow-glass)',

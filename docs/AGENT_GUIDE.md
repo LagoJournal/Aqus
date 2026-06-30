@@ -824,6 +824,15 @@ Menus and selects sit **above** modals on purpose, so a dropdown opened inside a
 - Panels that **portal to `document.body`** (Select, Menu, Combobox, Popover, Tooltip) can stay translucent — their backdrop-filter works.
 - Panels rendered **inside** glass chrome (NavBar dropdown) use an **opaque surface base** (`var(--surface)`) with the gloss + accent film on top, so they look glassy but never bleed. The library's NavBar already does this; follow the same rule for any custom panel nested in glass.
 
+**CSS gotcha — color only in the final `background` layer.** A `<color>` is valid *only* as the last layer of the `background` shorthand. A bare color token in a middle layer makes the **whole declaration invalid** and the element renders with *no* background (transparent). Wrap any mid-stack tint as a flat gradient:
+
+```js
+// ❌ invalid — accent-glass is a color in a non-final layer → whole rule dropped
+background: 'linear-gradient(...gloss...), var(--accent-glass), var(--surface)'
+// ✅ valid — tint as a gradient (image) layer, opaque color last
+background: 'linear-gradient(...gloss...), linear-gradient(var(--accent-glass), var(--accent-glass)), var(--surface)'
+```
+
 ---
 
 ## Constraints
