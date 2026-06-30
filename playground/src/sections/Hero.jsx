@@ -12,12 +12,12 @@ export function Hero({ onPrimary, onSecondary }) {
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px 5px 6px',
             borderRadius: 'var(--radius-pill)',
-            background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
-            WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
-            backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
-            border: '1px solid var(--glass-border-light)',
-            borderBottomColor: 'var(--glass-border-dark)',
-            boxShadow: 'var(--shadow-glass)',
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), rgba(255,255,255,0.08)',
+            WebkitBackdropFilter: 'blur(24px) saturate(1.8)',
+            backdropFilter: 'blur(24px) saturate(1.8)',
+            border: '1px solid rgba(255,255,255,0.40)',
+            borderBottomColor: 'rgba(0,0,0,0.06)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)',
             fontSize: 'var(--text-caption)', color: 'var(--text)',
           }}>
             <Avatar name="Agustin Lago" size={22} />
