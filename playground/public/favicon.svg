@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8BAAEF"></stop>
+      <stop offset="42%" stop-color="#4468CC"></stop>
+      <stop offset="100%" stop-color="#2B4BAE"></stop>
+    </linearGradient>
+    <radialGradient id="gl" cx="52%" cy="26%" r="52%" fx="45%" fy="12%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.82)"></stop>
+      <stop offset="38%" stop-color="rgba(255,255,255,0.22)"></stop>
+      <stop offset="56%" stop-color="rgba(255,255,255,0)"></stop>
+    </radialGradient>
+    <clipPath id="blob"><path d="M 128 14 C 175 14, 226 52, 238 100 C 250 148, 224 210, 182 232 C 140 254, 78 248, 46 212 C 14 176, 14 124, 36 84 C 58 44, 81 14, 128 14 Z"></path></clipPath>
+  </defs>
+  <path d="M 128 14 C 175 14, 226 52, 238 100 C 250 148, 224 210, 182 232 C 140 254, 78 248, 46 212 C 14 176, 14 124, 36 84 C 58 44, 81 14, 128 14 Z" fill="url(#g)"></path>
+  <rect x="0" y="0" width="256" height="160" fill="url(#gl)" clip-path="url(#blob)"></rect>
+  <text x="128" y="138" font-family="Nunito, Arial Rounded MT Bold, Arial, sans-serif" font-weight="900" font-size="128" fill="white" text-anchor="middle" dominant-baseline="middle" filter="drop-shadow(0 3px 8px rgba(0,8,55,0.5))">A</text>
+</svg>
