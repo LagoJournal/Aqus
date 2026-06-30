@@ -1,13 +1,13 @@
 import React from 'react'
 import { Section, Container, SegmentedControl, Badge } from '@agustin/aqus'
 import { DashboardExample } from '../examples/DashboardExample.jsx'
-import { BlogExample } from '../examples/BlogExample.jsx'
+import { StorefrontExample } from '../examples/StorefrontExample.jsx'
 import { ProfileExample } from '../examples/ProfileExample.jsx'
 
 const VIEWS = {
   dashboard: { label: 'Dashboard', node: <DashboardExample /> },
-  blog: { label: 'Blog', node: <BlogExample /> },
-  profile: { label: 'User profile', node: <ProfileExample /> },
+  storefront: { label: 'Storefront', node: <StorefrontExample /> },
+  profile: { label: 'Profile', node: <ProfileExample /> },
 }
 
 function darkAccentVars(h) {
@@ -37,12 +37,14 @@ export function Examples({ hue = 250, theme = 'light' }) {
           Aqus agent follows when it builds a view for one of your projects.
         </p>
 
-        <div style={{ marginBottom: 16 }}>
-          <SegmentedControl
-            value={view}
-            onChange={setView}
-            options={Object.entries(VIEWS).map(([value, v]) => ({ value, label: v.label }))}
-          />
+        <div style={{ marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
+          <div style={{ display: 'inline-flex', minWidth: 'min-content' }}>
+            <SegmentedControl
+              value={view}
+              onChange={setView}
+              options={Object.entries(VIEWS).map(([value, v]) => ({ value, label: v.label }))}
+            />
+          </div>
         </div>
 
         <div className="sc-frame" data-theme={theme} style={theme === 'dark' ? darkAccentVars(hue) : undefined}>

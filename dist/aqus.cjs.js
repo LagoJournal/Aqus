@@ -3635,19 +3635,54 @@ function NavBar({
   onLinkClick,
   homeHref = "/",
   onBrandClick,
+  compactAt = 720,
   style = {},
   ...rest
 }) {
   const { Wordmark: Wordmark2 } = window.AgusDesignSystem_492a6f;
-  return /* @__PURE__ */ jsxRuntime.jsxs("nav", { style: {
+  const [open, setOpen] = React.useState(false);
+  const [compact, setCompact] = React.useState(false);
+  const navRef = React.useRef(null);
+  React.useEffect(() => {
+    const el = navRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(([e]) => setCompact(e.contentRect.width < compactAt));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [compactAt]);
+  React.useEffect(() => {
+    if (!compact) setOpen(false);
+  }, [compact]);
+  const linkStyle = (active, block) => ({
+    display: block ? "flex" : "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    padding: block ? "11px 14px" : "7px 14px",
+    borderRadius: block ? "var(--radius-md)" : "var(--radius-pill)",
+    fontWeight: active ? 600 : 500,
+    fontSize: "var(--text-body-sm)",
+    color: active ? "var(--accent-text)" : "var(--text-muted)",
+    background: active ? "var(--accent-light)" : "transparent",
+    textDecoration: "none",
+    width: block ? "100%" : void 0,
+    transition: "background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out)"
+  });
+  const handleClick = (l) => (e) => {
+    if (onLinkClick) {
+      e.preventDefault();
+      onLinkClick(l);
+    }
+    setOpen(false);
+  };
+  return /* @__PURE__ */ jsxRuntime.jsxs("nav", { ref: navRef, style: {
     position: "sticky",
     top: 0,
     zIndex: 300,
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: "var(--space-4)",
-    padding: "10px 20px",
+    gap: "var(--space-3)",
+    padding: "10px 14px",
     margin: "12px",
     borderRadius: "var(--radius-pill)",
     background: "var(--glass-surface)",
@@ -3674,42 +3709,70 @@ function NavBar({
           e.preventDefault();
           onBrandClick(e);
         } : void 0,
-        style: { position: "relative", display: "inline-flex", textDecoration: "none" },
+        style: { position: "relative", display: "inline-flex", textDecoration: "none", flex: "none" },
         children: /* @__PURE__ */ jsxRuntime.jsx(Wordmark2, { size: 22, animate: false })
       }
     ),
-    links.length > 0 && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 2 }, children: links.map((l) => {
+    links.length > 0 && !compact && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap", justifyContent: "center" }, children: links.map((l) => {
       const active = activeHref === l.href;
-      return /* @__PURE__ */ jsxRuntime.jsxs(
-        "a",
+      return /* @__PURE__ */ jsxRuntime.jsxs("a", { href: l.href, onClick: handleClick(l), style: linkStyle(active, false), children: [
+        active && /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: 7 }),
+        l.label
+      ] }, l.href);
+    }) }),
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 8, flex: "none" }, children: [
+      action,
+      links.length > 0 && compact && /* @__PURE__ */ jsxRuntime.jsx(
+        "button",
         {
-          href: l.href,
-          onClick: onLinkClick ? (e) => {
-            e.preventDefault();
-            onLinkClick(l);
-          } : void 0,
+          type: "button",
+          "aria-label": open ? "Close menu" : "Open menu",
+          "aria-expanded": open,
+          onClick: () => setOpen((o) => !o),
           style: {
+            width: 38,
+            height: 38,
+            borderRadius: LIQUID_BLOB,
+            border: "none",
+            background: open ? "var(--accent-light)" : "transparent",
+            color: open ? "var(--accent-text)" : "var(--text-muted)",
             display: "inline-flex",
             alignItems: "center",
-            gap: 6,
-            padding: "7px 14px",
-            borderRadius: "var(--radius-pill)",
-            fontWeight: active ? 600 : 500,
-            fontSize: "var(--text-body-sm)",
-            color: active ? "var(--accent-text)" : "var(--text-muted)",
-            background: active ? "var(--accent-light)" : "transparent",
-            textDecoration: "none",
-            transition: "background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out)"
+            justifyContent: "center",
+            cursor: "pointer",
+            fontSize: 20,
+            padding: 0,
+            transition: "background var(--dur-fast) var(--ease-out)"
           },
-          children: [
-            active && /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: 7 }),
-            l.label
-          ]
-        },
-        l.href
-      );
-    }) }),
-    action && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { position: "relative", flex: "none" }, children: action })
+          children: /* @__PURE__ */ jsxRuntime.jsx("i", { className: open ? "ph ph-x" : "ph ph-list" })
+        }
+      )
+    ] }),
+    compact && open && links.length > 0 && /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+      position: "absolute",
+      top: "calc(100% + 8px)",
+      left: 0,
+      right: 0,
+      zIndex: 320,
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      padding: 8,
+      borderRadius: "var(--radius-lg)",
+      background: "var(--glass-surface)",
+      WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+      backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
+      border: "1px solid var(--glass-border-light)",
+      borderBottomColor: "var(--glass-border-dark)",
+      boxShadow: "var(--shadow-glass)",
+      animation: "agus-enter var(--dur-ui) var(--ease-spring)"
+    }, children: links.map((l) => {
+      const active = activeHref === l.href;
+      return /* @__PURE__ */ jsxRuntime.jsxs("a", { href: l.href, onClick: handleClick(l), style: linkStyle(active, true), children: [
+        active && /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: 7 }),
+        l.label
+      ] }, l.href);
+    }) })
   ] });
 }
 function Footer({

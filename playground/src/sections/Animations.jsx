@@ -73,7 +73,7 @@ export function Animations() {
             <strong style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h3)', fontWeight: 'var(--weight-bold)' }}>
               Loading states
             </strong>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: 24, alignItems: 'start' }}>
               <Stack gap={3}>
                 <span className="sc-item-desc">Skeleton shimmer — placeholder for text and media.</span>
                 <Stack gap={2}>

@@ -10,7 +10,7 @@ export function Hero({ onPrimary, onSecondary }) {
       <Container>
         <HeroSection
           align="center"
-          eyebrow="Retro-Aero × Modern · 71 components"
+          eyebrow="Retro-Aero × Modern · 76 components + charts"
           headline={
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
               <Monogram size={56} letter="A" />
@@ -31,7 +31,7 @@ export function Hero({ onPrimary, onSecondary }) {
         />
 
         <Stack direction="row" gap={2} justify="center" wrap style={{ marginTop: 8 }}>
-          <Badge tone="accent" dot>71 components</Badge>
+          <Badge tone="accent" dot>76 components</Badge>
           <Badge tone="success" dot>Light + dark</Badge>
           <Badge tone="neutral" dot>OKLCH tokens</Badge>
           <Badge tone="warning" dot>Self-hosted fonts</Badge>

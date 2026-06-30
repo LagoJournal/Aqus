@@ -1,6 +1,6 @@
 # Aqus
 
-Retro-Aero × Modern React component library. Glass and gloss on structural chrome (nav, modals, cards); flat and clean everywhere else. 71 components, full TypeScript types, CSS design tokens, self-hosted fonts.
+Retro-Aero × Modern React component library. Glass and gloss on structural chrome (nav, modals, cards); flat and clean everywhere else. 76 components + 5 pure-SVG charts, full TypeScript types, CSS design tokens, self-hosted fonts.
 
 **Aesthetic:** 50/50 Aqua-era depth × modern restraint. Signature element: the liquid bubble — every round element is a slowly-morphing organic blob, never a perfect circle.
 
@@ -103,7 +103,7 @@ Aqus uses [Phosphor Icons](https://phosphoricons.com/) for UI icons:
 
 ## Component library
 
-71 components across 8 categories:
+76 components across 9 categories:
 
 | Category | Components |
 |----------|-----------|
@@ -115,6 +115,7 @@ Aqus uses [Phosphor Icons](https://phosphoricons.com/) for UI icons:
 | **layout** | Container, Stack, Section, Prose, PageHeader, HeroSection, NavBar, Footer |
 | **content** | StatCard, FeatureCard, FilterBar, TestimonialCard, BlogCard, MediaCard, NotificationItem, Carousel |
 | **brand** | Monogram, Wordmark |
+| **charts** | BarChart, LineChart, DonutChart, Sparkline, ChartLegend (pure SVG, accent-derived palette) |
 
 Each component has a `.d.ts` (TypeScript props contract) and a `.prompt.md` (what/when + example) in `src/components/`.
 

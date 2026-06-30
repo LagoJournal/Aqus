@@ -79,7 +79,7 @@ export function Charts() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: 24, marginBottom: 24 }}>
+        <div className="sc-split" style={{ marginBottom: 24 }}>
           {/* Line chart */}
           <Card variant="resting" style={{ padding: 20 }}>
             <Stack gap={3}>
