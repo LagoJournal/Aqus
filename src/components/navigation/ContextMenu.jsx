@@ -1,5 +1,5 @@
 import React from 'react';
-import { Portal } from '../../internal/floating.jsx';
+import { Portal, Z_FLOATING } from '../../internal/floating.jsx';
 
 /**
  * Aqus — ContextMenu
@@ -44,7 +44,7 @@ export function ContextMenu({
           role="menu"
           ref={ref}
           style={{
-            position: 'fixed', top: pos.y, left: pos.x, zIndex: 200,
+            position: 'fixed', top: pos.y, left: pos.x, zIndex: Z_FLOATING,
             minWidth: 200,
             background: 'var(--glass-surface)',
             WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',

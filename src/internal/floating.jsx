@@ -10,6 +10,16 @@ import { createPortal } from 'react-dom';
  * `fixed` coordinates derived from the trigger's bounding rect.
  */
 
+/**
+ * Z-index tiers (single source of truth):
+ *   content        0–99
+ *   sticky nav     300
+ *   modal backdrop 500   (Dialog, Drawer, LoadingOverlay, CommandPalette)
+ *   floating       600   (Select, Menu, Combobox, Tooltip, …) — ABOVE modals
+ *                        so a dropdown opened inside a Dialog is never hidden.
+ */
+export const Z_FLOATING = 600;
+
 /** Render children into document.body. No-op during SSR. */
 export function Portal({ children }) {
   if (typeof document === 'undefined') return null;
@@ -69,7 +79,7 @@ export function useAnchoredFloating(open, onDismiss) {
  */
 export function placeAround(rect, placement = 'bottom', offset = 6, align = 'start') {
   if (!rect) return { position: 'fixed', visibility: 'hidden', top: -9999, left: -9999 };
-  const base = { position: 'fixed', zIndex: 200 };
+  const base = { position: 'fixed', zIndex: Z_FLOATING };
   switch (placement) {
     case 'top':
       return { ...base, bottom: window.innerHeight - rect.top + offset, ...crossX(rect, align) };

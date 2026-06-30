@@ -896,6 +896,7 @@ function Radio({
     label && /* @__PURE__ */ jsxRuntime.jsx("span", { children: label })
   ] });
 }
+const Z_FLOATING = 600;
 function Portal({ children }) {
   if (typeof document === "undefined") return null;
   return ReactDOM.createPortal(children, document.body);
@@ -935,7 +936,7 @@ function useAnchoredFloating(open, onDismiss) {
 }
 function placeAround(rect, placement = "bottom", offset = 6, align = "start") {
   if (!rect) return { position: "fixed", visibility: "hidden", top: -9999, left: -9999 };
-  const base = { position: "fixed", zIndex: 200 };
+  const base = { position: "fixed", zIndex: Z_FLOATING };
   switch (placement) {
     case "top":
       return { ...base, bottom: window.innerHeight - rect.top + offset, ...crossX(rect, align) };
@@ -1017,7 +1018,7 @@ function Select({
       top: rect.bottom + 6,
       left: rect.left,
       width: rect.width,
-      zIndex: 200,
+      zIndex: Z_FLOATING,
       padding: 6,
       borderRadius: "var(--radius-md)",
       boxSizing: "border-box",
@@ -1155,7 +1156,7 @@ function Combobox({
       top: rect.bottom + 6,
       left: rect.left,
       width: rect.width,
-      zIndex: 200,
+      zIndex: Z_FLOATING,
       boxSizing: "border-box",
       background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -1271,7 +1272,7 @@ function MultiSelect({
       top: rect.bottom + 6,
       left: rect.left,
       width: rect.width,
-      zIndex: 200,
+      zIndex: Z_FLOATING,
       boxSizing: "border-box",
       background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -1601,7 +1602,7 @@ function DatePicker({
       position: "fixed",
       top: rect.bottom + 8,
       left: rect.left,
-      zIndex: 200,
+      zIndex: Z_FLOATING,
       background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -2252,7 +2253,7 @@ function Tooltip({ label, side = "top", children, style = {} }) {
         children,
         show && rect && /* @__PURE__ */ jsxRuntime.jsx(Portal, { children: /* @__PURE__ */ jsxRuntime.jsx("span", { ref: panelRef, role: "tooltip", style: {
           ...placeAround(rect, side, 8, "center"),
-          zIndex: 200,
+          zIndex: Z_FLOATING,
           whiteSpace: "nowrap",
           pointerEvents: "none",
           padding: "6px 10px",
@@ -2277,7 +2278,7 @@ function Popover({
   children,
   placement = "bottom",
   offset = 8,
-  zIndex = 200,
+  zIndex = Z_FLOATING,
   style = {},
   ...rest
 }) {
@@ -2351,7 +2352,7 @@ function Dialog({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 24,
+        padding: "clamp(12px, 4vw, 24px)",
         background: "rgba(20,28,42,0.32)",
         WebkitBackdropFilter: "blur(6px)",
         backdropFilter: "blur(6px)",
@@ -2361,6 +2362,8 @@ function Dialog({
         position: "relative",
         width,
         maxWidth: "100%",
+        maxHeight: "calc(100vh - 24px)",
+        overflowY: "auto",
         background: "var(--glass-surface)",
         WebkitBackdropFilter: "blur(22px) saturate(1.6)",
         backdropFilter: "blur(22px) saturate(1.6)",
@@ -2779,7 +2782,7 @@ function Menu({ trigger, items = [], align = "left", style = {} }) {
     /* @__PURE__ */ jsxRuntime.jsx("span", { ref: anchorRef, onClick: () => setOpen((o) => !o), style: { display: "inline-flex", cursor: "pointer" }, children: trigger }),
     open && rect && /* @__PURE__ */ jsxRuntime.jsx(Portal, { children: /* @__PURE__ */ jsxRuntime.jsx("div", { ref: panelRef, role: "menu", style: {
       ...placeAround(rect, "bottom", 6, align === "right" ? "end" : "start"),
-      zIndex: 200,
+      zIndex: Z_FLOATING,
       minWidth: 180,
       padding: 6,
       borderRadius: "var(--radius-md)",
@@ -2860,7 +2863,7 @@ function ContextMenu({
           position: "fixed",
           top: pos.y,
           left: pos.x,
-          zIndex: 200,
+          zIndex: Z_FLOATING,
           minWidth: 200,
           background: "var(--glass-surface)",
           WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
@@ -3759,7 +3762,9 @@ function NavBar({
       gap: 2,
       padding: 8,
       borderRadius: "var(--radius-lg)",
-      background: "var(--glass-surface)",
+      // Full glass recipe — inner gloss + accent tint over the glass surface,
+      // matching Select / Dialog / the bar itself (not a flat surface).
+      background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)",
       WebkitBackdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       backdropFilter: "blur(var(--glass-blur)) saturate(1.6)",
       border: "1px solid var(--glass-border-light)",
@@ -3831,13 +3836,11 @@ function StatCard({
     /* @__PURE__ */ jsxRuntime.jsx("span", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, top: 0, height: "35%", background: "var(--gloss-card)", pointerEvents: "none" } }),
     /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }, children: [
       /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { flex: 1, minWidth: 0 }, children: [
-        /* @__PURE__ */ jsxRuntime.jsx("div", { style: { fontSize: "var(--text-label)", fontWeight: "var(--weight-medium)", color: "var(--text-muted)", marginBottom: "var(--space-2)" }, children: label }),
-        /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "baseline", gap: 10 }, children: [
-          /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "var(--text-display-lg)", lineHeight: 1, color: "var(--text)" }, children: value }),
-          delta !== void 0 && /* @__PURE__ */ jsxRuntime.jsxs("span", { style: { display: "inline-flex", alignItems: "center", gap: 4, fontSize: "var(--text-label)", fontWeight: "var(--weight-semibold)", color: up ? "var(--success)" : "var(--danger)" }, children: [
-            /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: 7, color: up ? "var(--success)" : "var(--danger)" }),
-            delta
-          ] })
+        /* @__PURE__ */ jsxRuntime.jsx("div", { style: { fontSize: "var(--text-label)", fontWeight: "var(--weight-medium)", color: "var(--text-muted)", marginBottom: "var(--space-2)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }, children: label }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { display: "block", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "var(--text-display-lg)", lineHeight: 1.05, color: "var(--text)", overflowWrap: "anywhere" }, children: value }),
+        delta !== void 0 && /* @__PURE__ */ jsxRuntime.jsxs("span", { style: { display: "inline-flex", alignItems: "center", gap: 5, marginTop: "var(--space-2)", fontSize: "var(--text-label)", fontWeight: "var(--weight-semibold)", color: up ? "var(--success)" : "var(--danger)", whiteSpace: "nowrap" }, children: [
+          /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: 7, color: up ? "var(--success)" : "var(--danger)" }),
+          delta
         ] })
       ] }),
       icon && /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
@@ -4100,7 +4103,12 @@ function MediaCard({
       onMouseEnter: () => setHover(true),
       onMouseLeave: () => setHover(false),
       style: {
-        display: "block",
+        // Flex column + height:100% lets a grid cell stretch the card to the
+        // tallest in its row; children pinned to the bottom stay aligned across
+        // the row even when titles wrap to different line counts.
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
         textDecoration: "none",
         cursor: href || onClick ? "pointer" : "default",
         background: "var(--surface)",
@@ -4115,7 +4123,7 @@ function MediaCard({
       },
       ...rest,
       children: [
-        /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", height: mediaHeight, overflow: "hidden", background: "linear-gradient(145deg, var(--accent-mid), var(--accent))" }, children: [
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", height: mediaHeight, flex: "none", overflow: "hidden", background: "linear-gradient(145deg, var(--accent-mid), var(--accent))" }, children: [
           /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
             position: "absolute",
             inset: 0,
@@ -4128,10 +4136,10 @@ function MediaCard({
           badge && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { position: "absolute", top: 12, left: 12 }, children: badge }),
           overlay && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.18)" }, children: overlay })
         ] }),
-        (title || subtitle || children) && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { padding: "var(--space-4) var(--space-5)" }, children: [
+        (title || subtitle || children) && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { flex: 1, display: "flex", flexDirection: "column", padding: "var(--space-4) var(--space-5)" }, children: [
           title && /* @__PURE__ */ jsxRuntime.jsx("h3", { style: { fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "var(--text-h3)", color: "var(--text)", margin: 0, lineHeight: "var(--leading-snug)" }, children: title }),
           subtitle && /* @__PURE__ */ jsxRuntime.jsx("p", { style: { fontSize: "var(--text-body-sm)", color: "var(--text-muted)", margin: "4px 0 0", lineHeight: "var(--leading-normal)" }, children: subtitle }),
-          children
+          children && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { marginTop: "auto", paddingTop: "var(--space-4)" }, children })
         ] })
       ]
     }

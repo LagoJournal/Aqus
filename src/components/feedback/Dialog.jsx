@@ -29,13 +29,14 @@ export function Dialog({
       onMouseDown={(e) => { if (e.target === e.currentTarget && onClose) onClose(); }}
       style={{
         position: 'fixed', inset: 0, zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: 24, background: 'rgba(20,28,42,0.32)',
+        padding: 'clamp(12px, 4vw, 24px)', background: 'rgba(20,28,42,0.32)',
         WebkitBackdropFilter: 'blur(6px)', backdropFilter: 'blur(6px)',
         animation: 'agus-enter var(--dur-fast) var(--ease-out)',
       }}
     >
       <div role="dialog" aria-modal="true" style={{
         position: 'relative', width, maxWidth: '100%',
+        maxHeight: 'calc(100vh - 24px)', overflowY: 'auto',
         background: 'var(--glass-surface)',
         WebkitBackdropFilter: 'blur(22px) saturate(1.6)', backdropFilter: 'blur(22px) saturate(1.6)',
         border: '1px solid var(--glass-border-light)', borderRadius: 'var(--radius-lg)',

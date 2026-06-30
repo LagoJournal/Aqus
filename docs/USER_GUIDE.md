@@ -420,7 +420,7 @@ import { CodeBlock } from '@agustin/aqus'
 ### Layout
 
 #### NavBar
-Renders the Wordmark automatically. Pass `links`, an `action` node, and `activeHref`.
+Renders the Wordmark automatically. Pass `links`, an `action` node, and `activeHref`. Mobile-first: when the bar gets narrower than `compactAt` (default 720px) the links collapse behind a hamburger that opens a full-glass dropdown; the `action` slot stays inline, so keep it to one or two controls.
 
 ```jsx
 import { NavBar, Button } from '@agustin/aqus'
@@ -428,9 +428,13 @@ import { NavBar, Button } from '@agustin/aqus'
 <NavBar
   links={[{ href: '/projects', label: 'Projects' }, { href: '/blog', label: 'Blog' }]}
   activeHref="/projects"
+  onLinkClick={(l) => navigate(l.href)}
+  compactAt={720}
   action={<Button variant="primary" size="sm">Sign in</Button>}
 />
 ```
+
+> **Floating layer z-index:** dropdowns, menus, selects, tooltips and popovers render at z-index 600 — above the modal tier (Dialog/Drawer at 500) — so a Select opened inside a Dialog is never hidden. Mount your own toast stacks at z-index 9999.
 
 #### HeroSection
 
@@ -480,11 +484,23 @@ import { PageHeader, Button } from '@agustin/aqus'
 ### Content
 
 #### StatCard
+Label, big value, and delta stack vertically, so the delta never wraps or clips regardless of value length. Don't append siblings expecting them to flow inline with the value.
 
 ```jsx
 import { StatCard } from '@agustin/aqus'
 
-<StatCard label="Projects shipped" value="12" delta="+3 this month" />
+<StatCard label="Projects shipped" value="12" delta="+3 this month" up />
+```
+
+#### MediaCard
+Image-first tile. Equal-height flex column: in a grid it stretches to the tallest card in the row and `children` pin to the bottom, so action buttons stay aligned across a row even when titles wrap differently. Put the action button in `children`, not as a sibling below the card.
+
+```jsx
+import { MediaCard, Button, Badge } from '@agustin/aqus'
+
+<MediaCard media={img} mediaHeight={160} title="Mechanical Keyboard" subtitle="$129" badge={<Badge tone="danger" pill>Limited</Badge>}>
+  <Button variant="secondary" size="sm" style={{ width: '100%' }}>Add to cart</Button>
+</MediaCard>
 ```
 
 #### FeatureCard

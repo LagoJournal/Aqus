@@ -127,7 +127,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
-| `NavBar` | Top navigation, glass chrome. Once per page. Renders Wordmark itself. | `links` ({href,label}[]), `action`, `activeHref`, `onLinkClick` | See View Recipes |
+| `NavBar` | Top navigation, glass chrome. Once per page. Renders Wordmark itself. Mobile-first: links auto-collapse behind a hamburger + glass dropdown below `compactAt` px (default 720). The `action` slot stays inline — keep it to 1–2 controls so it fits beside the hamburger on phones. | `links` ({href,label}[]), `action`, `activeHref`, `onLinkClick`, `compactAt` | See View Recipes |
 | `Footer` | Page footer. Renders Wordmark itself. | `columns` ({title,links}[]), `copyright` | `<Footer columns={cols} copyright="© 2026"/>` |
 | `HeroSection` | Landing/portfolio hero. | `eyebrow`, `headline`, `sub`, `cta`, `align` | See View Recipes |
 | `Section` | Page section with rhythm. | `size` (sm/md/lg), `horizon` | `<Section size="lg">…</Section>` |
@@ -140,12 +140,12 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
-| `StatCard` | KPI metric. | `label`, `value`, `delta`, `up` (bool), `icon` | `<StatCard label="Revenue" value="$12k" delta="+18%" up/>` |
+| `StatCard` | KPI metric. Label, big value, and delta stack vertically — delta never wraps or clips no matter how long the value (`$8` or `$204,102`). Don't append your own elements after it expecting inline flow. | `label`, `value`, `delta`, `up` (bool), `icon` | `<StatCard label="Revenue" value="$12k" delta="+18%" up/>` |
 | `FeatureCard` | Marketing highlight. | `icon`, `title`, `description` | `<FeatureCard icon={<i className="ph ph-lightning"/>} title="Fast" description="Ships in ms."/>` |
 | `FilterBar` | Active filter chip row. | `filters` ({label,tone?}[]), `onRemove`, `onClear` | — |
 | `TestimonialCard` | Quote + attribution. | `quote`, `name`, `role`, `avatarSrc`, `avatarInitials` | — |
 | `BlogCard` | Article preview tile. | `title`, `excerpt`, `date`, `readTime`, `tags`, `href`, `featured` | — |
-| `MediaCard` | Image-first card. | `media`, `title`, `subtitle`, `badge`, `href` | — |
+| `MediaCard` | Image-first card (product/gallery tile). Equal-height flex column: in a grid it stretches to the tallest card in the row, and `children` pin to the bottom edge — so a row of cards with different title lengths keeps action buttons aligned. Put the action (e.g. "Add to cart" `Button`) in `children`, never as a sibling below the card. | `media`, `title`, `subtitle`, `badge`, `href`, `children` | `<MediaCard media={img} title="Keyboard" subtitle="$129"><Button style={{width:'100%'}}>Add to cart</Button></MediaCard>` |
 | `NotificationItem` | Notification row. | `title`, `body`, `time`, `unread`, `avatar`/`icon` | — |
 | `Carousel` | Horizontal scroll snap. Arrow navigation smooth-scrolls to item; dots use LiquidBubble (filled, color switches on active). Manual swipe/scroll also advances dots with no flicker. | `children`, `itemWidth`, `gap`, `showArrows`, `showDots` | — |
 
@@ -739,6 +739,83 @@ style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
 | Two-column layout | 2 | `2fr 1fr` — no 3-column content layouts |
 | Form fields inline | 2 max | Only short fields (expiry + CVV). Otherwise stack |
 | NavBar links | 6 max | More → move to Drawer or Tabs |
+
+---
+
+## Layout & visual composition
+
+Layout is decided *before* component choice. A view that uses every right component but spaces them wrong reads as broken. Work in this order: **wireframe → rhythm → hierarchy → component fill.**
+
+### 1. Wireframe first (blocks, not components)
+
+Sketch the page as labelled rectangles before writing JSX. Name each block's job and its width behaviour. Example for a dashboard:
+
+```
+┌─────────────────────────────────────────────┐
+│ NavBar                            (full, sticky)│
+├─────────────────────────────────────────────┤
+│ PageHeader: title + action     (full)         │
+├──────────────┬──────────────┬───────────────┤
+│ StatCard     │ StatCard     │ StatCard  …    │  ← KPI strip (auto-fit, equal)
+├──────────────┴──────────────┴───────────────┤
+│ ┌─────────────────────────┐ ┌─────────────┐ │
+│ │ Primary chart (2fr)     │ │ Side (1fr)  │ │  ← .sc-split, stacks <820px
+│ └─────────────────────────┘ └─────────────┘ │
+└─────────────────────────────────────────────┘
+```
+
+Rules for the wireframe:
+- **One job per block.** A block is a header, a metric strip, a primary surface, or a sidebar — not a mix.
+- **Declare each block's width behaviour** (full / auto-fit / 2fr+1fr / fixed-max) in the sketch. This is where overflow bugs are prevented.
+- **Max one "hero" block per screen** — the single thing the eye should hit first (largest chart, headline, primary metric).
+
+### 2. Rhythm (spacing scale)
+
+Use the spacing scale, never arbitrary px. Consistent gaps are what make a layout read as "designed."
+
+| Context | Gap | Token |
+|---------|-----|-------|
+| Inside a control (icon ↔ label) | 6–8px | `gap={1}`–`gap={2}` |
+| Related items in a card (label ↔ value) | 8–12px | `gap={2}`–`gap={3}` |
+| Between cards in a grid | 16–24px | `gap: 16–24` / `gap={4}`–`gap={5}` |
+| Between major sections | 32–48px | `Stack gap={5}`–`gap={6}` / `Section` |
+
+- **One gap value per axis per container.** Don't mix `gap={2}` and `gap={5}` siblings in one Stack — split into nested Stacks.
+- **Padding ≥ gap.** A card's inner padding (16–24px) should be ≥ the gap between cards, so cards never feel tighter inside than between.
+- **Vertical rhythm > horizontal cramming.** When unsure, stack with breathing room rather than packing a row.
+
+### 3. Visual hierarchy — "eye rules"
+
+The eye is pulled by, in order: **size → weight → colour → position.** Use them deliberately and sparingly.
+
+- **Size:** one dominant element per surface. The big number on a StatCard, the headline in a hero. If everything is big, nothing is.
+- **Weight:** `--weight-extra`/`800` for the one thing that matters; `--weight-medium` for labels; regular for body. Never bold a whole paragraph.
+- **Colour = meaning, not decoration.** Accent marks the primary action / active state. `--success`/`--danger` only for real status. Muted (`--text-muted`) for supporting text. A surface with three accent elements has none.
+- **Position:** top-left is read first (LTR), bottom-right is where the eye exits — put the primary action bottom-right of a dialog, top-right of a header.
+- **Alignment creates calm.** Left-align text blocks; align numbers right in tables; give every item in a row a shared baseline or centre line. Ragged alignment reads as broken even when spacing is correct.
+- **Contrast pairs.** Pair one loud element with quiet neighbours. A featured Card works because the resting cards around it are plain.
+
+### 4. Grid & alignment rules (prevent the common breakages)
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Cards in a row have misaligned buttons | Unequal heights, action placed *after* the card | Equal-height cards (grid `align-items: stretch`, card `height:100%` flex column), action **inside** the card pinned to bottom (`marginTop:auto`) |
+| A sliver of the next card peeks at the edge | Card content min-width exceeds its grid track and overflows | `minWidth: 0` on text children, wrap badge/stat rows, move dense stats to their own row below the header |
+| Long value clips or wraps weirdly | Value + sibling share one baseline row | Stack the secondary element below the value; `whiteSpace: nowrap` on chips/deltas |
+| Table runs off-screen on mobile | Fixed multi-column table in a narrow card | Wrap the table in `overflow-x: auto` |
+| Dropdown hides behind a dialog | Floating layer below modal layer | Library handles this — floating panels are z 600, above the 500 modal tier. Don't hand-set lower z on menus inside dialogs |
+
+### 5. Z-index tiers (don't fight them)
+
+```
+content        0–99
+sticky NavBar  300
+modal backdrop 500   Dialog · Drawer · LoadingOverlay · CommandPalette
+floating       600   Select · Menu · Combobox · Tooltip · Popover · DatePicker
+toast/portal   9999  app-level toast stacks you mount yourself
+```
+
+Menus and selects sit **above** modals on purpose, so a dropdown opened inside a Dialog is never clipped. Mount your own toast stack at `position: fixed; z-index: 9999` and portal it to `document.body`.
 
 ---
 

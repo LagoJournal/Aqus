@@ -6,7 +6,7 @@ import React from 'react';
  * Selected row marked with a small liquid bubble.
  */
 import { LiquidBubble } from '../core/LiquidBubble.jsx';
-import { Portal, useAnchoredFloating } from '../../internal/floating.jsx';
+import { Portal, useAnchoredFloating, Z_FLOATING } from '../../internal/floating.jsx';
 
 export function Select({
   options = [],
@@ -54,7 +54,7 @@ export function Select({
       {open && rect && (
         <Portal>
         <div ref={panelRef} role="listbox" style={{
-          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 200,
+          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: Z_FLOATING,
           padding: 6, borderRadius: 'var(--radius-md)', boxSizing: 'border-box',
           background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
           WebkitBackdropFilter: 'blur(18px) saturate(1.6)', backdropFilter: 'blur(18px) saturate(1.6)',

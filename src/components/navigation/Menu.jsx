@@ -1,5 +1,5 @@
 import React from 'react';
-import { Portal, useAnchoredFloating, placeAround } from '../../internal/floating.jsx';
+import { Portal, useAnchoredFloating, placeAround, Z_FLOATING } from '../../internal/floating.jsx';
 
 /**
  * Aqus — Menu
@@ -16,7 +16,7 @@ export function Menu({ trigger, items = [], align = 'left', style = {} }) {
       {open && rect && (
         <Portal>
         <div ref={panelRef} role="menu" style={{
-          ...placeAround(rect, 'bottom', 6, align === 'right' ? 'end' : 'start'), zIndex: 200, minWidth: 180,
+          ...placeAround(rect, 'bottom', 6, align === 'right' ? 'end' : 'start'), zIndex: Z_FLOATING, minWidth: 180,
           padding: 6, borderRadius: 'var(--radius-md)',
           background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
           WebkitBackdropFilter: 'blur(18px) saturate(1.6)', backdropFilter: 'blur(18px) saturate(1.6)',

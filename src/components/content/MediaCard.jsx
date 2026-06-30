@@ -28,7 +28,11 @@ export function MediaCard({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        display: 'block', textDecoration: 'none', cursor: (href || onClick) ? 'pointer' : 'default',
+        // Flex column + height:100% lets a grid cell stretch the card to the
+        // tallest in its row; children pinned to the bottom stay aligned across
+        // the row even when titles wrap to different line counts.
+        display: 'flex', flexDirection: 'column', height: '100%',
+        textDecoration: 'none', cursor: (href || onClick) ? 'pointer' : 'default',
         background: 'var(--surface)', border: '1px solid var(--border)',
         borderRadius: 'var(--radius-md)', overflow: 'hidden',
         boxShadow: hover ? 'var(--shadow-md)' : 'var(--shadow-xs)',
@@ -40,7 +44,7 @@ export function MediaCard({
       {...rest}
     >
       {/* Media */}
-      <div style={{ position: 'relative', height: mediaHeight, overflow: 'hidden', background: 'linear-gradient(145deg, var(--accent-mid), var(--accent))' }}>
+      <div style={{ position: 'relative', height: mediaHeight, flex: 'none', overflow: 'hidden', background: 'linear-gradient(145deg, var(--accent-mid), var(--accent))' }}>
         <div style={{
           position: 'absolute', inset: 0,
           backgroundImage: typeof media === 'string' ? `url(${media})` : undefined,
@@ -55,12 +59,12 @@ export function MediaCard({
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.18)' }}>{overlay}</div>
         )}
       </div>
-      {/* Content */}
+      {/* Content — grows to fill; children pinned to the bottom edge. */}
       {(title || subtitle || children) && (
-        <div style={{ padding: 'var(--space-4) var(--space-5)' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 'var(--space-4) var(--space-5)' }}>
           {title && <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-h3)', color: 'var(--text)', margin: 0, lineHeight: 'var(--leading-snug)' }}>{title}</h3>}
           {subtitle && <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--text-muted)', margin: '4px 0 0', lineHeight: 'var(--leading-normal)' }}>{subtitle}</p>}
-          {children}
+          {children && <div style={{ marginTop: 'auto', paddingTop: 'var(--space-4)' }}>{children}</div>}
         </div>
       )}
     </Tag>

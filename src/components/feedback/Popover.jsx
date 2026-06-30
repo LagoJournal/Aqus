@@ -1,5 +1,5 @@
 import React from 'react';
-import { Portal, useAnchoredFloating, placeAround } from '../../internal/floating.jsx';
+import { Portal, useAnchoredFloating, placeAround, Z_FLOATING } from '../../internal/floating.jsx';
 
 /**
  * Aqus — Popover
@@ -12,7 +12,7 @@ export function Popover({
   children,
   placement = 'bottom',
   offset = 8,
-  zIndex = 200,
+  zIndex = Z_FLOATING,
   style = {},
   ...rest
 }) {

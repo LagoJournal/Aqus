@@ -149,31 +149,30 @@ export function StorefrontExample() {
                   action={<Button variant="secondary" onClick={() => { setQ(''); setCat('All') }}>Clear filters</Button>}
                 />
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 20 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 20, alignItems: 'stretch' }}>
                   {visible.map(p => (
-                    <div key={p.id}>
-                      <MediaCard
-                        media={
-                          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: `linear-gradient(${p.grad})` }}>
-                            <i className={`ph ${p.icon}`} style={{ fontSize: 52, color: 'rgba(255,255,255,0.85)' }} />
-                          </div>
-                        }
-                        mediaHeight={160}
-                        title={p.name}
-                        subtitle={`$${p.price}`}
-                        badge={p.tag ? <Badge tone={p.tagTone} pill>{p.tag}</Badge> : undefined}
-                        onClick={() => {}}
-                      />
+                    <MediaCard
+                      key={p.id}
+                      media={
+                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: `linear-gradient(${p.grad})` }}>
+                          <i className={`ph ${p.icon}`} style={{ fontSize: 52, color: 'rgba(255,255,255,0.85)' }} />
+                        </div>
+                      }
+                      mediaHeight={160}
+                      title={p.name}
+                      subtitle={`$${p.price}`}
+                      badge={p.tag ? <Badge tone={p.tagTone} pill>{p.tag}</Badge> : undefined}
+                    >
                       <Button
                         variant="secondary"
                         size="sm"
                         icon={<i className="ph ph-shopping-cart-simple" />}
-                        style={{ width: '100%', marginTop: 8 }}
+                        style={{ width: '100%' }}
                         onClick={() => addToCart(p)}
                       >
                         Add to cart
                       </Button>
-                    </div>
+                    </MediaCard>
                   ))}
                 </div>
               )}

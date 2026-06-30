@@ -1,5 +1,5 @@
 import React from 'react';
-import { Portal, useAnchoredFloating, placeAround } from '../../internal/floating.jsx';
+import { Portal, useAnchoredFloating, placeAround, Z_FLOATING } from '../../internal/floating.jsx';
 
 /**
  * Aqus — Tooltip
@@ -20,7 +20,7 @@ export function Tooltip({ label, side = 'top', children, style = {} }) {
       {show && rect && (
         <Portal>
         <span ref={panelRef} role="tooltip" style={{
-          ...placeAround(rect, side, 8, 'center'), zIndex: 200, whiteSpace: 'nowrap', pointerEvents: 'none',
+          ...placeAround(rect, side, 8, 'center'), zIndex: Z_FLOATING, whiteSpace: 'nowrap', pointerEvents: 'none',
           padding: '6px 10px', borderRadius: 'var(--radius-sm)',
           background: 'color-mix(in oklch, var(--ink) 88%, transparent)',
           WebkitBackdropFilter: 'blur(8px)', backdropFilter: 'blur(8px)',

@@ -49,7 +49,9 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 - **One accent in CSS** — override 9 `--accent-*` tokens + `--accent-h` (hue number) in `:root {}`. L: 0.55–0.72, C: 0.12–0.24. No second color. No hex.
 - **Chart colors derive from accent** — set `--accent-h` to the accent hue. Slots 2–8 auto-space at 45° via CSS `calc()`. Never hardcode chart hues.
 - **Mobile-first flag required** — before planning any view, confirm viewport target (mobile / desktop / responsive). If not stated in the prompt, ASK before writing any JSX.
-- **Plan layout before coding** — write grid structure + breakpoint strategy before first JSX line. No fixed pixel column widths. Use `minmax(0, 1fr)` and `auto-fit`. Add `wrap` to every `Stack direction="row"` with 3+ items.
+- **Plan layout before coding** — wireframe blocks → spacing rhythm → visual hierarchy → fill with components. No fixed pixel column widths. Use `minmax(0, 1fr)` and `auto-fit`. Add `wrap` to every `Stack direction="row"` with 3+ items.
+- **Eye rules** — one dominant element per surface (size → weight → colour → position). Equal-height cards in a grid; action buttons go *inside* the card pinned to the bottom, never as a sibling below. `minWidth: 0` on text children to stop overflow slivers. See AGENT_GUIDE "Layout & visual composition".
+- **Z-index** — floating layer (menus, selects, tooltips, popovers) is z 600, above the modal tier (Dialog/Drawer 500); the library handles this, don't hand-lower it.
 - **Glass = structural** — NavBar, Dialog, Drawer, GlassPanel. Not content.
 - **Round = LiquidBubble** — never `border-radius: 50%`.
 - **Tokens, not literals.** Depth is earned.

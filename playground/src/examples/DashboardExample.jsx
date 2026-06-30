@@ -352,19 +352,21 @@ export function DashboardExample() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 20 }}>
                 {TEAM.map((m) => (
                   <Card key={m.name} variant="resting" style={{ padding: 20 }}>
-                    <Stack direction="row" gap={3} align="center" justify="space-between">
-                      <Stack direction="row" gap={3} align="center">
-                        <Avatar name={m.name} size={48} status={m.status} />
-                        <Stack gap={1}>
-                          <strong style={{ fontSize: 'var(--text-body-sm)' }}>{m.name}</strong>
-                          <span className="sc-foot-note">{m.role}</span>
-                          <Stack direction="row" gap={2} align="center" style={{ marginTop: 2 }}>
-                            <Badge tone="neutral" pill><i className="ph ph-rocket-launch" style={{ marginRight: 4 }} />{m.deploys} deploys</Badge>
-                            <Badge tone="neutral" pill><i className="ph ph-git-merge" style={{ marginRight: 4 }} />{m.merged} merged</Badge>
+                    <Stack gap={3}>
+                      <Stack direction="row" gap={3} align="center" justify="space-between">
+                        <Stack direction="row" gap={3} align="center" style={{ minWidth: 0 }}>
+                          <Avatar name={m.name} size={48} status={m.status} />
+                          <Stack gap={0} style={{ minWidth: 0 }}>
+                            <strong style={{ fontSize: 'var(--text-body-sm)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.name}</strong>
+                            <span className="sc-foot-note">{m.role}</span>
                           </Stack>
                         </Stack>
+                        <ProgressCircle value={m.goal} size={48} showValue />
                       </Stack>
-                      <ProgressCircle value={m.goal} size={52} showValue />
+                      <Stack direction="row" gap={2} wrap>
+                        <Badge tone="neutral" pill><i className="ph ph-rocket-launch" style={{ marginRight: 4 }} />{m.deploys} deploys</Badge>
+                        <Badge tone="neutral" pill><i className="ph ph-git-merge" style={{ marginRight: 4 }} />{m.merged} merged</Badge>
+                      </Stack>
                     </Stack>
                   </Card>
                 ))}
