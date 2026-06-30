@@ -46,18 +46,18 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
 | `Button` | Primary action. One `primary` per surface. | `variant` (primary/secondary/ghost/destructive), `size` (sm/md/lg), `pulse`, `icon`, `iconRight` | `<Button variant="primary" pulse>Get started</Button>` |
-| `IconButton` | Icon-only action. | `icon`, `label`, `variant`, `size` | `<IconButton icon={<i className="ph ph-gear"/>} label="Settings"/>` |
+| `IconButton` | Icon-only action. Icon goes in children. | `variant` (ghost/soft/filled), `size`, `label` (required, a11y) | `<IconButton label="Settings"><i className="ph ph-gear"/></IconButton>` |
 | `Card` | Content surface. | `variant` (resting/raised/featured), `interactive`, `onClick` | `<Card interactive onClick={open}>Content</Card>` |
-| `GlassPanel` | Structural chrome ONLY. Nav/modal/drawer. Never content. | `blur`, `style` | `<GlassPanel>Nav chrome</GlassPanel>` |
+| `GlassPanel` | Structural chrome ONLY. Nav/modal/drawer. Never content. | `as`, `radius` (md/lg/xl/pill), `inset` | `<GlassPanel>Nav chrome</GlassPanel>` |
 | `Badge` | Status or count chip. | `tone` (accent/success/warning/danger/neutral) | `<Badge tone="success">Live</Badge>` |
 | `Tag` | Removable metadata label. | `onRemove` | `<Tag onRemove={rm}>React</Tag>` |
 | `Input` | Text field. | `label`, `type`, `value`, `onChange`, `icon`, `error` | `<Input label="Email" type="email" value={v} onChange={set}/>` |
-| `Switch` | Boolean toggle. | `checked`, `onChange`, `label` | `<Switch checked={on} onChange={set} label="Dark mode"/>` |
+| `Switch` | Boolean toggle. `onChange(next: boolean)`. No label prop — pair with your own text. | `checked`, `onChange`, `size` | `<Switch checked={on} onChange={set}/>` |
 | `SegmentedControl` | 2–4 inline exclusive options. Prefer over Tabs for compact choice. | `value`, `onChange`, `options` ({value,label}[]) | `<SegmentedControl value={v} onChange={set} options={[{value:'grid',label:'Grid'},{value:'list',label:'List'}]}/>` |
 | `ToggleGroup` | Multi-select toggles. | `value` (string[]), `onChange`, `options` | `<ToggleGroup value={v} onChange={set} options={opts}/>` |
-| `Spinner` | Loading indicator. | `size`, `tone` | `<Spinner size="md"/>` |
+| `Spinner` | Loading indicator. | `size` (px number), `thickness` | `<Spinner size={20}/>` |
 | `LiquidBubble` | Any circular element. Replaces border-radius:50%. | `size`, `color`, `variant` (filled/outline/spinner) | `<LiquidBubble size={12} color="var(--accent)"/>` |
-| `Kbd` | Keyboard shortcut. | `keys` | `<Kbd keys={['⌘','K']}/>` |
+| `Kbd` / `KbdShortcut` | Single key / key sequence. | `Kbd`: children · `KbdShortcut`: `keys` | `<KbdShortcut keys={['⌘','K']}/>` |
 
 ### Forms
 
@@ -84,72 +84,72 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | `Drawer` | Side panel (settings, detail). | `open`, `onClose`, `title`, `side` (left/right) | `<Drawer open={o} onClose={close} title="Settings" side="right">…</Drawer>` |
 | `Toast` | Floating notification. | `tone`, `title`, `message`, `onClose` | `<Toast tone="success" title="Saved" onClose={dismiss}/>` |
 | `Alert` | Inline contextual message. | `tone`, `title`, `children` | `<Alert tone="warning">Trial ends soon.</Alert>` |
-| `Tooltip` | On-hover hint. Wraps trigger. | `content`, `children` | `<Tooltip content="Delete"><IconButton …/></Tooltip>` |
-| `Popover` | Click-triggered floating panel. | `trigger`, `content`, `open`, `onClose` | — |
+| `Tooltip` | On-hover hint. Wraps trigger. | `label`, `side`, `children` | `<Tooltip label="Delete"><IconButton …/></Tooltip>` |
+| `Popover` | Click-triggered floating panel. Holds interactive content. | `trigger`, `placement`, `children` | `<Popover trigger={<Button>Open</Button>}>…</Popover>` |
 | `Progress` | Linear progress. | `value` (0–100), `label` | `<Progress value={60}/>` |
 | `ProgressCircle` | Circular progress. | `value`, `size` | `<ProgressCircle value={75} size={48}/>` |
-| `Skeleton` | Loading placeholder. | `width`, `height`, `variant` (rect/circle) | `<Skeleton width={200} height={20}/>` |
-| `LoadingOverlay` | Full-surface loading. | `visible`, `message` | `<LoadingOverlay visible={loading}/>` |
+| `Skeleton` | Loading placeholder. | `width`, `height`, `circle` (bool) | `<Skeleton width={200} height={20}/>` |
+| `LoadingOverlay` | Full-surface loading. | `show`, `message`, `fullscreen` | `<LoadingOverlay show={loading}/>` |
 | `EmptyState` | Zero-data prompt. | `icon`, `title`, `description`, `action` | See View Recipes |
-| `Banner` | Top-of-page announcement. | `tone`, `message`, `onDismiss` | `<Banner tone="accent" message="Update available." onDismiss={fn}/>` |
-| `CommandPalette` | ⌘K overlay. | `open`, `onClose`, `items` ({id,label,icon,onSelect}[]) | See View Recipes |
+| `Banner` | Top-of-page announcement. Message is children. | `tone`, `action`, `onClose` | `<Banner tone="accent" onClose={fn}>Update available.</Banner>` |
+| `CommandPalette` | ⌘K overlay. | `open`, `onClose`, `commands` ({id,label,icon,onSelect}[]) | See View Recipes |
 
 ### Navigation
 
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
 | `Tabs` | Section navigation, 3–6 tabs. | `value`, `onChange`, `tabs` ({value,label}[]) | `<Tabs value={t} onChange={set} tabs={tabs}/>` |
-| `Breadcrumb` | Page hierarchy. | `items` ({label,href?}[]) | `<Breadcrumb items={[{label:'Home',href:'/'},{label:'Projects'}]}/>` |
+| `Breadcrumb` | Page hierarchy. | `items` ({label,value?}[]), `onNavigate` | `<Breadcrumb items={[{label:'Home',value:'/'},{label:'Projects'}]}/>` |
 | `Menu` | Dropdown actions. | `trigger`, `items` ({label,icon?,onClick}[]) | — |
-| `ContextMenu` | Right-click menu. | `trigger`, `items` | — |
-| `Accordion` | Collapsible sections. | `items` ({id,label,content}[]) | — |
-| `Pagination` | Page navigation. | `page`, `total`, `perPage`, `onChange` | `<Pagination page={p} total={100} perPage={10} onChange={set}/>` |
-| `Stepper` | Multi-step flow. | `steps` (string[]), `current` (0-indexed) | `<Stepper steps={['Account','Profile','Done']} current={1}/>` |
+| `ContextMenu` | Right-click menu. Wraps children. | `items`, `children` | — |
+| `Accordion` | Collapsible sections. | `items` ({id,title,content}[]) | — |
+| `Pagination` | Page navigation. `total` = page count. | `page`, `total`, `onChange`, `siblings` | `<Pagination page={p} total={10} onChange={set}/>` |
+| `Stepper` | Multi-step flow. | `steps` ({label,description?}[]), `current` (0-indexed) | `<Stepper steps={[{label:'Account'},{label:'Done'}]} current={1}/>` |
 
 ### Data
 
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
-| `Avatar` | User image or initials. | `src`, `name`, `size` (sm/md/lg/xl) | `<Avatar name="AL" size="md"/>` |
+| `Avatar` | User image or initials. | `src`, `name`, `size` (px number), `shape`, `status` | `<Avatar name="AL" size={40}/>` |
 | `Divider` | Visual separator. | `label`, `orientation` | `<Divider label="Or"/>` |
-| `Table` | Tabular data. | `columns` ({key,label}[]), `rows` (object[]) | `<Table columns={cols} rows={data}/>` |
-| `Timeline` | Chronological events. | `items` ({date,title,description}[]) | — |
-| `TreeView` | Hierarchical data. | `items` (nested) | — |
-| `CodeBlock` | Syntax-highlighted code. | `language`, `children` | `<CodeBlock language="tsx">{code}</CodeBlock>` |
-| `DescriptionList` | Key-value metadata. | `items` ({label,value}[]) | `<DescriptionList items={[{label:'Status',value:'Live'}]}/>` |
+| `Table` | Tabular data. | `columns` ({key,label,sortable?,align?}[]), `rows` (object[]) | `<Table columns={cols} rows={data}/>` |
+| `Timeline` | Chronological events. | `items` ({title,description,time,status}[]) | — |
+| `TreeView` | Hierarchical data. | `nodes` (TreeNode[]), `onSelect` | — |
+| `CodeBlock` | Syntax-highlighted code. | `code`, `language`, `showLineNumbers` | `<CodeBlock language="tsx" code={code}/>` |
+| `DescriptionList` | Key-value metadata. | `items` ({term,value}[]), `columns` | `<DescriptionList items={[{term:'Status',value:'Live'}]}/>` |
 
 ### Layout
 
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
-| `NavBar` | Top navigation, glass chrome. Once per page. | `logo`, `nav` ({label,href}[]), `actions` | See View Recipes |
-| `Footer` | Page footer. | `logo`, `links`, `copyright` | `<Footer logo={<Wordmark/>} links={links}/>` |
-| `HeroSection` | Landing/portfolio hero. | `eyebrow`, `title`, `subtitle`, `actions` | See View Recipes |
-| `Section` | Page section with rhythm. | `id`, `style` | `<Section id="features">…</Section>` |
-| `Container` | Max-width centered wrapper. | `size` (sm/md/lg/full) | `<Container size="lg">…</Container>` |
-| `Stack` | Flex column/row with gap. | `gap`, `direction`, `align`, `justify` | `<Stack gap={24} direction="row">…</Stack>` |
-| `PageHeader` | Title + desc + actions row. | `title`, `description`, `actions`, `breadcrumb` | `<PageHeader title="Projects" actions={<Button>New</Button>}/>` |
+| `NavBar` | Top navigation, glass chrome. Once per page. Renders Wordmark itself. | `links` ({href,label}[]), `action`, `activeHref`, `onLinkClick` | See View Recipes |
+| `Footer` | Page footer. Renders Wordmark itself. | `columns` ({title,links}[]), `copyright` | `<Footer columns={cols} copyright="© 2026"/>` |
+| `HeroSection` | Landing/portfolio hero. | `eyebrow`, `headline`, `sub`, `cta`, `align` | See View Recipes |
+| `Section` | Page section with rhythm. | `size` (sm/md/lg), `horizon` | `<Section size="lg">…</Section>` |
+| `Container` | Max-width centered wrapper. | `size` (sm/default/lg/full) | `<Container size="lg">…</Container>` |
+| `Stack` | Flex column/row with gap. `gap` = token index 1–8 or CSS string. | `gap`, `direction`, `align`, `justify`, `wrap` | `<Stack gap={5} direction="row">…</Stack>` |
+| `PageHeader` | Title + subtitle + action row. | `title`, `subtitle`, `eyebrow`, `action` | `<PageHeader title="Projects" action={<Button>New</Button>}/>` |
 | `Prose` | Long-form text. | `children` | `<Prose><h2>About</h2><p>…</p></Prose>` |
 
 ### Content
 
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
-| `StatCard` | KPI metric. | `label`, `value`, `delta`, `icon` | `<StatCard label="Revenue" value="$12k" delta="+18%"/>` |
+| `StatCard` | KPI metric. | `label`, `value`, `delta`, `up` (bool), `icon` | `<StatCard label="Revenue" value="$12k" delta="+18%" up/>` |
 | `FeatureCard` | Marketing highlight. | `icon`, `title`, `description` | `<FeatureCard icon={<i className="ph ph-lightning"/>} title="Fast" description="Ships in ms."/>` |
-| `FilterBar` | Search + filter row. | `filters`, `value`, `onChange` | — |
-| `TestimonialCard` | Quote + attribution. | `quote`, `author`, `role`, `avatar` | — |
-| `BlogCard` | Article preview tile. | `title`, `excerpt`, `date`, `href`, `cover` | — |
-| `MediaCard` | Image/video + caption. | `src`, `alt`, `caption` | — |
-| `NotificationItem` | Notification row. | `title`, `message`, `time`, `read`, `avatar` | — |
-| `Carousel` | Horizontal scroll snap. | `items`, `autoPlay` | — |
+| `FilterBar` | Active filter chip row. | `filters` ({label,tone?}[]), `onRemove`, `onClear` | — |
+| `TestimonialCard` | Quote + attribution. | `quote`, `name`, `role`, `avatarSrc`, `avatarInitials` | — |
+| `BlogCard` | Article preview tile. | `title`, `excerpt`, `date`, `readTime`, `tags`, `href`, `featured` | — |
+| `MediaCard` | Image-first card. | `media`, `title`, `subtitle`, `badge`, `href` | — |
+| `NotificationItem` | Notification row. | `title`, `body`, `time`, `unread`, `avatar`/`icon` | — |
+| `Carousel` | Horizontal scroll snap. | `children`, `itemWidth`, `showArrows`, `showDots` | — |
 
 ### Brand
 
 | Component | When to use | Props |
 |-----------|-------------|-------|
-| `Monogram` | Logo mark. Square contexts. | `size`, `style` |
-| `Wordmark` | Full logo. Nav, footer. | `size` (sm/md/lg), `style` |
+| `Monogram` | Logo mark. Square contexts. | `size` (px number), `letter`, `animate` |
+| `Wordmark` | Full logo. Nav, footer. | `size` (px number), `color`, `animate` |
 
 ---
 
@@ -187,27 +187,27 @@ Sidebar (Drawer or fixed GlassPanel)
 import '@agustin/aqus/styles.css'
 import {
   NavBar, HeroSection, Section, Container, Stack,
-  FeatureCard, Button, Footer, Wordmark, StatCard
+  FeatureCard, Button, Footer, StatCard
 } from '@agustin/aqus'
 
 export function LandingPage() {
   return (
     <>
       <NavBar
-        logo={<Wordmark />}
-        nav={[
-          { label: 'Work', href: '#work' },
-          { label: 'About', href: '#about' },
-          { label: 'Blog', href: '/blog' },
+        links={[
+          { href: '#work', label: 'Work' },
+          { href: '#about', label: 'About' },
+          { href: '/blog', label: 'Blog' },
         ]}
-        actions={<Button variant="primary" size="sm">Get in touch</Button>}
+        activeHref="#work"
+        action={<Button variant="primary" size="sm">Get in touch</Button>}
       />
 
       <HeroSection
         eyebrow="Available for select work"
-        title="Agustin Lago"
-        subtitle="Product engineer and designer building sharp, fast interfaces."
-        actions={<>
+        headline="Agustin Lago"
+        sub="Product engineer and designer building sharp, fast interfaces."
+        cta={<>
           <Button variant="primary" pulse>View work</Button>
           <Button variant="secondary">Read the blog</Button>
         </>}
@@ -233,7 +233,10 @@ export function LandingPage() {
         </Container>
       </Section>
 
-      <Footer logo={<Wordmark size="sm" />} links={[{ label: 'GitHub', href: 'https://github.com/agustinlago' }]} />
+      <Footer
+        columns={[{ title: 'Links', links: [{ label: 'GitHub', href: 'https://github.com/agustinlago' }] }]}
+        copyright="© 2026 Agustin Lago"
+      />
     </>
   )
 }
@@ -247,7 +250,7 @@ import React from 'react'
 import {
   NavBar, PageHeader, Section, Container, Stack,
   Card, StatCard, Table, Badge, Button, SearchInput,
-  Tabs, Avatar, Skeleton, Wordmark
+  Tabs, Avatar, Skeleton
 } from '@agustin/aqus'
 
 export function DashboardView({ user, stats, projects, loading }) {
@@ -257,9 +260,9 @@ export function DashboardView({ user, stats, projects, loading }) {
   return (
     <>
       <NavBar
-        logo={<Wordmark />}
-        nav={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Projects', href: '/projects' }]}
-        actions={<Avatar src={user.avatar} name={user.name} size="sm" />}
+        links={[{ href: '/dashboard', label: 'Dashboard' }, { href: '/projects', label: 'Projects' }]}
+        activeHref="/dashboard"
+        action={<Avatar src={user.avatar} name={user.name} size={34} />}
       />
 
       <main>
@@ -268,8 +271,8 @@ export function DashboardView({ user, stats, projects, loading }) {
             <Stack gap={32}>
               <PageHeader
                 title={`Good morning, ${user.firstName}.`}
-                description="Here's what's happening today."
-                actions={<Button variant="primary" icon={<i className="ph ph-plus" />}>New project</Button>}
+                subtitle="Here's what's happening today."
+                action={<Button variant="primary" icon={<i className="ph ph-plus" />}>New project</Button>}
               />
 
               <Stack direction="row" gap={16}>
@@ -319,7 +322,7 @@ import '@agustin/aqus/styles.css'
 import React from 'react'
 import {
   NavBar, PageHeader, Section, Container, Stack, Card,
-  Input, Textarea, Select, Switch, Button, Divider, Alert, Dialog, Wordmark
+  Input, Textarea, Select, Switch, Button, Divider, Alert, Dialog
 } from '@agustin/aqus'
 
 export function SettingsPage({ user }) {
@@ -334,12 +337,12 @@ export function SettingsPage({ user }) {
 
   return (
     <>
-      <NavBar logo={<Wordmark />} nav={[{ label: 'Dashboard', href: '/dashboard' }]} />
+      <NavBar links={[{ href: '/dashboard', label: 'Dashboard' }]} activeHref="/dashboard" />
       <main>
         <Section>
-          <Container size="md">
+          <Container size="default">
             <Stack gap={32}>
-              <PageHeader title="Settings" description="Manage your account and preferences." />
+              <PageHeader title="Settings" subtitle="Manage your account and preferences." />
               {saved && <Alert tone="success">Changes saved.</Alert>}
 
               <Card>
@@ -356,7 +359,10 @@ export function SettingsPage({ user }) {
                   <h3 style={{ margin: 0, font: 'var(--text-heading-sm)', color: 'var(--text-primary)' }}>Preferences</h3>
                   <Select label="Theme" value={theme} onChange={setTheme}
                     options={[{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }, { value: 'system', label: 'System' }]} />
-                  <Switch checked={notifications} onChange={setNotifications} label="Email notifications" />
+                  <Stack direction="row" align="center" justify="space-between">
+                    <span style={{ font: 'var(--text-body-sm)', color: 'var(--text-primary)' }}>Email notifications</span>
+                    <Switch checked={notifications} onChange={setNotifications} />
+                  </Stack>
                   <Button variant="secondary" onClick={save}>Save preferences</Button>
                 </Stack>
               </Card>
@@ -420,7 +426,7 @@ export function SignInPage({ onSignIn }) {
     <Section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
       <Container size="sm">
         <Stack gap={32} align="center">
-          <Wordmark size="lg" />
+          <Wordmark size={72} />
           <Card style={{ width: '100%', maxWidth: 420 }}>
             <form onSubmit={submit}>
               <Stack gap={20}>
@@ -502,7 +508,7 @@ import { EmptyState, Button } from '@agustin/aqus'
 <div style={{ borderRadius: '50%', width: 12, height: 12, background: 'var(--accent)' }} />
 
 // ✅
-<IconButton icon={<i className="ph ph-plus" />} label="Add" />
+<IconButton label="Add"><i className="ph ph-plus" /></IconButton>
 <Card>Card content</Card>
 <Badge tone="success">Live</Badge>
 <LiquidBubble size={12} color="var(--accent)" />

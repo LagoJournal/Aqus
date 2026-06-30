@@ -124,11 +124,12 @@ import { Input } from '@agustin/aqus'
 ```
 
 #### Switch
+`onChange` is called with the next boolean. No built-in label — pair with your own text.
 
 ```jsx
 import { Switch } from '@agustin/aqus'
 
-<Switch checked={enabled} onChange={setEnabled} label="Notifications" />
+<Switch checked={enabled} onChange={setEnabled} />
 ```
 
 #### SegmentedControl
@@ -249,8 +250,8 @@ import { Alert } from '@agustin/aqus'
 ```jsx
 import { Tooltip } from '@agustin/aqus'
 
-<Tooltip content="⌘K">
-  <IconButton icon={<i className="ph ph-command" />} label="Command palette" />
+<Tooltip label="⌘K">
+  <IconButton label="Command palette"><i className="ph ph-command" /></IconButton>
 </Tooltip>
 ```
 
@@ -270,7 +271,7 @@ import { Drawer } from '@agustin/aqus'
 import { Skeleton } from '@agustin/aqus'
 
 <Skeleton width={200} height={20} />
-<Skeleton variant="circle" size={40} />
+<Skeleton circle height={40} />
 ```
 
 #### EmptyState
@@ -294,7 +295,7 @@ import { CommandPalette } from '@agustin/aqus'
 <CommandPalette
   open={open}
   onClose={() => setOpen(false)}
-  items={[
+  commands={[
     { id: 'new', label: 'New project', icon: <i className="ph ph-plus" />, onSelect: createProject },
     { id: 'settings', label: 'Open settings', icon: <i className="ph ph-gear" />, onSelect: openSettings },
   ]}
@@ -327,15 +328,16 @@ const [tab, setTab] = React.useState('overview')
 ```jsx
 import { Breadcrumb } from '@agustin/aqus'
 
-<Breadcrumb items={[{ label: 'Projects', href: '/projects' }, { label: 'Aqus Studio' }]} />
+<Breadcrumb items={[{ label: 'Projects', value: '/projects' }, { label: 'Aqus Studio' }]} />
 ```
 
 #### Pagination
+`total` is the page count (not row count). `page` is 1-indexed.
 
 ```jsx
 import { Pagination } from '@agustin/aqus'
 
-<Pagination page={page} total={120} perPage={10} onChange={setPage} />
+<Pagination page={page} total={12} onChange={setPage} />
 ```
 
 #### Stepper
@@ -343,7 +345,7 @@ import { Pagination } from '@agustin/aqus'
 ```jsx
 import { Stepper } from '@agustin/aqus'
 
-<Stepper steps={['Account', 'Profile', 'Review']} current={1} />
+<Stepper steps={[{ label: 'Account' }, { label: 'Profile' }, { label: 'Review' }]} current={1} />
 ```
 
 #### Accordion
@@ -352,8 +354,8 @@ import { Stepper } from '@agustin/aqus'
 import { Accordion } from '@agustin/aqus'
 
 <Accordion items={[
-  { id: 'a', label: 'What is Aqus?', content: 'A Retro-Aero design system.' },
-  { id: 'b', label: 'How to install?', content: 'npm install github:agustinlago/aqus#v0.1.0' },
+  { id: 'a', title: 'What is Aqus?', content: 'A Retro-Aero design system.' },
+  { id: 'b', title: 'How to install?', content: 'npm install github:agustinlago/aqus#v0.1.0' },
 ]} />
 ```
 
@@ -366,8 +368,8 @@ import { Accordion } from '@agustin/aqus'
 ```jsx
 import { Avatar } from '@agustin/aqus'
 
-<Avatar src="/avatar.jpg" name="Agustin Lago" size="md" />
-<Avatar name="AL" size="sm" />
+<Avatar src="/avatar.jpg" name="Agustin Lago" size={40} />
+<Avatar name="AL" size={32} status="online" />
 ```
 
 #### Table
@@ -386,7 +388,7 @@ import { Table } from '@agustin/aqus'
 ```jsx
 import { CodeBlock } from '@agustin/aqus'
 
-<CodeBlock language="tsx">{`import { Button } from '@agustin/aqus'`}</CodeBlock>
+<CodeBlock language="tsx" code={`import { Button } from '@agustin/aqus'`} />
 ```
 
 ---
@@ -394,14 +396,15 @@ import { CodeBlock } from '@agustin/aqus'
 ### Layout
 
 #### NavBar
+Renders the Wordmark automatically. Pass `links`, an `action` node, and `activeHref`.
 
 ```jsx
-import { NavBar, Wordmark, Button } from '@agustin/aqus'
+import { NavBar, Button } from '@agustin/aqus'
 
 <NavBar
-  logo={<Wordmark />}
-  nav={[{ label: 'Projects', href: '/projects' }, { label: 'Blog', href: '/blog' }]}
-  actions={<Button variant="primary" size="sm">Sign in</Button>}
+  links={[{ href: '/projects', label: 'Projects' }, { href: '/blog', label: 'Blog' }]}
+  activeHref="/projects"
+  action={<Button variant="primary" size="sm">Sign in</Button>}
 />
 ```
 
@@ -412,9 +415,9 @@ import { HeroSection, Button } from '@agustin/aqus'
 
 <HeroSection
   eyebrow="Available for work"
-  title="Agustin Lago"
-  subtitle="Product engineer and designer."
-  actions={<>
+  headline="Agustin Lago"
+  sub="Product engineer and designer."
+  cta={<>
     <Button variant="primary" pulse>View work</Button>
     <Button variant="secondary">Get in touch</Button>
   </>}
@@ -443,8 +446,8 @@ import { PageHeader, Button } from '@agustin/aqus'
 
 <PageHeader
   title="Projects"
-  description="All your active work."
-  actions={<Button variant="primary" icon={<i className="ph ph-plus" />}>New project</Button>}
+  subtitle="All your active work."
+  action={<Button variant="primary" icon={<i className="ph ph-plus" />}>New project</Button>}
 />
 ```
 
@@ -480,7 +483,7 @@ import { FeatureCard } from '@agustin/aqus'
 import { Monogram, Wordmark } from '@agustin/aqus'
 
 <Monogram size={40} />
-<Wordmark size="md" />
+<Wordmark size={40} />
 ```
 
 ---
