@@ -33,7 +33,7 @@ export function Drawer({
   return (
     <Portal>
     <div aria-hidden={!open} style={{
-      position: 'fixed', inset: 0, zIndex: 1000,
+      position: 'fixed', inset: 0, zIndex: 500,
       pointerEvents: open ? 'auto' : 'none',
     }}>
       {/* Backdrop */}

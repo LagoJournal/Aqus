@@ -20,7 +20,7 @@ export function Tooltip({ label, side = 'top', children, style = {} }) {
       {show && rect && (
         <Portal>
         <span ref={panelRef} role="tooltip" style={{
-          ...placeAround(rect, side, 8, 'center'), zIndex: 1000, whiteSpace: 'nowrap', pointerEvents: 'none',
+          ...placeAround(rect, side, 8, 'center'), zIndex: 200, whiteSpace: 'nowrap', pointerEvents: 'none',
           padding: '6px 10px', borderRadius: 'var(--radius-sm)',
           background: 'color-mix(in oklch, var(--ink) 88%, transparent)',
           WebkitBackdropFilter: 'blur(8px)', backdropFilter: 'blur(8px)',

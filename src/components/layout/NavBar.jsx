@@ -19,7 +19,7 @@ export function NavBar({
   const { Wordmark } = window.AgusDesignSystem_492a6f;
   return (
     <nav style={{
-      position: 'sticky', top: 0, zIndex: 50,
+      position: 'sticky', top: 0, zIndex: 300,
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       gap: 'var(--space-4)', padding: '10px 20px', margin: '12px',
       borderRadius: 'var(--radius-pill)',

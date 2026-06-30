@@ -69,7 +69,7 @@ export function useAnchoredFloating(open, onDismiss) {
  */
 export function placeAround(rect, placement = 'bottom', offset = 6, align = 'start') {
   if (!rect) return { position: 'fixed', visibility: 'hidden', top: -9999, left: -9999 };
-  const base = { position: 'fixed', zIndex: 1000 };
+  const base = { position: 'fixed', zIndex: 200 };
   switch (placement) {
     case 'top':
       return { ...base, bottom: window.innerHeight - rect.top + offset, ...crossX(rect, align) };

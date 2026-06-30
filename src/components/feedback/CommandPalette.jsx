@@ -59,7 +59,7 @@ export function CommandPalette({
       aria-label="Command palette"
       onKeyDown={onKey}
       style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
+        position: 'fixed', inset: 0, zIndex: 500,
         display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
         paddingTop: '14vh',
         background: 'rgba(0,0,0,0.32)',

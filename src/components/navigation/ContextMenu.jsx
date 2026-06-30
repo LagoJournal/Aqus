@@ -44,7 +44,7 @@ export function ContextMenu({
           role="menu"
           ref={ref}
           style={{
-            position: 'fixed', top: pos.y, left: pos.x, zIndex: 1000,
+            position: 'fixed', top: pos.y, left: pos.x, zIndex: 200,
             minWidth: 200,
             background: 'var(--glass-surface)',
             WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',

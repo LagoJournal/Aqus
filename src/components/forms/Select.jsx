@@ -54,7 +54,7 @@ export function Select({
       {open && rect && (
         <Portal>
         <div ref={panelRef} role="listbox" style={{
-          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 1000,
+          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 200,
           padding: 6, borderRadius: 'var(--radius-md)', boxSizing: 'border-box',
           background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
           WebkitBackdropFilter: 'blur(18px) saturate(1.6)', backdropFilter: 'blur(18px) saturate(1.6)',

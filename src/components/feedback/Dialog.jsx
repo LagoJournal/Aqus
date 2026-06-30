@@ -28,7 +28,7 @@ export function Dialog({
     <div
       onMouseDown={(e) => { if (e.target === e.currentTarget && onClose) onClose(); }}
       style={{
-        position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        position: 'fixed', inset: 0, zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 24, background: 'rgba(20,28,42,0.32)',
         WebkitBackdropFilter: 'blur(6px)', backdropFilter: 'blur(6px)',
         animation: 'agus-enter var(--dur-fast) var(--ease-out)',

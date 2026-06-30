@@ -29,7 +29,7 @@ export function Popover({
           ref={panelRef}
           role="dialog"
           style={{
-            ...placeAround(rect, placement, offset, 'center'), zIndex: 1000,
+            ...placeAround(rect, placement, offset, 'center'), zIndex: 200,
             background: 'var(--glass-surface)',
             WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
             backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',

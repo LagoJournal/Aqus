@@ -58,7 +58,7 @@ export function MultiSelect({
       {open && rect && (
         <Portal>
         <div ref={panelRef} style={{
-          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 1000, boxSizing: 'border-box',
+          position: 'fixed', top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 200, boxSizing: 'border-box',
           background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
           WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)', backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
           border: '1px solid var(--glass-border-light)', borderBottomColor: 'var(--glass-border-dark)',
