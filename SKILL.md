@@ -17,7 +17,9 @@ Read `docs/AGENT_GUIDE.md` before composing any view. It contains:
 
 Read `docs/ux-laws.md` for the UX decision layer — 10 Laws of UX (Jakob, Fitts, Hick, Miller, Postel, Peak–End, Aesthetic–Usability, Von Restorff, Tesler, Doherty) translated into concrete Aqus rules: which component to use when, how to stage complexity, where to place emphasis, how to make every interaction feel fast. Required reading for any non-trivial view.
 
-**Workflow:** load AGENT_GUIDE + ux-laws → find matching View Recipe → adapt → output complete JSX → run UX laws checklist.
+Read `docs/voice-rules.md` for the copy/voice layer — three registers (intentive/creative/technical), microcopy patterns for every component state (Button, EmptyState, Toast, Alert, Dialog, Tooltip, forms), universal casing/length/fluff rules, and a copy checklist. Every string in the UI has a rule here.
+
+**Workflow:** load AGENT_GUIDE + ux-laws + voice-rules → find matching View Recipe → adapt → output complete JSX → run UX laws checklist + copy checklist.
 
 ## For design/branding questions
 
@@ -61,4 +63,4 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 - **Compose from primitives** — never re-style raw HTML.
 - **Icons:** Phosphor (`<i class="ph ph-<name>">`) — no emoji in chrome.
 - **Motion:** physics-based springs. Data surfaces: micro-interactions only.
-- **Copy:** sentence case, terse, honest. No emoji. No hype.
+- **Copy & voice** — intentive register by default (verb-led, plain); creative only at peaks (hero/success), backed by a plain line; technical for docs/data (exact numbers, no gloss). Buttons `verb + noun` ≤3 words. Errors: *what → why → fix*. No fluff (`just/simply/seamless/powerful`). Sentence case. No emoji in chrome. Full rules: `docs/voice-rules.md`.

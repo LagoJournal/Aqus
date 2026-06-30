@@ -14,6 +14,8 @@
 
 **UX decision layer:** `docs/ux-laws.md` translates the 10 Laws of UX into concrete Aqus rules — when to use which component, how to stage complexity, how to place emphasis, and how to make every interaction feel fast. Read it alongside this guide for any non-trivial view.
 
+**Voice & copy layer:** `docs/voice-rules.md` covers every word in the product — three registers (intentive/creative/technical), microcopy patterns for every component state, and a copy checklist. Read it before writing any label, headline, empty state, error, or confirmation.
+
 ---
 
 ## Setup boilerplate
@@ -842,6 +844,49 @@ background: 'linear-gradient(...gloss...), var(--accent-glass), var(--surface)'
 // ✅ valid — tint as a gradient (image) layer, opaque color last
 background: 'linear-gradient(...gloss...), linear-gradient(var(--accent-glass), var(--accent-glass)), var(--surface)'
 ```
+
+---
+
+## Copy & voice
+
+Full reference: `docs/voice-rules.md`. Quick rules for every string you write:
+
+**Three registers — pick one per moment:**
+- **Intentive** (default): buttons, labels, confirmations, tooltips, most empty states. Verb-led, plain, calm.
+- **Creative** (peaks only): hero headline, success state, onboarding welcome. Backed by a plain line beneath.
+- **Technical** (docs/data): prop refs, errors, chart labels, changelogs. Exact numbers, no marketing gloss.
+
+**Microcopy patterns:**
+
+| Component / state | Pattern | Example |
+|-------------------|---------|---------|
+| `Button` | `verb + noun`, ≤3 words | "Create project", "Save changes" |
+| Destructive `Button` | name the consequence | "Delete project" not "OK" |
+| `EmptyState` title | situation, ≤5 words | "No projects yet" |
+| `EmptyState` description | one next step, ≤20 words | "Create your first to get started." |
+| `Toast` success | name the specific thing | "Project created" not "Success!" |
+| `Alert`/`Banner` error | what → why → fix | "Couldn't send. You're offline. Reconnect and try again." |
+| `Dialog` confirm | question + plain stakes | "Delete this project? This can't be undone." |
+| `LoadingOverlay` label | present-continuous + ellipsis | "Saving…" |
+| `Tooltip` | add info the UI can't show; never restate the label | ≤1 line |
+| Form label | the noun | "Email" |
+| Form help text | the constraint or why | "We'll only use this to sign you in." |
+
+**Universal rules:**
+- Sentence case everywhere. UPPERCASE only for eyebrow labels and table headers (wide tracking).
+- Second person, present tense, active voice. "You're all set," not "The user has been set up."
+- Delete: `just`, `simply`, `easily`, `seamless`, `powerful`, `leverage`, `unlock`, `elevate`, `supercharge`.
+- No emoji in chrome. No exclamation piles — at most one "!" at a true peak.
+- One term per concept across the whole product (never "project" + "workspace" + "board" for the same thing).
+- Claims concrete: "3 files", "under 400ms" — never "several", "fast", "many".
+
+**Copy checklist (run with the UX checklist):**
+- [ ] Right register (intentive default / creative at peaks / technical for docs)
+- [ ] Second person, present tense, active voice; sentence case
+- [ ] All fluff words cut
+- [ ] Buttons `verb + noun` ≤3 words; errors say *what → why → fix*
+- [ ] Claims are specific numbers; one term per concept
+- [ ] Creative lines backed by a plain supporting line; no emoji in chrome
 
 ---
 
