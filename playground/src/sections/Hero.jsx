@@ -1,30 +1,13 @@
 import React from 'react'
 import {
   Section, Container, HeroSection, Button, Badge, Stack,
-  Monogram, LiquidBubble, Avatar,
+  Monogram, LiquidBubble,
 } from '@agustin/aqus'
 
 export function Hero({ onPrimary, onSecondary }) {
   return (
     <Section id="overview" size="lg" horizon className="anchor">
       <Container>
-        <Stack gap={3} align="center" style={{ marginBottom: 8 }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px 5px 6px',
-            borderRadius: 'var(--radius-pill)',
-            background: 'linear-gradient(to bottom, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), rgba(255,255,255,0.08)',
-            WebkitBackdropFilter: 'blur(24px) saturate(1.8)',
-            backdropFilter: 'blur(24px) saturate(1.8)',
-            border: '1px solid rgba(255,255,255,0.40)',
-            borderBottomColor: 'rgba(0,0,0,0.06)',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)',
-            fontSize: 'var(--text-caption)', color: 'var(--text)',
-          }}>
-            <Avatar name="Agustin Lago" size={22} />
-            By Agustin Lago
-          </span>
-        </Stack>
-
         <HeroSection
           align="center"
           eyebrow="Retro-Aero × Modern · 71 components"
