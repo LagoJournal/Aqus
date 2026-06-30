@@ -2,10 +2,12 @@ import React from 'react'
 import { Section, Container, SegmentedControl, Badge } from '@agustin/aqus'
 import { DashboardExample } from '../examples/DashboardExample.jsx'
 import { ProfileExample } from '../examples/ProfileExample.jsx'
+import { JournalExample } from '../examples/JournalExample.jsx'
 
 const VIEWS = {
   dashboard: { label: 'Dashboard', node: <DashboardExample /> },
   profile:   { label: 'Profile',   node: <ProfileExample /> },
+  journal:   { label: 'Journal',   node: <JournalExample /> },
 }
 
 function darkAccentVars(h) {
