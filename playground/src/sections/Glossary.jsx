@@ -336,6 +336,15 @@ export function Glossary() {
             </div>
           )
         })}
+
+        {query && filteredTotal === 0 && (
+          <EmptyState
+            icon={<i className="ph ph-magnifying-glass" />}
+            title="No components found"
+            description={`Nothing matches "${q.trim()}".`}
+            action={<Button variant="secondary" onClick={() => setQ('')}>Clear search</Button>}
+          />
+        )}
       </Container>
     </Section>
   )
