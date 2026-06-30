@@ -399,7 +399,7 @@ export function DashboardExample() {
             <Divider />
             <Stack gap={3}>
               <strong style={{ fontSize: 'var(--text-body-sm)' }}>Details</strong>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px 16px' }}>
                 {[
                   ['Owner', selected.owner],
                   ['Stack', selected.stack],
