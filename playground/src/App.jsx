@@ -34,6 +34,7 @@ const swatch = (h) => `oklch(0.65 0.20 ${h})`
 const accentTokens = (h, theme) =>
   theme === 'dark'
     ? {
+        '--accent-h': h,
         '--accent': `oklch(0.72 0.19 ${h})`,
         '--accent-hover': `oklch(0.78 0.17 ${h})`,
         '--accent-light': `oklch(0.305 0.055 ${h})`,
@@ -45,6 +46,7 @@ const accentTokens = (h, theme) =>
         '--on-accent': `oklch(0.15 0.02 ${h})`,
       }
     : {
+        '--accent-h': h,
         '--accent': `oklch(0.65 0.20 ${h})`,
         '--accent-hover': `oklch(0.59 0.22 ${h})`,
         '--accent-light': `oklch(0.92 0.07 ${h})`,

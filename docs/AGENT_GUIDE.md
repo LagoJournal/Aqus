@@ -25,6 +25,10 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 ```css
 /* Root CSS — override accent for this project */
 :root {
+  /* Hue number — MUST match the hue used in --accent below.
+     Chart palette (slots 2–8) derives automatically from this via CSS calc(). */
+  --accent-h:      255;
+
   --accent:        oklch(0.60 0.20 255);
   --accent-hover:  oklch(0.64 0.20 255);
   --accent-light:  oklch(0.92 0.06 255);
@@ -661,6 +665,83 @@ import { EmptyState, Button } from '@agustin/aqus'
 
 ---
 
+## Mobile-first design flag
+
+**Before writing any JSX, you must know the viewport target.** If the prompt does not specify, stop and ask:
+
+> "Is this mobile-first, desktop-first, or should it be fully responsive (both)?"
+
+Do not assume. A dashboard built for a wide monitor and a settings page built for a phone require completely different grid decisions. Getting this wrong upfront means broken layouts that can't be patched without rewriting structure.
+
+### Layout planning step (required before coding)
+
+Write a brief layout intent block before the first line of JSX:
+
+```
+Viewport target: responsive (mobile-first → desktop)
+Structure:
+  NavBar (sticky)
+  Section → Container(lg)
+    PageHeader
+    Grid: 4 StatCards — repeat(auto-fit, minmax(180px, 1fr))
+    Grid: main(2fr) + sidebar(1fr) — collapses to 1-col on narrow
+    Table inside Card — horizontal scroll on narrow
+Footer
+Breakpoint strategy:
+  - 4-col stat grid collapses when columns < 180px (auto-fit handles it)
+  - 2-col layout uses minmax(0,1fr) to avoid overflow
+  - Stack direction="row" wrap on all action rows
+```
+
+This takes 30 seconds and prevents every layout bug below.
+
+### Layout rules — never break these
+
+| Rule | Why | Pattern |
+|------|-----|---------|
+| Never fixed pixel column widths | Overflows on narrow viewports | `minmax(0, 1fr)` or `auto-fit` |
+| Always `minmax(0, 1fr)` in grids | `1fr` without `minmax(0,...)` allows child overflow | `gridTemplateColumns: 'repeat(N, minmax(0, 1fr))'` |
+| `wrap` on every `Stack direction="row"` with 3+ items | Items overflow or get squashed | `<Stack direction="row" wrap gap={2}>` |
+| Max 4 columns on desktop, 2 on tablet, 1 on mobile | Overcrowding causes clutter | Use `auto-fit` or explicit media breakpoints |
+| `min-width: 0` on flex/grid children with text | Long text breaks out of containers | `style={{ minWidth: 0 }}` on text-bearing children |
+| No `overflow: hidden` on text containers | Clips content on narrow screens | Only use on media/image wrappers |
+| Charts always inside a `Card` or fixed-width parent | SVG needs bounded width | `<Card style={{ padding: 20 }}><LineChart /></Card>` |
+| Horizontal action rows use `wrap` | Buttons overflow on mobile | `<Stack direction="row" gap={2} wrap>` |
+| Form fields stack vertically | Side-by-side inputs break on mobile | `<Stack gap={3}>` not `direction="row"` (unless explicitly wide) |
+| Two-column layouts use `2fr 1fr` not fixed px | Fixed px sidebar overflows narrow | `gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)'` |
+
+### Responsive grid patterns
+
+```jsx
+// ✅ auto-collapses to 1-col when space runs out
+style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}
+
+// ✅ explicit N-col that won't overflow children
+style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 16 }}
+
+// ✅ two-column with overflow-safe children
+style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: 24 }}
+
+// ❌ fixed pixel columns
+style={{ display: 'grid', gridTemplateColumns: '320px 320px 320px' }}
+
+// ❌ 1fr without minmax — children can overflow
+style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
+```
+
+### Density rules
+
+| Surface | Max cols | Notes |
+|---------|----------|-------|
+| StatCard row | 4 | Use `auto-fit minmax(180px, 1fr)` |
+| Product/media grid | 3 | `auto-fit minmax(220px, 1fr)` |
+| Feature cards | 3 | `auto-fit minmax(200px, 1fr)` |
+| Two-column layout | 2 | `2fr 1fr` — no 3-column content layouts |
+| Form fields inline | 2 max | Only short fields (expiry + CVV). Otherwise stack |
+| NavBar links | 6 max | More → move to Drawer or Tabs |
+
+---
+
 ## Constraints
 
 | Rule | In practice |
@@ -675,6 +756,9 @@ import { EmptyState, Button } from '@agustin/aqus'
 | Motion physics only | No ambient animation on data surfaces. Micro-interactions only |
 | Copy sentence case | "New project" not "New Project" |
 | No emoji in chrome | Phosphor icons only in UI |
+| Chart colors follow accent hue | Set `--accent-h` to the accent hue number. Slots 2–8 auto-derive at 45° steps via CSS `calc()`. Never hardcode chart hues — they must shift with the accent |
+| Mobile target required | State viewport target before writing JSX. Ask if not specified |
+| Plan layout before coding | Write layout intent (grid structure + breakpoint strategy) before first JSX line |
 
 ## Anti-patterns
 
@@ -696,11 +780,13 @@ import { EmptyState, Button } from '@agustin/aqus'
 
 ## Composition process
 
-1. **Identify view type.** Landing / dashboard / settings / auth / detail / form / data table?
-2. **Start from matching View Recipe.** Adapt structure, don't build from scratch.
-3. **List content requirements.** Data, actions, loading states, empty states, errors.
-4. **Map content → components.** Use catalog. Pick the most specific component.
-5. **Apply layout hierarchy.** `NavBar` → `main` → `Section` → `Container` → `Stack`.
-6. **Handle all states.** Loading → Skeleton/LoadingOverlay. Empty → EmptyState. Error → Alert/EmptyState.
-7. **Check constraints.** One primary Button, glass = structural, tokens not literals.
-8. **Output complete component.** Full imports, complete JSX, no stubs.
+1. **Confirm viewport target.** Mobile-first / desktop / responsive. If not stated in the prompt → ask before proceeding.
+2. **Write layout intent.** Grid structure, column counts, breakpoint strategy — before any JSX. 30 seconds now prevents full rewrites later.
+3. **Identify view type.** Landing / dashboard / settings / auth / detail / form / data table?
+4. **Start from matching View Recipe.** Adapt structure, don't build from scratch.
+5. **List content requirements.** Data, actions, loading states, empty states, errors.
+6. **Map content → components.** Use catalog. Pick the most specific component.
+7. **Apply layout hierarchy.** `NavBar` → `main` → `Section` → `Container` → `Stack`.
+8. **Handle all states.** Loading → Skeleton/LoadingOverlay. Empty → EmptyState. Error → Alert/EmptyState.
+9. **Check constraints.** One primary Button, glass = structural, tokens not literals, `--accent-h` set if using charts, no fixed pixel grid columns, `wrap` on row Stacks.
+10. **Output complete component.** Full imports, complete JSX, no stubs.

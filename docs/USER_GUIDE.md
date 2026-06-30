@@ -22,6 +22,7 @@ import '@agustin/aqus/styles.css'
 
 ```css
 :root {
+  --accent-h:      255;              /* hue only — chart palette derives from this */
   --accent:        oklch(0.60 0.20 255);
   --accent-hover:  oklch(0.64 0.20 255);
   --accent-light:  oklch(0.92 0.06 255);
@@ -587,16 +588,37 @@ Props: `data` (number[]), `width`, `height`, `color`.
 
 **CHART_PALETTE** — 8-slot categorical color array. `CHART_PALETTE[0]` = `var(--chart-1)` = `var(--accent)`.
 
-**Chart CSS tokens** (override in `:root` to retheme):
+**Chart color system — accent-derived palette:**
+
+Chart slots 2–8 are derived from `--accent-h` (the accent hue number) using CSS `calc()` at evenly-spaced 45° steps around the hue wheel (360° ÷ 8 = 45°). This guarantees no two series share a hue with the active accent, regardless of which accent is selected.
+
+Set `--accent-h` alongside your 9 `--accent-*` tokens:
 
 ```css
 :root {
-  --chart-1: var(--accent);          /* slot 1 always follows accent */
-  --chart-2: oklch(0.68 0.15 42);   /* amber */
-  --chart-3: oklch(0.64 0.15 155);  /* green */
-  --chart-4: oklch(0.62 0.16 320);  /* magenta */
-  --chart-grid: var(--border);
-  --chart-axis: var(--text-muted);
+  --accent-h: 250;                    /* hue number — must match --accent */
+  --accent:   oklch(0.65 0.20 250);  /* cobalt */
+  /* … other accent tokens … */
+}
+/* Chart slots 2–8 auto-derive: +45°, +90°, +135°, +180°, +225°, +270°, +315° */
+```
+
+If you change the accent at runtime (e.g. via JavaScript), also update `--accent-h`:
+
+```js
+document.documentElement.style.setProperty('--accent-h', hue)
+document.documentElement.style.setProperty('--accent', `oklch(0.65 0.20 ${hue})`)
+// … rest of accent tokens …
+```
+
+Override individual slots to use fixed colors:
+
+```css
+:root {
+  --chart-1: var(--accent);          /* slot 1 always = accent */
+  --chart-3: oklch(0.64 0.15 155);  /* override slot 3 to fixed green */
+  --chart-grid:       var(--border);
+  --chart-axis:       var(--text-muted);
   --chart-tooltip-bg: var(--glass-surface);
 }
 ```

@@ -1,49 +1,69 @@
 /* ============================================================
    Aqus — Data Visualization tokens
    ------------------------------------------------------------
-   A categorical series palette + axis/grid tokens for charts.
+   Categorical palette derived from --accent-h (hue number only).
+   Slots 2–8 are evenly spaced at 45° intervals around the hue
+   wheel (360° ÷ 8 slots = 45° step), so no two series ever share
+   a hue with the brand accent regardless of which accent is active.
 
-   Series colors are a harmonious OKLCH set: consistent lightness
-   (~0.66) and chroma (~0.15), hue-rotated around the wheel and
-   ANCHORED on the brand accent (--chart-1 = the accent itself).
-   Override --chart-1..8 in your own :root to recolor charts.
+   Required: set --accent-h to the same hue you use in --accent.
+   The playground / App.jsx does this automatically; consumer apps
+   must set it alongside the 9 --accent-* tokens in :root.
 
-   Axis / grid / surface tokens adapt to light & dark automatically.
+   Example (cobalt accent, hue 250):
+     :root {
+       --accent-h: 250;
+       --accent:   oklch(0.65 0.20 250);
+       … other accent tokens …
+     }
+
+   Hue-wheel map (example with hue 250):
+     chart-1   0°   250  → accent itself
+     chart-2  45°   295  → violet-magenta
+     chart-3  90°   340  → red-pink
+     chart-4 135°    25  → orange
+     chart-5 180°    70  → yellow-green
+     chart-6 225°   115  → green
+     chart-7 270°   160  → teal
+     chart-8 315°   205  → sky-cyan
    ============================================================ */
 
 :root {
-  /* Categorical series — chart-1 tracks the active accent */
-  --chart-1: var(--accent);                 /* primary = brand accent */
-  --chart-2: oklch(0.68 0.15 42);           /* warm amber   */
-  --chart-3: oklch(0.64 0.15 155);          /* green        */
-  --chart-4: oklch(0.62 0.16 320);          /* magenta      */
-  --chart-5: oklch(0.70 0.13 95);           /* gold         */
-  --chart-6: oklch(0.62 0.15 200);          /* teal-cyan    */
-  --chart-7: oklch(0.58 0.16 12);           /* red-coral    */
-  --chart-8: oklch(0.66 0.12 275);          /* periwinkle   */
+  /* Hue anchor — MUST match the hue in --accent */
+  --accent-h: 250;
+
+  /* Categorical series — evenly spaced 45° steps from accent hue */
+  --chart-1: var(--accent);
+  --chart-2: oklch(0.66 0.15 calc(var(--accent-h) + 45));
+  --chart-3: oklch(0.64 0.15 calc(var(--accent-h) + 90));
+  --chart-4: oklch(0.65 0.15 calc(var(--accent-h) + 135));
+  --chart-5: oklch(0.68 0.14 calc(var(--accent-h) + 180));
+  --chart-6: oklch(0.64 0.15 calc(var(--accent-h) + 225));
+  --chart-7: oklch(0.62 0.16 calc(var(--accent-h) + 270));
+  --chart-8: oklch(0.66 0.13 calc(var(--accent-h) + 315));
 
   /* Chart chrome (adapts via the neutral aliases) */
-  --chart-grid:       var(--border);                 /* gridlines       */
-  --chart-axis:       var(--text-muted);             /* axis labels     */
+  --chart-grid:       var(--border);
+  --chart-axis:       var(--text-muted);
   --chart-axis-line:  color-mix(in oklab, var(--border) 80%, transparent);
-  --chart-surface:    var(--surface);                /* plot background */
-  --chart-track:      color-mix(in oklab, var(--border) 55%, transparent); /* empty bar/ring track */
-  --chart-tooltip-bg: var(--glass-surface);          /* glass tooltip   */
+  --chart-surface:    var(--surface);
+  --chart-track:      color-mix(in oklab, var(--border) 55%, transparent);
+  --chart-tooltip-bg: var(--glass-surface);
 
-  /* Area-fill opacity stops (under line/area charts) */
+  /* Area-fill opacity stops */
   --chart-fill-from: 0.22;
   --chart-fill-to:   0.02;
 }
 
 [data-theme="dark"] {
-  /* Lift series lightness +0.06 so they read on the navy canvas */
-  --chart-2: oklch(0.74 0.15 42);
-  --chart-3: oklch(0.72 0.15 155);
-  --chart-4: oklch(0.70 0.16 320);
-  --chart-5: oklch(0.78 0.13 95);
-  --chart-6: oklch(0.70 0.15 200);
-  --chart-7: oklch(0.66 0.16 12);
-  --chart-8: oklch(0.74 0.12 275);
+  /* Lift series lightness +0.06 for dark canvas readability */
+  --chart-2: oklch(0.72 0.15 calc(var(--accent-h) + 45));
+  --chart-3: oklch(0.70 0.15 calc(var(--accent-h) + 90));
+  --chart-4: oklch(0.71 0.15 calc(var(--accent-h) + 135));
+  --chart-5: oklch(0.74 0.14 calc(var(--accent-h) + 180));
+  --chart-6: oklch(0.70 0.15 calc(var(--accent-h) + 225));
+  --chart-7: oklch(0.68 0.16 calc(var(--accent-h) + 270));
+  --chart-8: oklch(0.72 0.13 calc(var(--accent-h) + 315));
 
   --chart-fill-from: 0.30;
   --chart-fill-to:   0.04;
