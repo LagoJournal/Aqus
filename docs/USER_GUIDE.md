@@ -7,7 +7,7 @@ Aqus is a Retro-Aero × Modern React component library. Glass and gloss live onl
 ## Installation
 
 ```bash
-npm install github:LagoJournal/aqus#v0.1.0
+npm install github:LagoJournal/aqus#v0.2.0
 ```
 
 ## Setup
@@ -378,7 +378,7 @@ import { Accordion } from '@agustin/aqus'
 
 <Accordion items={[
   { id: 'a', title: 'What is Aqus?', content: 'A Retro-Aero design system.' },
-  { id: 'b', title: 'How to install?', content: 'npm install github:LagoJournal/aqus#v0.1.0' },
+  { id: 'b', title: 'How to install?', content: 'npm install github:LagoJournal/aqus#v0.2.0' },
 ]} />
 ```
 
@@ -507,6 +507,98 @@ import { Monogram, Wordmark } from '@agustin/aqus'
 
 <Monogram size={40} />
 <Wordmark size={40} />
+```
+
+### Charts
+
+Charts are pure SVG — no external chart library. Tokens come from `charts.css`, which is imported automatically by `@agustin/aqus/styles.css`. Tooltips portal to `document.body` and are never clipped by `overflow:hidden` parents.
+
+```jsx
+import {
+  BarChart, LineChart, DonutChart, Sparkline,
+  ChartLegend, CHART_PALETTE,
+} from '@agustin/aqus'
+```
+
+**BarChart** — grouped or stacked bars.
+
+```jsx
+const data = [
+  { x: 'Q1', web: 400, mobile: 260 },
+  { x: 'Q2', web: 520, mobile: 310 },
+]
+const series = [{ key: 'web', label: 'Web' }, { key: 'mobile', label: 'Mobile' }]
+
+<BarChart data={data} series={series} height={240} />
+<BarChart data={data} series={series} height={240} stacked />
+```
+
+Props: `data`, `series`, `height`, `stacked` (bool), `showGrid` (bool), `showLegend` (bool), `yTicks`, `valueFormat` (fn), `style`.
+
+**LineChart** — time series with optional area fill and smooth Catmull-Rom curves.
+
+```jsx
+const data = [
+  { x: 'Jan', revenue: 12000, costs: 8000 },
+  { x: 'Feb', revenue: 15000, costs: 9000 },
+]
+const series = [{ key: 'revenue', label: 'Revenue' }, { key: 'costs', label: 'Costs' }]
+
+<LineChart data={data} series={series} height={240} area />
+```
+
+Props: `data`, `series`, `height`, `area` (bool), `smooth` (bool), `showGrid`, `showLegend`, `yTicks`, `valueFormat`, `style`.
+
+**DonutChart** — proportional ring. `morph` gently animates the ring outline using the brand liquid shape.
+
+```jsx
+const data = [
+  { label: 'Enterprise', value: 58 },
+  { label: 'Growth',     value: 27 },
+  { label: 'Starter',    value: 15 },
+]
+
+<DonutChart
+  data={data}
+  size={200}
+  thickness={26}
+  centerValue="$82k"
+  centerLabel="ARR"
+  valueFormat={(v) => `${v}%`}
+/>
+```
+
+Props: `data`, `size`, `thickness`, `gap`, `morph` (bool, default true), `centerValue`, `centerLabel`, `showLegend`, `valueFormat`, `style`.
+
+**Sparkline** — tiny inline trend line, no axes. Ideal in table cells, StatCards, or summary rows.
+
+```jsx
+<Sparkline data={[10, 14, 12, 20, 18, 26]} width={120} height={32} />
+<Sparkline data={[...]} width={120} height={32} color="var(--chart-3)" />
+```
+
+Props: `data` (number[]), `width`, `height`, `color`.
+
+**ChartLegend** — standalone legend row. Charts already render their own legend when `showLegend={true}`; use this only in custom multi-chart layouts.
+
+```jsx
+<ChartLegend series={[{ key: 'a', label: 'Series A' }, { key: 'b', label: 'Series B' }]} />
+```
+
+**CHART_PALETTE** — 8-slot categorical color array. `CHART_PALETTE[0]` = `var(--chart-1)` = `var(--accent)`.
+
+**Chart CSS tokens** (override in `:root` to retheme):
+
+```css
+:root {
+  --chart-1: var(--accent);          /* slot 1 always follows accent */
+  --chart-2: oklch(0.68 0.15 42);   /* amber */
+  --chart-3: oklch(0.64 0.15 155);  /* green */
+  --chart-4: oklch(0.62 0.16 320);  /* magenta */
+  --chart-grid: var(--border);
+  --chart-axis: var(--text-muted);
+  --chart-tooltip-bg: var(--glass-surface);
+}
 ```
 
 ---

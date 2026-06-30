@@ -152,6 +152,51 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | `Monogram` | Logo mark. Square contexts. | `size` (px number), `letter`, `animate` |
 | `Wordmark` | Full logo. Nav, footer. | `size` (px number), `color`, `animate` |
 
+### Charts
+
+> `charts.css` tokens are included automatically via `@agustin/aqus/styles.css`. No separate import. Charts are pure SVG — no external chart library dependency.
+
+> **Tooltips:** All chart tooltips portal to `document.body` via `ReactDOM.createPortal`. They are never clipped by `overflow:hidden` parents or trapped by ancestor `transform` properties.
+
+| Component | When to use | Key props | Minimal example |
+|-----------|-------------|-----------|-----------------|
+| `BarChart` | Grouped or stacked bar comparison. `stacked` collapses series into single column. | `data` ({x, …keys}[]), `series` ({key,label,color?}[]), `height`, `stacked`, `showGrid`, `showLegend`, `yTicks`, `valueFormat` | `<BarChart data={data} series={[{key:'v',label:'Value'}]} height={240}/>` |
+| `LineChart` | Time-series or trend. `area` adds gradient fill beneath line. Smooth Catmull-Rom curves. Animated liquid blob at each series' latest point. | `data` ({x, …keys}[]), `series` ({key,label,color?}[]), `height`, `area`, `smooth`, `showGrid`, `showLegend`, `valueFormat` | `<LineChart data={data} series={series} height={240} area/>` |
+| `DonutChart` | Proportional ring. `morph` animates ring shape via `agus-liquid`. Hover highlights segment + shows tooltip. | `data` ({label,value,color?}[]), `size`, `thickness`, `gap`, `morph`, `centerValue`, `centerLabel`, `showLegend`, `valueFormat` | `<DonutChart data={data} size={200} centerValue="$12k" centerLabel="revenue"/>` |
+| `Sparkline` | Tiny inline trend — no axes, no labels. For table cells, StatCards, summary rows. | `data` (number[]), `width`, `height`, `color` | `<Sparkline data={[10,18,14,24,30]} width={120} height={32}/>` |
+| `ChartLegend` | Standalone legend row. Charts render their own legend when `showLegend` is true — use this only when composing a custom layout with multiple charts sharing one legend. | `series` ({key,label,color?}[]) | `<ChartLegend series={series}/>` |
+
+**`CHART_PALETTE`** — exported array of 8 OKLCH color strings keyed to `--chart-1` through `--chart-8`. `--chart-1` always resolves to `--accent`. Use it when you need to manually match a chart's colors in custom UI:
+
+```jsx
+import { CHART_PALETTE } from '@agustin/aqus'
+// CHART_PALETTE[0] === 'var(--chart-1)' (accent)
+```
+
+**Data shape:**
+
+```js
+// BarChart / LineChart — row per x-tick, one key per series
+const data = [
+  { x: 'Jan', revenue: 12000, costs: 8000 },
+  { x: 'Feb', revenue: 15000, costs: 9000 },
+]
+const series = [
+  { key: 'revenue', label: 'Revenue' },
+  { key: 'costs',   label: 'Costs', color: 'var(--chart-3)' },
+]
+
+// DonutChart — flat segments
+const data = [
+  { label: 'US', value: 52 },
+  { label: 'EU', value: 30 },
+  { label: 'APAC', value: 18 },
+]
+
+// Sparkline — raw numbers, newest last
+const data = [10, 14, 12, 20, 18, 26]
+```
+
 ---
 
 ## Page anatomy
@@ -451,6 +496,138 @@ export function SignInPage({ onSignIn }) {
         </Stack>
       </Container>
     </Section>
+  )
+}
+```
+
+### Analytics / Charts View
+
+```jsx
+import '@agustin/aqus/styles.css'
+import React from 'react'
+import {
+  NavBar, Section, Container, Stack, Card, StatCard,
+  Divider, Badge, SegmentedControl,
+  LineChart, BarChart, DonutChart, Sparkline,
+} from '@agustin/aqus'
+
+const TREND = [
+  { x: 'Jan', arr: 42000, churn: 3200 },
+  { x: 'Feb', arr: 48000, churn: 2900 },
+  { x: 'Mar', arr: 53000, churn: 3100 },
+  { x: 'Apr', arr: 61000, churn: 2700 },
+  { x: 'May', arr: 70000, churn: 2400 },
+  { x: 'Jun', arr: 82000, churn: 2100 },
+]
+const TREND_SERIES = [
+  { key: 'arr', label: 'ARR' },
+  { key: 'churn', label: 'Churn' },
+]
+
+const CHANNELS = [
+  { x: 'Q1', organic: 400, paid: 260, referral: 140 },
+  { x: 'Q2', organic: 520, paid: 310, referral: 180 },
+  { x: 'Q3', organic: 480, paid: 280, referral: 220 },
+  { x: 'Q4', organic: 640, paid: 360, referral: 260 },
+]
+const CHANNEL_SERIES = [
+  { key: 'organic', label: 'Organic' },
+  { key: 'paid',    label: 'Paid' },
+  { key: 'referral',label: 'Referral' },
+]
+
+const REVENUE_MIX = [
+  { label: 'Enterprise', value: 58 },
+  { label: 'Growth',     value: 27 },
+  { label: 'Starter',    value: 15 },
+]
+
+export function AnalyticsView() {
+  const [barMode, setBarMode] = React.useState('grouped')
+
+  return (
+    <>
+      <NavBar
+        links={[{ href: '/dashboard', label: 'Dashboard' }, { href: '/analytics', label: 'Analytics' }]}
+        activeHref="/analytics"
+      />
+      <Section>
+        <Container>
+          <Stack gap={5}>
+
+            {/* KPI row with sparklines */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+              {[
+                { label: 'ARR', value: '$82k', delta: '+18%', up: true, spark: [42,48,53,61,70,82] },
+                { label: 'MRR', value: '$6.8k', delta: '+12%', up: true, spark: [5.2,5.6,5.9,6.1,6.4,6.8] },
+                { label: 'Churn', value: '2.1%', delta: '-0.3%', up: true, spark: [3.2,2.9,3.1,2.7,2.4,2.1] },
+                { label: 'NPS', value: '68', delta: '+5', up: true, spark: [52,55,58,61,64,68] },
+              ].map((k) => (
+                <Card key={k.label} variant="resting" style={{ padding: 16 }}>
+                  <Stack gap={2}>
+                    <StatCard label={k.label} value={k.value} delta={k.delta} up={k.up} />
+                    <Sparkline data={k.spark} width="100%" height={28} />
+                  </Stack>
+                </Card>
+              ))}
+            </div>
+
+            {/* Revenue trend + mix */}
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
+              <Card variant="resting" style={{ padding: 20 }}>
+                <Stack gap={3}>
+                  <Stack direction="row" justify="space-between" align="center">
+                    <strong>ARR vs churn</strong>
+                    <Badge tone="success" dot>Live</Badge>
+                  </Stack>
+                  <Divider />
+                  <LineChart data={TREND} series={TREND_SERIES} height={220} area valueFormat={(v) => `$${(v/1000).toFixed(0)}k`} />
+                </Stack>
+              </Card>
+
+              <Card variant="resting" style={{ padding: 20 }}>
+                <Stack gap={3}>
+                  <strong>Revenue mix</strong>
+                  <Divider />
+                  <DonutChart
+                    data={REVENUE_MIX}
+                    size={160}
+                    thickness={22}
+                    centerValue="$82k"
+                    centerLabel="ARR"
+                    valueFormat={(v) => `${v}%`}
+                  />
+                </Stack>
+              </Card>
+            </div>
+
+            {/* Acquisition by channel */}
+            <Card variant="resting" style={{ padding: 20 }}>
+              <Stack gap={3}>
+                <Stack direction="row" justify="space-between" align="center">
+                  <strong>Acquisition by channel</strong>
+                  <SegmentedControl
+                    size="sm"
+                    value={barMode}
+                    onChange={setBarMode}
+                    options={[{ value: 'grouped', label: 'Grouped' }, { value: 'stacked', label: 'Stacked' }]}
+                  />
+                </Stack>
+                <Divider />
+                <BarChart
+                  data={CHANNELS}
+                  series={CHANNEL_SERIES}
+                  height={220}
+                  stacked={barMode === 'stacked'}
+                  valueFormat={(v) => `${v}`}
+                />
+              </Stack>
+            </Card>
+
+          </Stack>
+        </Container>
+      </Section>
+    </>
   )
 }
 ```
