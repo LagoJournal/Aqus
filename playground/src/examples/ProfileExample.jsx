@@ -2,12 +2,20 @@ import React from 'react'
 import {
   NavBar, Container, Section, Stack, Button, Card, Avatar, Badge, Tag,
   Tabs, DescriptionList, Timeline, StatCard, Switch, Divider, ProgressCircle,
-  Wordmark, IconButton,
+  IconButton, MediaCard, Progress, Stepper,
 } from '@agustin/aqus'
+
+const SKILLS = [
+  { label: 'React', value: 95 },
+  { label: 'Design systems', value: 88 },
+  { label: 'OKLCH / color', value: 76 },
+  { label: 'Motion', value: 64 },
+]
 
 export function ProfileExample() {
   const [tab, setTab] = React.useState('overview')
   const [pub, setPub] = React.useState(true)
+  const [mentions, setMentions] = React.useState(false)
 
   return (
     <div>
@@ -28,11 +36,12 @@ export function ProfileExample() {
             <Card variant="featured" style={{ padding: 28 }}>
               <Stack direction="row" gap={4} align="center" wrap justify="space-between">
                 <Stack direction="row" gap={4} align="center" wrap>
-                  <Avatar name="Agustin Lago" size={84} status="online" />
+                  <Avatar name="Agustin Lago" size={88} status="online" />
                   <Stack gap={2}>
                     <Stack direction="row" gap={2} align="center" wrap>
                       <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: 'var(--text-h2)', fontWeight: 'var(--weight-extra)' }}>Agustin Lago</h2>
                       <Badge tone="accent" dot>Pro</Badge>
+                      <Badge tone="success" pill>Verified</Badge>
                     </Stack>
                     <span className="sc-item-desc">Product engineer & designer · Buenos Aires</span>
                     <Stack direction="row" gap={2} wrap>
@@ -67,10 +76,32 @@ export function ProfileExample() {
                   <Stack gap={3} align="center">
                     <strong style={{ alignSelf: 'flex-start' }}>Profile completion</strong>
                     <ProgressCircle value={86} size={120} showValue label="complete" />
+                    <Divider />
                     <Stack direction="row" gap={3} align="center" justify="space-between" style={{ width: '100%' }}>
                       <span className="sc-item-desc">Public profile</span>
                       <Switch checked={pub} onChange={setPub} />
                     </Stack>
+                    <Stack direction="row" gap={3} align="center" justify="space-between" style={{ width: '100%' }}>
+                      <span className="sc-item-desc">Mention alerts</span>
+                      <Switch checked={mentions} onChange={setMentions} />
+                    </Stack>
+                  </Stack>
+                </Card>
+
+                <Card variant="resting" style={{ padding: 20 }}>
+                  <Stack gap={3}>
+                    <strong>Onboarding</strong>
+                    <Divider />
+                    <Stepper
+                      orientation="vertical"
+                      current={2}
+                      steps={[
+                        { label: 'Create account', description: 'Done' },
+                        { label: 'Set up profile', description: 'Done' },
+                        { label: 'Invite team', description: 'In progress' },
+                        { label: 'Ship first project', description: 'Upcoming' },
+                      ]}
+                    />
                   </Stack>
                 </Card>
               </Stack>
@@ -91,6 +122,21 @@ export function ProfileExample() {
                       <StatCard label="Stars" value="3.4k" delta="+120" up icon={<i className="ph ph-star" />} />
                     </div>
                     <Card variant="resting" style={{ padding: 20 }}>
+                      <Stack gap={3}>
+                        <strong>Skills</strong>
+                        <Divider />
+                        {SKILLS.map((s) => (
+                          <Stack key={s.label} gap={1}>
+                            <Stack direction="row" justify="space-between" align="center">
+                              <span className="sc-item-desc" style={{ color: 'var(--text)' }}>{s.label}</span>
+                              <span className="sc-foot-note">{s.value}%</span>
+                            </Stack>
+                            <Progress value={s.value} height={8} />
+                          </Stack>
+                        ))}
+                      </Stack>
+                    </Card>
+                    <Card variant="resting" style={{ padding: 20 }}>
                       <Stack gap={2}>
                         <strong>About</strong>
                         <Divider />
@@ -109,21 +155,29 @@ export function ProfileExample() {
                     <Timeline items={[
                       { title: 'Released Aqus v0.1.0', description: 'Tagged the first standalone library build.', time: 'now', status: 'done' },
                       { title: 'Wrote the agent guide', description: 'View composition reference for LLMs.', time: '2h', status: 'done' },
-                      { title: 'Reviewing component props', description: 'Aligning docs with real contracts.', time: '5h', status: 'active' },
+                      { title: 'Aligned docs with real contracts', description: 'Every prop now matches the shipped .d.ts.', time: '5h', status: 'active' },
                       { title: 'Publish to GitHub', description: 'Push main + v0.1.0 tag.', time: '—', status: 'pending' },
                     ]} />
                   </Card>
                 )}
 
                 {tab === 'projects' && (
-                  <div className="sc-grid">
-                    {['Aero Mail', 'Portfolio v3', 'Liquid Docs', 'Vista Kit'].map((p) => (
-                      <Card key={p} variant="raised" interactive style={{ padding: 18 }}>
-                        <Stack gap={2}>
-                          <Stack direction="row" justify="space-between" align="center"><strong>{p}</strong><Badge tone="success" dot>Live</Badge></Stack>
-                          <span className="sc-item-desc">Updated recently · 12 commits this week</span>
-                        </Stack>
-                      </Card>
+                  <div className="sc-grid sc-grid-2">
+                    {[
+                      { t: 'Aero Mail', s: 'Branded email client', icon: 'ph-envelope' },
+                      { t: 'Portfolio v3', s: 'Personal site rebuild', icon: 'ph-browser' },
+                      { t: 'Liquid Docs', s: 'Docs theme kit', icon: 'ph-book-open' },
+                      { t: 'Vista Kit', s: 'Marketing starter', icon: 'ph-layout' },
+                    ].map((p) => (
+                      <MediaCard
+                        key={p.t}
+                        href="#"
+                        media={<div style={{ display: 'grid', placeItems: 'center', height: '100%', background: 'var(--accent-glass)', color: 'var(--accent-text)', fontSize: 40 }}><i className={`ph ${p.icon}`} /></div>}
+                        mediaHeight={96}
+                        badge={<Badge tone="success" dot>Live</Badge>}
+                        title={p.t}
+                        subtitle={p.s}
+                      />
                     ))}
                   </div>
                 )}
