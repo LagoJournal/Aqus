@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   Section, Container, Stack, GlassPanel, Badge, Button, Popover, Menu,
-  IconButton, Card,
+  IconButton, Card, SegmentedControl,
 } from '@agustin/aqus'
 
 const LAYERS = [
@@ -12,6 +12,32 @@ const LAYERS = [
   { token: '--glass-border-light / dark', note: 'Light top/left edge, dark bottom/right edge for a lit-from-above bevel.' },
   { token: '--shadow-glass', note: 'Soft cast shadow plus an inset top highlight line.' },
 ]
+
+const GLASS_LEVELS = {
+  thin: {
+    label: 'Thin',
+    vars: {
+      '--glass-blur': '4px',
+      '--glass-surface': 'rgba(255,255,255,0.18)',
+      '--glass-inner-gloss': 'rgba(255,255,255,0.45)',
+    },
+    note: '4px blur — barely frosted, content behind reads clearly.',
+  },
+  frosted: {
+    label: 'Frosted',
+    vars: {},
+    note: '18px blur — default. Backdrop is tinted but unreadable.',
+  },
+  dense: {
+    label: 'Dense',
+    vars: {
+      '--glass-blur': '48px',
+      '--glass-surface': 'rgba(255,255,255,0.82)',
+      '--glass-inner-gloss': 'rgba(255,255,255,0.28)',
+    },
+    note: '48px blur — near-opaque. Backdrop colour bleeds, detail disappears.',
+  },
+}
 
 // The exact composite every glass chrome surface uses (NavBar, Dialog,
 // Popover, Select/Menu dropdowns). Shown here as one inline recipe.
@@ -27,6 +53,9 @@ const glassRecipe = {
 }
 
 export function Materials() {
+  const [level, setLevel] = React.useState('frosted')
+  const levelCfg = GLASS_LEVELS[level]
+
   return (
     <Section id="materials" size="md" className="anchor">
       <Container>
@@ -38,10 +67,21 @@ export function Materials() {
           top gloss, beveled edges. Here it is on a vivid backdrop so each layer reads.
         </p>
 
+        <Stack direction="row" gap={3} align="center" justify="space-between" style={{ marginBottom: 12 }}>
+          <SegmentedControl
+            value={level}
+            onChange={setLevel}
+            options={Object.entries(GLASS_LEVELS).map(([value, cfg]) => ({ value, label: cfg.label }))}
+          />
+          <span className="sc-item-desc" style={{ maxWidth: 320 }}>{levelCfg.note}</span>
+        </Stack>
+
         {/* Live stage: vivid backdrop so the frost + tint are visible */}
         <div style={{
+          ...levelCfg.vars,
           position: 'relative', borderRadius: 'var(--radius-xl)', overflow: 'hidden',
           padding: '56px 28px', minHeight: 320,
+          transition: '--glass-blur var(--dur-ui)',
           background:
             'radial-gradient(120% 120% at 12% 10%, var(--accent-light), transparent 55%),' +
             'radial-gradient(110% 110% at 88% 88%, var(--warning-light), transparent 55%),' +
