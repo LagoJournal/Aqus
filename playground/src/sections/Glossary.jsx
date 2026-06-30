@@ -280,6 +280,12 @@ export function Glossary() {
   const query = q.trim().toLowerCase()
 
   const total = CATALOG.reduce((n, [, items]) => n + items.length, 0)
+  const filteredTotal = CATALOG.reduce((n, [cat, items]) => n + items.filter(([name, desc]) =>
+    !query ||
+    name.toLowerCase().includes(query) ||
+    cat.toLowerCase().includes(query) ||
+    desc.toLowerCase().includes(query)
+  ).length, 0)
 
   return (
     <Section id="glossary" size="md" className="anchor">
@@ -292,7 +298,7 @@ export function Glossary() {
         </p>
 
         <div style={{ maxWidth: 420, marginBottom: 12 }}>
-          <SearchInput value={q} onChange={setQ} placeholder="Search components…" count={total} />
+          <SearchInput value={q} onChange={setQ} placeholder="Search components…" count={query ? filteredTotal : undefined} />
         </div>
 
         {CATALOG.map(([cat, items]) => {
