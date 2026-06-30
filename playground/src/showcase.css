@@ -138,6 +138,7 @@ body {
   border-radius: var(--radius-lg, 16px);
   overflow: hidden;
   background: var(--bg);
+  isolation: isolate; /* new stacking context — child NavBars (z:300) stay inside; main navwrap wins outside */
 }
 .sc-frame[data-theme] { color: var(--text); }
 .sc-frame-bar {
