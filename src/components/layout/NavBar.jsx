@@ -124,9 +124,11 @@ export function NavBar({
           position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0, zIndex: 320,
           display: 'flex', flexDirection: 'column', gap: 2, padding: 8,
           borderRadius: 'var(--radius-lg)',
-          // Full glass recipe — inner gloss + accent tint over the glass surface,
-          // matching Select / Dialog / the bar itself (not a flat surface).
-          background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
+          // Glass look (inner gloss + accent film) over an OPAQUE surface base.
+          // The panel is nested inside the bar, so its backdrop-filter can't frost
+          // the page behind it — an opaque base keeps the links readable instead of
+          // letting page content bleed through.
+          background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--surface)',
           WebkitBackdropFilter: 'blur(var(--glass-blur-dense)) saturate(1.6)',
           backdropFilter: 'blur(var(--glass-blur-dense)) saturate(1.6)',
           border: '1px solid var(--glass-border-light)',
