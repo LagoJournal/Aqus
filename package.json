@@ -1,0 +1,43 @@
+{
+  "name": "@agustin/aqus",
+  "version": "0.1.0",
+  "description": "Aqus design system — Retro-Aero × Modern React component library",
+  "type": "module",
+  "main": "./dist/aqus.cjs.js",
+  "module": "./dist/aqus.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/aqus.es.js",
+      "require": "./dist/aqus.cjs.js"
+    },
+    "./styles.css": "./styles.css"
+  },
+  "files": [
+    "dist",
+    "src",
+    "styles.css",
+    "assets/fonts",
+    "docs",
+    "SKILL.md",
+    "_adherence.oxlintrc.json"
+  ],
+  "sideEffects": ["*.css"],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "@vitejs/plugin-react": "^4.3.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agustinlago/aqus.git"
+  },
+  "keywords": ["design-system", "react", "aqua", "retro-aero", "component-library"],
+  "license": "MIT"
+}
