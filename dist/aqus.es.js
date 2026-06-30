@@ -3090,7 +3090,7 @@ function Stepper({
     ...style
   }, ...rest, children: steps.map((step, i) => {
     const state = i < current ? "done" : i === current ? "current" : "upcoming";
-    const variant = state === "done" ? "filled" : "outline";
+    const variant = state === "done" ? "filled" : state === "current" ? "spinner" : "outline";
     const isLast = i === steps.length - 1;
     return /* @__PURE__ */ jsxs("div", { style: {
       display: "flex",

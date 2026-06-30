@@ -56,14 +56,14 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | `SegmentedControl` | 2–4 inline exclusive options. Prefer over Tabs for compact choice. | `value`, `onChange`, `options` ({value,label}[]) | `<SegmentedControl value={v} onChange={set} options={[{value:'grid',label:'Grid'},{value:'list',label:'List'}]}/>` |
 | `ToggleGroup` | Multi-select toggles. | `value` (string[]), `onChange`, `options` | `<ToggleGroup value={v} onChange={set} options={opts}/>` |
 | `Spinner` | Loading indicator. | `size` (px number), `thickness` | `<Spinner size={20}/>` |
-| `LiquidBubble` | Any circular element. Replaces border-radius:50%. `spinner` variant = loading/async state only — never use it to indicate "active" or "current". | `size`, `color`, `variant` (filled/outline/spinner) | `<LiquidBubble size={12} color="var(--accent)"/>` |
+| `LiquidBubble` | Any circular element. Replaces border-radius:50%. `spinner` = animated arc for loading/in-progress states. `filled` = selected/done. `outline` = idle/upcoming. | `size`, `color`, `variant` (filled/outline/spinner) | `<LiquidBubble size={12} color="var(--accent)"/>` |
 | `Kbd` / `KbdShortcut` | Single key / key sequence. | `Kbd`: children · `KbdShortcut`: `keys` | `<KbdShortcut keys={['⌘','K']}/>` |
 
 ### Forms
 
 | Component | When to use | Key props | Minimal example |
 |-----------|-------------|-----------|-----------------|
-| `Select` | Dropdown, 5+ options. For 2–4 use SegmentedControl. | `label`, `value`, `onChange`, `options` | `<Select label="Role" value={v} onChange={set} options={opts}/>` |
+| `Select` | Dropdown, 5+ options. For 2–4 use SegmentedControl. Hover state uses `--surface-raised` (dark-mode aware). | `label`, `value`, `onChange`, `options` | `<Select label="Role" value={v} onChange={set} options={opts}/>` |
 | `Combobox` | Searchable dropdown. | `label`, `value`, `onChange`, `options` | — |
 | `MultiSelect` | Multi-choice dropdown. | `label`, `value` (string[]), `onChange`, `options` | — |
 | `Checkbox` | Boolean check. | `checked`, `onChange`, `label` | `<Checkbox checked={ok} onChange={set} label="Agree"/>` |
@@ -101,11 +101,11 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 |-----------|-------------|-----------|-----------------|
 | `Tabs` | Section navigation, 3–6 tabs. | `value`, `onChange`, `tabs` ({value,label}[]) | `<Tabs value={t} onChange={set} tabs={tabs}/>` |
 | `Breadcrumb` | Page hierarchy. | `items` ({label,value?}[]), `onNavigate` | `<Breadcrumb items={[{label:'Home',value:'/'},{label:'Projects'}]}/>` |
-| `Menu` | Dropdown actions. | `trigger`, `items` ({label,icon?,onClick}[]) | — |
+| `Menu` | Dropdown actions. Hover state uses `--surface-raised` (dark-mode aware — adapts automatically in light and dark themes). | `trigger`, `items` ({label,icon?,onClick}[]) | — |
 | `ContextMenu` | Right-click menu. Wraps children. | `items`, `children` | — |
 | `Accordion` | Collapsible sections. | `items` ({id,title,content}[]) | — |
 | `Pagination` | Page navigation. `total` = page count. | `page`, `total`, `onChange`, `siblings` | `<Pagination page={p} total={10} onChange={set}/>` |
-| `Stepper` | Multi-step flow. Visuals are automatic: done=filled bubble, current=outline (pulsing), upcoming=outline (muted). | `steps` ({label,description?}[]), `current` (0-indexed), `orientation` (horizontal/vertical) | `<Stepper steps={[{label:'Account'},{label:'Done'}]} current={1}/>` |
+| `Stepper` | Multi-step flow. Visuals are automatic: done=filled bubble, current=spinner (animated arc = step in progress), upcoming=outline (muted). | `steps` ({label,description?}[]), `current` (0-indexed), `orientation` (horizontal/vertical) | `<Stepper steps={[{label:'Account'},{label:'Done'}]} current={1}/>` |
 
 ### Data
 
@@ -143,7 +143,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | `BlogCard` | Article preview tile. | `title`, `excerpt`, `date`, `readTime`, `tags`, `href`, `featured` | — |
 | `MediaCard` | Image-first card. | `media`, `title`, `subtitle`, `badge`, `href` | — |
 | `NotificationItem` | Notification row. | `title`, `body`, `time`, `unread`, `avatar`/`icon` | — |
-| `Carousel` | Horizontal scroll snap. | `children`, `itemWidth`, `showArrows`, `showDots` | — |
+| `Carousel` | Horizontal scroll snap. Arrow navigation smooth-scrolls to item; dots use LiquidBubble (filled, color switches on active). Manual swipe/scroll also advances dots with no flicker. | `children`, `itemWidth`, `gap`, `showArrows`, `showDots` | — |
 
 ### Brand
 

@@ -25,7 +25,7 @@ export function Stepper({
     }} {...rest}>
       {steps.map((step, i) => {
         const state = i < current ? 'done' : i === current ? 'current' : 'upcoming';
-        const variant = state === 'done' ? 'filled' : 'outline';
+        const variant = state === 'done' ? 'filled' : state === 'current' ? 'spinner' : 'outline';
         const isLast = i === steps.length - 1;
         return (
           <div key={step.id ?? i} style={{
