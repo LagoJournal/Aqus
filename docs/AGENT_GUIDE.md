@@ -56,7 +56,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | `SegmentedControl` | 2–4 inline exclusive options. Prefer over Tabs for compact choice. | `value`, `onChange`, `options` ({value,label}[]) | `<SegmentedControl value={v} onChange={set} options={[{value:'grid',label:'Grid'},{value:'list',label:'List'}]}/>` |
 | `ToggleGroup` | Multi-select toggles. | `value` (string[]), `onChange`, `options` | `<ToggleGroup value={v} onChange={set} options={opts}/>` |
 | `Spinner` | Loading indicator. | `size` (px number), `thickness` | `<Spinner size={20}/>` |
-| `LiquidBubble` | Any circular element. Replaces border-radius:50%. | `size`, `color`, `variant` (filled/outline/spinner) | `<LiquidBubble size={12} color="var(--accent)"/>` |
+| `LiquidBubble` | Any circular element. Replaces border-radius:50%. `spinner` variant = loading/async state only — never use it to indicate "active" or "current". | `size`, `color`, `variant` (filled/outline/spinner) | `<LiquidBubble size={12} color="var(--accent)"/>` |
 | `Kbd` / `KbdShortcut` | Single key / key sequence. | `Kbd`: children · `KbdShortcut`: `keys` | `<KbdShortcut keys={['⌘','K']}/>` |
 
 ### Forms
@@ -105,7 +105,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 | `ContextMenu` | Right-click menu. Wraps children. | `items`, `children` | — |
 | `Accordion` | Collapsible sections. | `items` ({id,title,content}[]) | — |
 | `Pagination` | Page navigation. `total` = page count. | `page`, `total`, `onChange`, `siblings` | `<Pagination page={p} total={10} onChange={set}/>` |
-| `Stepper` | Multi-step flow. | `steps` ({label,description?}[]), `current` (0-indexed) | `<Stepper steps={[{label:'Account'},{label:'Done'}]} current={1}/>` |
+| `Stepper` | Multi-step flow. Visuals are automatic: done=filled bubble, current=outline (pulsing), upcoming=outline (muted). | `steps` ({label,description?}[]), `current` (0-indexed), `orientation` (horizontal/vertical) | `<Stepper steps={[{label:'Account'},{label:'Done'}]} current={1}/>` |
 
 ### Data
 
