@@ -10,12 +10,18 @@ export function Hero({ onPrimary, onSecondary }) {
       <Container>
         <Stack gap={3} align="center" style={{ marginBottom: 8 }}>
           <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 12px 5px 6px',
-            borderRadius: 'var(--radius-pill)', background: 'var(--surface)',
-            border: '1px solid var(--border)', fontSize: 'var(--text-caption)', color: 'var(--text-muted)',
+            display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px 5px 6px',
+            borderRadius: 'var(--radius-pill)',
+            background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
+            WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
+            backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
+            border: '1px solid var(--glass-border-light)',
+            borderBottomColor: 'var(--glass-border-dark)',
+            boxShadow: 'var(--shadow-glass)',
+            fontSize: 'var(--text-caption)', color: 'var(--text)',
           }}>
             <Avatar name="Agustin Lago" size={22} />
-            By Agustin Lago · Software engineer
+            By Agustin Lago
           </span>
         </Stack>
 

@@ -186,7 +186,7 @@ const CATALOG = [
     ['Banner', 'Full-width page-level announcement.', <Banner tone="accent" onClose={() => {}}>New version available.</Banner>],
     ['Progress', 'Linear progress bar.', <Progress value={62} label="Upload" showValue />],
     ['ProgressCircle', 'Circular progress with morphing ring.', <ProgressCircle value={72} size={68} showValue />],
-    ['Skeleton', 'Loading placeholder.', <Stack gap={2}><Skeleton width={180} height={14} /><Skeleton width={120} height={14} /><Skeleton circle width={36} height={36} /></Stack>],
+    ['Skeleton', 'Loading placeholder.', <Stack gap={2} style={{ width: '100%' }}><Stack direction="row" gap={2} align="center"><Skeleton circle width={36} /><Stack gap={1} style={{ flex: 1 }}><Skeleton height={12} /><Skeleton height={10} width="60%" /></Stack></Stack><Skeleton height={12} /><Skeleton height={10} width="75%" /></Stack>],
     ['LoadingOverlay', 'Covers a surface while loading.', <LoadingDemo />],
     ['Toast', 'Floating notification; springs in.', <Toast tone="success" title="Shipped" message="Aero Mail is live." onClose={() => {}} />],
     ['Tooltip', 'On-hover hint that wraps its trigger.', <Tooltip label="Shortcut: ⌘K"><Button variant="secondary">Hover me</Button></Tooltip>],
