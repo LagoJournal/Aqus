@@ -35,7 +35,7 @@ const GLASS_LEVELS = {
       '--glass-surface': 'rgba(255,255,255,0.82)',
       '--glass-inner-gloss': 'rgba(255,255,255,0.28)',
     },
-    note: '48px blur — near-opaque. Backdrop colour bleeds, detail disappears.',
+    note: '48px blur — near-opaque. The NavBar uses this dense level so it reads as solid over scrolling content.',
   },
 }
 
@@ -43,7 +43,7 @@ const GLASS_LEVELS = {
 // Popover, Select/Menu dropdowns). Shown here as one inline recipe.
 const glassRecipe = {
   background:
-    'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass), var(--glass-surface)',
+    'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), linear-gradient(var(--accent-glass), var(--accent-glass)), var(--glass-surface)',
   WebkitBackdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
   backdropFilter: 'blur(var(--glass-blur)) saturate(1.6)',
   border: '1px solid var(--glass-border-light)',
@@ -67,7 +67,7 @@ export function Materials() {
           top gloss, beveled edges. Here it is on a vivid backdrop so each layer reads.
         </p>
 
-        <Stack direction="row" gap={3} align="center" justify="space-between" style={{ marginBottom: 12 }}>
+        <Stack direction="row" gap={3} align="center" justify="space-between" wrap style={{ marginBottom: 12 }}>
           <SegmentedControl
             value={level}
             onChange={setLevel}
