@@ -126,7 +126,7 @@ export function App() {
                   variant="primary"
                   size="sm"
                   icon={<i className="ph ph-github-logo" />}
-                  onClick={() => window.open('https://github.com/LagoJournal/aqus', '_blank')}
+                  onClick={() => window.open('https://github.com/LagoJournal/Aqus', '_blank')}
                 >
                   GitHub
                 </Button>
@@ -162,15 +162,15 @@ export function App() {
             links: [
               { label: 'Components', href: '#glossary' },
               { label: 'Examples', href: '#examples' },
-              { label: 'GitHub', href: 'https://github.com/LagoJournal/aqus' },
+              { label: 'GitHub', href: 'https://github.com/LagoJournal/Aqus' },
             ],
           },
           {
             title: 'Install',
             links: [
-              { label: 'npm package', href: 'https://github.com/LagoJournal/aqus' },
-              { label: 'User guide', href: 'https://github.com/LagoJournal/aqus/blob/main/docs/USER_GUIDE.md' },
-              { label: 'Agent guide', href: 'https://github.com/LagoJournal/aqus/blob/main/docs/AGENT_GUIDE.md' },
+              { label: 'npm package', href: 'https://github.com/LagoJournal/Aqus' },
+              { label: 'User guide', href: 'https://github.com/LagoJournal/Aqus/blob/main/docs/USER_GUIDE.md' },
+              { label: 'Agent guide', href: 'https://github.com/LagoJournal/Aqus/blob/main/docs/AGENT_GUIDE.md' },
             ],
           },
         ]}

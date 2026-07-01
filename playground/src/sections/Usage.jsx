@@ -5,7 +5,7 @@ import {
 
 // ── code snippets ─────────────────────────────────────────────────────────────
 
-const INSTALL = `npm install github:LagoJournal/aqus`
+const INSTALL = `npm install github:LagoJournal/Aqus`
 const INIT    = `npx aqus init`
 
 const INIT_FLOW = `# What init does, step by step:

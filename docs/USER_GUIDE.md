@@ -7,7 +7,7 @@ Aqus is a Retro-Aero × Modern React component library. Glass and gloss live onl
 ## Installation
 
 ```bash
-npm install github:LagoJournal/aqus
+npm install github:LagoJournal/Aqus
 npx aqus init
 ```
 
@@ -386,7 +386,7 @@ import { Accordion } from '@agustin/aqus'
 
 <Accordion items={[
   { id: 'a', title: 'What is Aqus?', content: 'A Retro-Aero design system.' },
-  { id: 'b', title: 'How to install?', content: 'npm install github:LagoJournal/aqus && npx aqus init' },
+  { id: 'b', title: 'How to install?', content: 'npm install github:LagoJournal/Aqus && npx aqus init' },
 ]} />
 ```
 
