@@ -24,7 +24,11 @@
     "lib",
     "styles.css",
     "assets/fonts",
-    "docs",
+    "docs/AGENT_GUIDE.md",
+    "docs/USER_GUIDE.md",
+    "docs/brand-guide.md",
+    "docs/ux-laws.md",
+    "docs/voice-rules.md",
     "SKILL.md",
     "postinstall.js",
     "_adherence.oxlintrc.json"
