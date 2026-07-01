@@ -11,6 +11,12 @@ export interface NavBarProps extends React.HTMLAttributes<HTMLElement> {
   links?: NavLink[];
   /** Trailing node — typically a Button. */
   action?: React.ReactNode;
+  /**
+   * Alternative trailing node rendered below `compactAt` (mobile). Use to swap
+   * a labeled action Button for an icon-only IconButton so it doesn't crowd the
+   * brand + hamburger. Keep the accessible name via `aria-label`.
+   */
+  actionCompact?: React.ReactNode;
   /** href matching the active link. */
   activeHref?: string;
   onLinkClick?: (link: NavLink) => void;

@@ -707,22 +707,26 @@ Structure:
   NavBar (sticky)
   Section → Container(lg)
     PageHeader
-    Grid: 4 StatCards — repeat(auto-fit, minmax(180px, 1fr))
+    Grid: 4 StatCards — repeat(auto-fit, minmax(min(100%, 180px), 1fr))
     Grid: main(2fr) + sidebar(1fr) — collapses to 1-col on narrow
     Table inside Card — horizontal scroll on narrow
 Footer
 Breakpoint strategy:
-  - 4-col stat grid collapses when columns < 180px (auto-fit handles it)
+  - 4-col stat grid collapses when columns < 180px (auto-fit + min(100%,180px))
   - 2-col layout uses minmax(0,1fr) to avoid overflow
   - Stack direction="row" wrap on all action rows
+  - Verify at 320px: zero horizontal scroll
 ```
 
 This takes 30 seconds and prevents every layout bug below.
+
+> **Test at 320px — mandatory.** Before you consider a view done, render it (mentally or in a 320px frame) at the narrowest common phone. If anything causes horizontal scroll, it's a bug. The usual culprits: a `minmax(Npx, 1fr)` min-track wider than the screen (use `min(100%, N)`), and `nowrap` chips/Badges in a flex row (let them wrap).
 
 ### Layout rules — never break these
 
 | Rule | Why | Pattern |
 |------|-----|---------|
+| **A grid's min track must NEVER exceed the container** | `minmax(280px, 1fr)` overflows any viewport narrower than 280px + padding (every small phone). This one pattern is the root of most overflow bugs. | **Always** `minmax(min(100%, N), 1fr)` — never a bare `minmax(Npx, 1fr)` |
 | Never fixed pixel column widths | Overflows on narrow viewports | `minmax(0, 1fr)` or `auto-fit` |
 | Always `minmax(0, 1fr)` in grids | `1fr` without `minmax(0,...)` allows child overflow | `gridTemplateColumns: 'repeat(N, minmax(0, 1fr))'` |
 | `wrap` on every `Stack direction="row"` with 3+ items | Items overflow or get squashed | `<Stack direction="row" wrap gap={2}>` |
@@ -737,8 +741,8 @@ This takes 30 seconds and prevents every layout bug below.
 ### Responsive grid patterns
 
 ```jsx
-// ✅ auto-collapses to 1-col when space runs out
-style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}
+// ✅ auto-collapses to 1-col when space runs out — min track capped at 100%
+style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: 16 }}
 
 // ✅ explicit N-col that won't overflow children
 style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 16 }}
@@ -749,6 +753,9 @@ style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', 
 // ❌ fixed pixel columns
 style={{ display: 'grid', gridTemplateColumns: '320px 320px 320px' }}
 
+// ❌ bare px min track — overflows any viewport < 200px + padding (small phones!)
+style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}
+
 // ❌ 1fr without minmax — children can overflow
 style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
 ```
@@ -757,9 +764,9 @@ style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
 
 | Surface | Max cols | Notes |
 |---------|----------|-------|
-| StatCard row | 4 | Use `auto-fit minmax(180px, 1fr)` |
-| Product/media grid | 3 | `auto-fit minmax(220px, 1fr)` |
-| Feature cards | 3 | `auto-fit minmax(200px, 1fr)` |
+| StatCard row | 4 | Use `auto-fit minmax(min(100%, 180px), 1fr)` |
+| Product/media grid | 3 | `auto-fit minmax(min(100%, 220px), 1fr)` |
+| Feature cards | 3 | `auto-fit minmax(min(100%, 200px), 1fr)` |
 | Two-column layout | 2 | `2fr 1fr` — no 3-column content layouts |
 | Form fields inline | 2 max | Only short fields (expiry + CVV). Otherwise stack |
 | NavBar links | 6 max | More → move to Drawer or Tabs |
@@ -963,7 +970,8 @@ Full reference: `docs/voice-rules.md`. Quick rules for every string you write:
 7. **Apply layout hierarchy.** `NavBar` → `main` → `Section` → `Container` → `Stack`.
 8. **Handle all states.** Loading → Skeleton/LoadingOverlay. Empty → EmptyState. Error → Alert/EmptyState.
 9. **Check constraints.** One primary Button, glass = structural, tokens not literals, `--accent-h` set if using charts, no fixed pixel grid columns, `wrap` on row Stacks.
-10. **Output complete component.** Full imports, complete JSX, no stubs.
+10. **Test at 320px (mandatory).** Render the view at a 320px-wide viewport — the narrowest common phone. Zero horizontal scroll. Every `minmax` min-track is `min(100%, N)`, every chip/Badge row wraps, no fixed-px column. This step catches the overflow bugs before they ship.
+11. **Output complete component.** Full imports, complete JSX, no stubs.
 
 ### UX laws checklist (run before shipping any view)
 
@@ -994,6 +1002,7 @@ Run this after writing JSX, before committing. Four bars, all must pass.
 - [ ] One emphasis per region — one accented/bold element per card or section
 
 ### Interaction & layout
+- [ ] **Tested at 320px** — mentally (or in a 320px-wide frame) render the view at the narrowest phone; **zero horizontal scroll**. Every `minmax` min-track is `min(100%, N)`; every chip/Badge row wraps; no fixed-px column.
 - [ ] Mobile-first — viewport target confirmed; `auto-fit` grid, `wrap` on row Stacks with 3+ items, `minWidth: 0` on text
 - [ ] No rebuilt components — every `Button`, `Input`, `Modal`, `Select` is imported from `@agustin/aqus`, never a styled raw element
 - [ ] One primary `Button` per surface
@@ -1029,4 +1038,6 @@ Run this after writing JSX, before committing. Four bars, all must pass.
 | Ambient data animation | Chart bars breathing/pulsing | Motion on chrome only |
 | Creative register on error | "Oops! Looks like something went wrong 🎉" | Technical register for errors |
 | Fixed pixel columns | `gridTemplateColumns: '300px 300px'` | `minmax(min(100%, 280px), 1fr)` |
+| Fixed-px `minmax` min-track | `repeat(auto-fit, minmax(280px, 1fr))` — overflows every phone < 280px + padding | `repeat(auto-fit, minmax(min(100%, 280px), 1fr))` |
+| Nowrap chip in a flex row | `<Badge>` / chip with `whiteSpace:'nowrap'` in a row → overflows narrow | Let it wrap (Badge wraps by default); `flexWrap:'wrap'` on the row |
 | Circular bubble | `borderRadius: '50%', width:12, height:12` | `<LiquidBubble size={12} />` |

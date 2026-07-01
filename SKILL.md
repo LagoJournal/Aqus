@@ -87,7 +87,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 
 - **Chart colors derive from accent** — set `--accent-h` to the accent hue. Slots 2–8 auto-space at 45° via CSS `calc()`. Never hardcode chart hues.
 - **Mobile-first flag required** — before planning any view, confirm viewport target (mobile / desktop / responsive). If not stated in the prompt, ASK before writing any JSX.
-- **Plan layout before coding** — wireframe blocks → spacing rhythm → visual hierarchy → fill with components. No fixed pixel column widths. Use `minmax(0, 1fr)` and `auto-fit`. Add `wrap` to every `Stack direction="row"` with 3+ items.
+- **Plan layout before coding** — wireframe blocks → spacing rhythm → visual hierarchy → fill with components. No fixed pixel column widths. Use `minmax(0, 1fr)` for explicit N-col; for auto-fit grids the min-track **must** be capped: `repeat(auto-fit, minmax(min(100%, N), 1fr))` — a bare `minmax(Npx, 1fr)` overflows every phone narrower than N. Add `wrap` to every `Stack direction="row"` with 3+ items, and never put `nowrap` chips/Badges in a flex row.
 - **Eye rules** — one dominant element per surface (size → weight → colour → position). Equal-height cards in a grid; action buttons go *inside* the card pinned to the bottom, never as a sibling below. `minWidth: 0` on text children to stop overflow slivers. See AGENT_GUIDE "Layout & visual composition".
 - **UX laws** — one primary action per view (Hick); content chunked 5–9 (Miller); targets ≥ 44px spaced ≥ 8px (Fitts); all four states designed: empty/loading/error/success (Postel); delight at peak and end only (Peak–End); one emphasized element per region (Von Restorff); visible feedback < 400ms (Doherty). Full rules: `docs/ux-laws.md`.
 - **Z-index** — floating layer (menus, selects, tooltips, popovers) is z 600, above the modal tier (Dialog/Drawer 500); the library handles this, don't hand-lower it.
@@ -102,7 +102,7 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 ```
 AQUS BAR
 - Brand:       [✓/✗] tokens not literals  [✓/✗] theme-adaptive  [✓/✗] glass = chrome  [✓/✗] round = LiquidBubble  [✓/✗] one accent  [✓/✗] liquid = shape only  [✓/✗] one emphasis per region
-- Interaction: [✓/✗] mobile-first  [✓/✗] no rebuilt components  [✓/✗] one primary Button  [✓/✗] targets ≥ 44px  [✓/✗] all 4 states covered  [✓/✗] feedback < 400ms
+- Interaction: [✓/✗] mobile-first  [✓/✗] no horizontal scroll at 320px  [✓/✗] no rebuilt components  [✓/✗] one primary Button  [✓/✗] targets ≥ 44px  [✓/✗] all 4 states covered  [✓/✗] feedback < 400ms
 - Voice:       [✓/✗] right register  [✓/✗] sentence case  [✓/✗] fluff cut  [✓/✗] buttons verb+noun  [✓/✗] errors what→why→fix
 - A11y:        [✓/✗] focus ring visible  [✓/✗] destructive named by consequence  [✓/✗] Dialog has label  [✓/✗] color never sole signal
 ```
@@ -126,7 +126,7 @@ PRE-FLIGHT
 ```
 AQUS BAR
 - Brand:       ✓ tokens not literals  ✓ theme-adaptive  ✓ glass = chrome (none used, flat Cards)  ✓ round = LiquidBubble  ✓ one accent  ✓ liquid = shape only  ✓ one emphasis per region
-- Interaction: ✓ mobile-first  ✓ no rebuilt components  ✓ one primary Button  ✓ targets ≥ 44px  ✓ all 4 states covered  ✓ feedback < 400ms
+- Interaction: ✓ mobile-first  ✓ no horizontal scroll at 320px  ✓ no rebuilt components  ✓ one primary Button  ✓ targets ≥ 44px  ✓ all 4 states covered  ✓ feedback < 400ms
 - Voice:       ✓ right register (intentive)  ✓ sentence case  ✓ fluff cut  ✓ buttons verb+noun ("Save profile")  ✓ errors what→why→fix
 - A11y:        ✓ focus ring visible  ✓ destructive named by consequence ("Delete account")  ✓ Dialog has label  ✓ color never sole signal
 ```

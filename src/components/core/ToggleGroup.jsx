@@ -31,7 +31,11 @@ export function ToggleGroup({
 
   return (
     <div role="group" style={{
-      display: 'inline-flex', padding: 3, gap: 3,
+      // maxWidth + flex-wrap so a long row of options wraps instead of
+      // overflowing narrow (320px) viewports. `inline-flex` alone forced a
+      // single non-wrapping row.
+      display: 'inline-flex', flexWrap: 'wrap', maxWidth: '100%',
+      padding: 3, gap: 3,
       background: 'var(--surface)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-pill)', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
       fontFamily: 'var(--font-ui)', ...style,

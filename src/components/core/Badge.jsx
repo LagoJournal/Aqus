@@ -12,6 +12,7 @@ export function Badge({
   pill = false,
   dot = false,
   bubble = true,
+  nowrap = false,
   style = {},
   children,
   ...rest
@@ -34,13 +35,20 @@ export function Badge({
         fontWeight: 'var(--weight-semibold)',
         fontSize: 'var(--text-caption)',
         letterSpacing: 'var(--tracking-wide)',
-        lineHeight: 1,
+        // Wrapping labels need a bit of breathing room between lines.
+        lineHeight: nowrap ? 1 : 1.25,
         padding: '4px 10px',
         color: t.fg,
         background: t.bg,
         borderRadius: pill ? 'var(--radius-pill)' : 'var(--radius-xs)',
         border: tone === 'neutral' ? 'var(--border-hairline) solid var(--border)' : 'none',
-        whiteSpace: 'nowrap',
+        // Wrap by default and never exceed the container. Long labels used to
+        // overflow (nowrap + no max-width) and cause horizontal scroll on
+        // narrow phones. Pass `nowrap` for short status chips that must stay
+        // on one line.
+        maxWidth: '100%',
+        whiteSpace: nowrap ? 'nowrap' : 'normal',
+        overflowWrap: 'anywhere',
         ...style,
       }}
       {...rest}

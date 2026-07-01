@@ -6,6 +6,32 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning: [S
 
 ---
 
+## [0.3.0] — 2026-07-01
+
+Mobile/layout bugfix pass from a real production dashboard integration. The root
+cause of most overflow bugs was a documented grid recipe whose min-track exceeded
+the viewport — fixed at the source (docs the agent reads) and in the components
+that overflowed. Additive — no breaking removals.
+
+### Fixed
+- **`Badge` overflowed its container with long text** — it hardcoded `white-space: nowrap` with no `max-width`, so a long label (e.g. `Evitar sentadilla profunda por ahora`) grew wider than its card and caused horizontal scroll on ~320px phones. Badges now **wrap by default** and are capped at `max-width: 100%`. New `nowrap` prop opts short status chips back into single-line.
+- **`Banner` action was inline-only** — the message/action row now wraps so a cramped action drops below the message on narrow widths. New `stackAction` prop forces the action onto its own full-width row at every width.
+- **`ToggleGroup` overflowed with many options** — the `inline-flex` row couldn't wrap; it now `flex-wrap`s and is capped at `max-width: 100%` so a long row wraps instead of forcing horizontal scroll.
+- **`AGENT_GUIDE` grid recipes overflowed small phones (root cause)** — every `repeat(auto-fit, minmax(Npx, 1fr))` recipe used a fixed-px min-track that overflows any viewport narrower than `N` + padding. All recipes now use `minmax(min(100%, N), 1fr)`.
+
+### Added
+- **`Badge` `nowrap`** — force a single line for short status chips (default false; Badges wrap).
+- **`Banner` `stackAction`** — stack the action below the message at every width (default false; wraps only when cramped).
+- **`NavBar` `actionCompact`** — alternative trailing node rendered below `compactAt`; swap a labeled action Button for an icon-only variant so it doesn't crowd the brand + hamburger on phones. Keep the accessible name via `aria-label`.
+- **Regression test suite** — `vitest` + `jsdom` + Testing Library; `npm test`. Guards each fix (Badge wrap/`nowrap`, Banner stacking, ToggleGroup wrap, NavBar `actionCompact` swap driven by a mocked `ResizeObserver`).
+
+### Docs
+- **New loud rule in `AGENT_GUIDE.md` + `ux-laws.md`:** a grid's min track must never exceed the container — always `minmax(min(100%, N), 1fr)`. Added anti-pattern rows for fixed-px `minmax` min-tracks and `nowrap` chips in flex rows.
+- **Mandatory "test at 320px" step** added to the composition process, the layout-planning block, the Aqus bar (`SKILL.md` + `AGENT_GUIDE.md`), and the ux-laws checklist — confirm zero horizontal scroll at the narrowest phone before shipping.
+- **`ToggleGroup` scope note** — it's for a small fixed set of toolbar actions/view switches; count/tag filters belong in `FilterBar` or `Tag`s.
+
+---
+
 ## [0.2.2] — 2026-07-01
 
 Second bugfix pass from real-world integration feedback. Additive — no breaking removals.

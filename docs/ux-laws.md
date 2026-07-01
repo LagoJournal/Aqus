@@ -280,6 +280,15 @@ A repeatable recipe that satisfies the laws above when composing any screen:
    and the final confirmation; keep the middle calm. *(Peak–End)*
 8. **Verify conventions & reach.** Expected elements in expected places; targets ≥44px,
    well spaced; sub-400ms feedback on every action. *(Jakob, Fitts, Doherty)*
+9. **Test at 320px.** Render the finished view at a 320px-wide viewport — the narrowest
+   common phone — and confirm **zero horizontal scroll**. This is where overflow bugs
+   surface. *(Jakob, Fitts)*
+
+> **A grid's min track must never exceed its container.** `minmax(280px, 1fr)` overflows
+> any viewport narrower than 280px + padding — i.e. every small phone. **Always** cap it:
+> `repeat(auto-fit, minmax(min(100%, 280px), 1fr))`. Likewise, never place `nowrap` chips
+> or Badges in a flex row without `flex-wrap` — a single long label forces horizontal
+> scroll. These two patterns cause the majority of mobile overflow.
 
 ### Density & rhythm
 - **Chrome is rich, content is calm.** Glass, gloss, and liquid motion on nav/cards/
@@ -310,3 +319,4 @@ A repeatable recipe that satisfies the laws above when composing any screen:
 - [ ] Exactly one emphasized element per region; emphasis not color-only *(Von Restorff)*
 - [ ] Irreducible complexity absorbed by the system, not the user *(Tesler)*
 - [ ] Visible feedback < 400ms; motion snappy; latency covered by liquid feedback *(Doherty)*
+- [ ] No horizontal scroll at 320px; every `minmax` min-track is `min(100%, N)`; chip/Badge rows wrap *(mobile overflow)*

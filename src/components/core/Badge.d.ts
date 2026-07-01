@@ -9,6 +9,12 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   dot?: boolean;
   /** Render the dot as a LiquidBubble (vs a plain circle). Default true. */
   bubble?: boolean;
+  /**
+   * Force the label onto a single line (white-space:nowrap). Default false —
+   * Badges wrap and stay within their container so long labels don't overflow
+   * on narrow viewports. Use for short status chips only.
+   */
+  nowrap?: boolean;
   children?: React.ReactNode;
 }
 

@@ -10,6 +10,7 @@ export function Banner({
   tone = 'accent',
   icon,
   action,
+  stackAction = false,
   onClose,
   children,
   style = {},
@@ -35,10 +36,20 @@ export function Banner({
       ...style,
     }} {...rest}>
       {glossy && <span aria-hidden="true" style={{ position: 'absolute', insetInline: 0, top: 0, height: '60%', background: 'var(--gloss-button)', pointerEvents: 'none' }} />}
-      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 10, flex: 1, justifyContent: 'center', textAlign: 'center' }}>
-        {icon && <span style={{ display: 'inline-flex', fontSize: 18, flex: 'none' }}>{icon}</span>}
-        <span style={{ fontWeight: 'var(--weight-medium)' }}>{children}</span>
-        {action && <span style={{ flex: 'none', marginLeft: 4 }}>{action}</span>}
+      {/* The message + action row wraps by default so a cramped action drops
+          below the message on narrow widths instead of squeezing beside it.
+          `stackAction` forces the action onto its own row at every width. */}
+      <div data-aqus-banner-body style={{
+        position: 'relative', display: 'flex',
+        flexDirection: stackAction ? 'column' : 'row',
+        flexWrap: 'wrap', rowGap: 6, columnGap: 10,
+        alignItems: 'center', flex: 1, justifyContent: 'center', textAlign: 'center',
+      }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+          {icon && <span style={{ display: 'inline-flex', fontSize: 18, flex: 'none' }}>{icon}</span>}
+          <span style={{ fontWeight: 'var(--weight-medium)' }}>{children}</span>
+        </span>
+        {action && <span style={{ flex: 'none' }}>{action}</span>}
       </div>
       {onClose && (
         <button aria-label="Dismiss" onClick={onClose} style={{

@@ -361,6 +361,7 @@ function Badge({
   pill = false,
   dot = false,
   bubble = true,
+  nowrap = false,
   style = {},
   children,
   ...rest
@@ -384,13 +385,20 @@ function Badge({
         fontWeight: "var(--weight-semibold)",
         fontSize: "var(--text-caption)",
         letterSpacing: "var(--tracking-wide)",
-        lineHeight: 1,
+        // Wrapping labels need a bit of breathing room between lines.
+        lineHeight: nowrap ? 1 : 1.25,
         padding: "4px 10px",
         color: t.fg,
         background: t.bg,
         borderRadius: pill ? "var(--radius-pill)" : "var(--radius-xs)",
         border: tone === "neutral" ? "var(--border-hairline) solid var(--border)" : "none",
-        whiteSpace: "nowrap",
+        // Wrap by default and never exceed the container. Long labels used to
+        // overflow (nowrap + no max-width) and cause horizontal scroll on
+        // narrow phones. Pass `nowrap` for short status chips that must stay
+        // on one line.
+        maxWidth: "100%",
+        whiteSpace: nowrap ? "nowrap" : "normal",
+        overflowWrap: "anywhere",
         ...style
       },
       ...rest,
@@ -710,7 +718,12 @@ function ToggleGroup({
     }
   };
   return /* @__PURE__ */ jsxRuntime.jsx("div", { role: "group", style: {
+    // maxWidth + flex-wrap so a long row of options wraps instead of
+    // overflowing narrow (320px) viewports. `inline-flex` alone forced a
+    // single non-wrapping row.
     display: "inline-flex",
+    flexWrap: "wrap",
+    maxWidth: "100%",
     padding: 3,
     gap: 3,
     background: "var(--surface)",
@@ -2007,6 +2020,7 @@ function Banner({
   tone = "accent",
   icon,
   action,
+  stackAction = false,
   onClose,
   children,
   style = {},
@@ -2036,10 +2050,23 @@ function Banner({
     ...style
   }, ...rest, children: [
     glossy && /* @__PURE__ */ jsxRuntime.jsx("span", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, top: 0, height: "60%", background: "var(--gloss-button)", pointerEvents: "none" } }),
-    /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 10, flex: 1, justifyContent: "center", textAlign: "center" }, children: [
-      icon && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { display: "inline-flex", fontSize: 18, flex: "none" }, children: icon }),
-      /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontWeight: "var(--weight-medium)" }, children }),
-      action && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { flex: "none", marginLeft: 4 }, children: action })
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { "data-aqus-banner-body": true, style: {
+      position: "relative",
+      display: "flex",
+      flexDirection: stackAction ? "column" : "row",
+      flexWrap: "wrap",
+      rowGap: 6,
+      columnGap: 10,
+      alignItems: "center",
+      flex: 1,
+      justifyContent: "center",
+      textAlign: "center"
+    }, children: [
+      /* @__PURE__ */ jsxRuntime.jsxs("span", { style: { display: "inline-flex", alignItems: "center", gap: 10, justifyContent: "center", flexWrap: "wrap" }, children: [
+        icon && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { display: "inline-flex", fontSize: 18, flex: "none" }, children: icon }),
+        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { fontWeight: "var(--weight-medium)" }, children })
+      ] }),
+      action && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { flex: "none" }, children: action })
     ] }),
     onClose && /* @__PURE__ */ jsxRuntime.jsx("button", { "aria-label": "Dismiss", onClick: onClose, style: {
       position: "relative",
@@ -3727,6 +3754,7 @@ function NavBar({
   brandProps,
   links = [],
   action,
+  actionCompact,
   activeHref,
   onLinkClick,
   homeHref = "/",
@@ -3818,7 +3846,7 @@ function NavBar({
       ] }, l.href);
     }) }),
     /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 8, flex: "none" }, children: [
-      action,
+      compact && actionCompact !== void 0 ? actionCompact : action,
       links.length > 0 && compact && /* @__PURE__ */ jsxRuntime.jsx(
         "button",
         {

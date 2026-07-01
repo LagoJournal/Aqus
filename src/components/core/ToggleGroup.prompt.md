@@ -11,3 +11,5 @@ const [fmt, setFmt] = React.useState(['bold']);
 ```
 
 `multiple` allows several pressed at once (formatting). Single mode allows deselect. Options are strings or `{value, label, icon}`.
+
+**Scope:** ToggleGroup is for a **small fixed set** of toolbar actions/view switches (2–5 options). It is not a count/tag filter — many short count-style labels (e.g. `G·1`, `P·1`, `G·2`…) render as one oversized pill and read out-of-system. For count/tag filters use `FilterBar` or a row of `Tag`s instead. The group wraps to a second line rather than overflowing narrow viewports, but that's a safety net, not a layout to design around.

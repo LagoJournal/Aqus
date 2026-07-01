@@ -8,7 +8,10 @@ import { Wordmark } from '../brand/Wordmark.jsx';
  * and an action slot. The top-chrome for any Aqus surface.
  *
  * Mobile-first: below `compactAt` px the links collapse behind a
- * hamburger that opens a glass dropdown. The action slot stays inline.
+ * hamburger that opens a glass dropdown. The action slot stays inline —
+ * pass `actionCompact` to swap a labeled action Button for an icon-only
+ * variant below the breakpoint (keep the accessible name via `aria-label`)
+ * so it doesn't crowd the brand + hamburger on phones.
  *
  * Pass `brand` to render your own logo/name instead of the default
  * Wordmark, or `brandProps` to tweak the default Wordmark (e.g.
@@ -19,6 +22,7 @@ export function NavBar({
   brandProps,
   links = [],
   action,
+  actionCompact,
   activeHref,
   onLinkClick,
   homeHref = '/',
@@ -106,7 +110,7 @@ export function NavBar({
       )}
 
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 8, flex: 'none' }}>
-        {action}
+        {compact && actionCompact !== undefined ? actionCompact : action}
         {links.length > 0 && compact && (
           <button
             type="button"

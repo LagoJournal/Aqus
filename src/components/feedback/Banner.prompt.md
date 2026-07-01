@@ -8,3 +8,5 @@ Full-width announcement bar for page-level messages — sits above the nav, span
 ```
 
 Use for launch notices, trial/billing warnings, maintenance windows. Keep copy to one line. For contextual messages inside a form or card, use Alert.
+
+The `action` wraps below the message automatically when space runs out on narrow widths — no cramped side-by-side. Pass `stackAction` to force it onto its own row at every width (e.g. a full-width "Renew" button on mobile).
