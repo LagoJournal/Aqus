@@ -32,6 +32,7 @@ Bugfix pass from real-world integration feedback (Fuchidle). No breaking removal
 - Repo URL casing normalized to match the actual GitHub remote (`LagoJournal/Aqus`) across `package.json`, `README.md`, `SKILL.md`, `docs/USER_GUIDE.md`, and the playground UI
 - Legacy `Agus` brand-string remnants in comment headers and prose renamed to `Aqus`
 - `Timeline`'s component comment now documents its accepted `status` values (`done`/`active`/anything else = pending/outline), matching what its `.d.ts` already specified
+- **`SKILL.md`** — hardened the `aqus-design` agent skill so its rules survive a skipped doc read: mandatory pre-flight block (doc-read confirmation, viewport, layout intent, accent plan) required before any JSX, non-negotiables expanded from 10 to 12 (inlining "all four states" and "one primary action per view" so they're enforced even without reading `docs/`), and the Aqus-bar ship-gate checklist is now required in the same response as the JSX, not just recommended
 
 ---
 
