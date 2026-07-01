@@ -56,7 +56,7 @@ export function GlassPanel({
         background:
           'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass)',
       }} />
-      <div style={{ position: 'relative', ...innerStyle }}>{children}</div>
+      <div style={{ position: 'relative', flex: '1 1 auto', minWidth: 0, ...innerStyle }}>{children}</div>
     </Tag>
   );
 }
