@@ -50,3 +50,15 @@
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+:root {
+  --text-heading:    700 32px/1.1  var(--font-display); /* page-level h1 */
+  --text-heading-sm: 700 20px/1.25 var(--font-display); /* card-section h3 */
+}
+
+body {
+  font-family: var(--font-ui);
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}

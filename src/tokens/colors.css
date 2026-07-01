@@ -26,6 +26,10 @@
   --surface-raised:var(--bone-raised);
   --text:          var(--ink);
   --text-muted:    var(--ink-soft);
+  --text-primary:   var(--text);
+  --text-secondary: var(--text-muted);
+  --text-disabled:  oklch(0.85 0.020 78 / 0.55);
+  --text-inverse:   var(--on-accent);
   --border:        var(--edge);
 
   /* ---- Tier 2 · Active accent (Universal default — cobalt) ---- */
@@ -98,6 +102,10 @@
   --surface-raised:var(--navy-light);
   --text:          var(--bone-cool);
   --text-muted:    var(--bone-muted);
+  --text-primary:   var(--text);
+  --text-secondary: var(--text-muted);
+  --text-disabled:  oklch(0.940 0.008 90 / 0.40);
+  --text-inverse:   var(--on-accent);
   --border:        var(--navy-edge);
 
   /* Accent: brightened for dark (L 0.72). Derived tints keep the
