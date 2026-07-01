@@ -200,6 +200,12 @@ body {
   70%        { transform: translate(8px,  -14px)  scale(0.95); border-radius: 66% 34% 45% 55% / 60% 42% 58% 40%; }
 }
 @keyframes sc-blob-c {
-  0%,  100% { transform: translate(0px, 0px)  scale(1);    opacity: 0.18; border-radius: 50% 50% 60% 40% / 45% 55% 45% 55%; }
-  50%        { transform: translate(6px, -8px) scale(1.08); opacity: 0.28; border-radius: 62% 38% 50% 50% / 52% 48% 52% 48%; }
+  0%,  100% { transform: translate(0px, 0px)  scale(1);    opacity: 0.55; border-radius: 50% 50% 60% 40% / 45% 55% 45% 55%; }
+  50%        { transform: translate(6px, -8px) scale(1.08); opacity: 0.75; border-radius: 62% 38% 50% 50% / 52% 48% 52% 48%; }
+}
+/* Slow drifting light source behind glass */
+@keyframes sc-light-drift {
+  0%,  100% { transform: translate(0%,    0%)   }
+  30%        { transform: translate(22%,  -14%)  }
+  65%        { transform: translate(-14%,  18%)  }
 }

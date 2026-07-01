@@ -86,24 +86,36 @@ export function Materials() {
             'radial-gradient(110% 110% at 88% 88%, var(--warning-light, oklch(0.92 0.12 80)), transparent 55%),' +
             'linear-gradient(135deg, var(--accent-mid), var(--accent))',
         }}>
-          {/* animated liquid blobs */}
+          {/* drifting light source */}
           <span aria-hidden style={{
-            position: 'absolute', top: 20, right: 60,
-            width: 110, height: 110,
-            background: 'rgba(255,255,255,0.32)', filter: 'blur(2px)',
+            position: 'absolute', top: '-40%', left: '-20%',
+            width: '80%', height: '80%',
+            background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.22) 0%, transparent 62%)',
+            filter: 'blur(16px)',
+            animation: 'sc-light-drift 18s ease-in-out infinite',
+            pointerEvents: 'none',
+          }} />
+          {/* accent-hued bubble */}
+          <span aria-hidden style={{
+            position: 'absolute', top: 22, right: 52,
+            width: 88, height: 88,
+            background: 'oklch(0.62 0.22 255 / 0.55)',
+            filter: 'blur(1px)',
             animation: 'sc-blob-a 9s ease-in-out infinite',
           }} />
+          {/* warm/warning bubble */}
           <span aria-hidden style={{
-            position: 'absolute', bottom: 28, left: 44,
-            width: 80, height: 80,
-            background: 'rgba(255,255,255,0.22)', filter: 'blur(2px)',
+            position: 'absolute', bottom: 32, left: 38,
+            width: 62, height: 62,
+            background: 'oklch(0.78 0.16 75 / 0.60)',
+            filter: 'blur(1px)',
             animation: 'sc-blob-b 13s ease-in-out infinite',
           }} />
+          {/* teal/cyan bubble */}
           <span aria-hidden style={{
-            position: 'absolute', top: '50%', left: '50%',
-            width: 60, height: 60,
-            marginTop: -30, marginLeft: -30,
-            background: 'rgba(255,255,255,0.15)', filter: 'blur(3px)',
+            position: 'absolute', top: '55%', left: '60%',
+            width: 44, height: 44,
+            background: 'oklch(0.72 0.18 195 / 0.65)',
             animation: 'sc-blob-c 7s ease-in-out infinite',
           }} />
 
