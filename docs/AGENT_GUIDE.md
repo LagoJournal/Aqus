@@ -37,8 +37,14 @@ When documents conflict: token constraints → ux-laws → voice-rules → this 
 ```jsx
 // main.jsx or layout root
 import '@agustin/aqus/styles.css'
+import '@phosphor-icons/web/regular'   // REQUIRED — components render <i class="ph ph-…">
 import { Button, Card, NavBar, ... } from '@agustin/aqus'
 ```
+
+> **Icons:** Aqus components render Phosphor glyphs (`<i class="ph ph-<name>">`).
+> Install the font once (`npm i @phosphor-icons/web`) and import `@phosphor-icons/web/regular`
+> at your app root, or icons render blank. The library's own nav chrome (hamburger,
+> carousel carets) uses these same glyphs. Use `ph ph-<name>` for any icon you add.
 
 ```css
 /* Root CSS — override accent for this project */
@@ -830,6 +836,7 @@ The eye is pulled by, in order: **size → weight → colour → position.** Use
 | Long value clips or wraps weirdly | Value + sibling share one baseline row | Stack the secondary element below the value; `whiteSpace: nowrap` on chips/deltas |
 | Table runs off-screen on mobile | Fixed multi-column table in a narrow card | Wrap the table in `overflow-x: auto` |
 | Dropdown hides behind a dialog | Floating layer below modal layer | Library handles this — floating panels are z 600, above the 500 modal tier. Don't hand-set lower z on menus inside dialogs |
+| Card shadow / hover-lift sheared off in a horizontal scroll rail | An `overflow-x: auto` container also clips `overflow-y`, so child Card shadows and the `translateY(-Npx)` hover get cut | Add block padding to the rail (`padding: '18px 6px'`) **or** use `Carousel`, the intended horizontal-rail primitive, which already pads for shadows/hover |
 
 ### 5. Z-index tiers (don't fight them)
 

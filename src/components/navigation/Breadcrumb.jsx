@@ -15,18 +15,30 @@ export function Breadcrumb({ items = [], onNavigate, style = {}, ...rest }) {
     }} {...rest}>
       {norm.map((it, i) => {
         const last = i === norm.length - 1;
+        const linkStyle = {
+          border: 'none', background: 'transparent', cursor: 'pointer', padding: 0,
+          fontFamily: 'inherit', fontSize: 'inherit', color: 'var(--text-muted)',
+          textDecoration: 'none',
+        };
+        const hover = {
+          onMouseEnter: (e) => { e.currentTarget.style.color = 'var(--accent-text)'; },
+          onMouseLeave: (e) => { e.currentTarget.style.color = 'var(--text-muted)'; },
+        };
+        const navigate = (e) => {
+          if (!onNavigate) return;
+          // Let onNavigate own the navigation (SPA routing) — stop the default
+          // full-page anchor jump when a handler is provided.
+          if (it.href) e.preventDefault();
+          onNavigate(it.value ?? it.href ?? it.label, i);
+        };
         return (
           <React.Fragment key={i}>
             {last ? (
               <span aria-current="page" style={{ color: 'var(--text)', fontWeight: 600 }}>{it.label}</span>
+            ) : it.href ? (
+              <a href={it.href} onClick={navigate} style={linkStyle} {...hover}>{it.label}</a>
             ) : (
-              <button onClick={() => onNavigate && onNavigate(it.value ?? it.label, i)} style={{
-                border: 'none', background: 'transparent', cursor: 'pointer', padding: 0,
-                fontFamily: 'inherit', fontSize: 'inherit', color: 'var(--text-muted)',
-              }}
-                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--accent-text)'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
-              >{it.label}</button>
+              <button onClick={navigate} style={linkStyle} {...hover}>{it.label}</button>
             )}
             {!last && <LiquidBubble size={4} color="var(--text-muted)" animate={false} />}
           </React.Fragment>

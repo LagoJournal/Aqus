@@ -82,7 +82,17 @@ The derivation formula and dark-mode variants are in [`src/tokens/ACCENT.md`](sr
 
 ### 4. Icons
 
-Aqus uses [Phosphor Icons](https://phosphoricons.com/):
+Aqus components render [Phosphor Icons](https://phosphoricons.com/) (`<i class="ph ph-…">`) —
+including the library's own nav chrome (hamburger, carousel carets). **Install the font or
+icons render blank.**
+
+Bundler / JS entry (recommended):
+
+```js
+import '@phosphor-icons/web/regular'   // after: npm i @phosphor-icons/web
+```
+
+Or via CDN in your HTML:
 
 ```html
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />

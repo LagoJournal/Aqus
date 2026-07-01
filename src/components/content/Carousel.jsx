@@ -72,7 +72,12 @@ export function Carousel({
           onScroll={onScroll}
           style={{
             display: 'flex', gap, overflowX: 'auto', scrollSnapType: 'x mandatory',
-            flex: 1, scrollbarWidth: 'none', msOverflowStyle: 'none', padding: '4px 0',
+            flex: 1, scrollbarWidth: 'none', msOverflowStyle: 'none',
+            // Block padding gives child Card shadows + hover-lift room to breathe:
+            // an overflow-x:auto container also clips overflow-y, so without this
+            // the shadow and translateY(-Npx) hover get sheared off. Small inline
+            // padding keeps the first/last card's side shadow from clipping too.
+            padding: '18px 6px',
           }}
         >
           {items.map((child, i) => (

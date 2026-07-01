@@ -6,6 +6,26 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning: [S
 
 ---
 
+## [0.2.2] — 2026-07-01
+
+Second bugfix pass from real-world integration feedback. Additive — no breaking removals.
+
+### Fixed
+- **Accent override was flaky (the recurring one)** — Aqus token defaults shipped in a bare `:root` (specificity 0,1,0), so a consumer's own `:root { --accent: … }` override was a *tie* decided by load order, which flips under Vite dev. Token defaults now live in `@layer aqus.tokens`; unlayered consumer styles always beat layered ones regardless of order or specificity. A plain `:root { --accent: … }` override just works — no `:root:root` hack.
+- **Phosphor icons rendered blank** — components (and the library's own nav chrome) render `<i class="ph ph-…">` but the package neither depended on nor documented the font. Added `@phosphor-icons/web` as an (optional) `peerDependency`, and the `import '@phosphor-icons/web/regular'` line is now in the Setup boilerplate of both `README.md` and `AGENT_GUIDE.md`.
+- **`Breadcrumb` clicks did nothing with `href` items** — the component only fired `onNavigate` off a `<button>` and ignored `href`. Items with `href` now render real `<a>` links (still call `onNavigate` for SPA routing, preventing the default jump when a handler is set).
+- **`Carousel` clipped child `Card` shadows and hover-lift** — an `overflow-x: auto` track also clips `overflow-y`; bumped the track's block padding (`18px 6px`) so shadows and the hover `translateY` aren't sheared.
+- **`aqus init` accent presets** — `Violet` was H 265, which reads blue (≈15° off the cobalt default); it's now H 292 (true violet) and `Purple` moved to H 318 for real separation. The non-interactive default is now `Blue` (H 245 ≈ cobalt). Custom `--hue` in the 245–285 blue-violet zone now prints a warning.
+
+### Added
+- **`BreadcrumbItem.href`** — optional per-item link target (see Fixed).
+- **`hueWarning(H)`** export in `lib/tokens.js` — flags hues that read blue when a violet was intended.
+
+### Docs
+- **`AGENT_GUIDE.md`** — new layout-gotcha row: horizontal scroll rail clips Card shadow/hover → add block padding or use `Carousel`.
+
+---
+
 ## [0.2.1] — 2026-07-01
 
 Bugfix pass from real-world integration feedback (Fuchidle). No breaking removals — all new props/exports are additive.

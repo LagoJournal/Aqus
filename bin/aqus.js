@@ -11,7 +11,7 @@
 import { createInterface } from 'readline'
 import { writeFileSync, existsSync } from 'fs'
 import { join, relative } from 'path'
-import { PRESETS, renderCSS } from '../lib/tokens.js'
+import { PRESETS, renderCSS, hueWarning } from '../lib/tokens.js'
 import { detectEntry, injectImports } from '../lib/detect.js'
 import { claudeExists, installAgent } from '../lib/agent.js'
 
@@ -83,6 +83,7 @@ async function init(flags = {}) {
     const C = parseFloat(flags.chroma)
     const L = parseFloat(flags.lightness)
     if ([H, C, L].some(isNaN)) { console.error('  --hue/--chroma/--lightness must all be numbers.'); process.exit(1) }
+    const w = hueWarning(H); if (w) console.log(`  ${dim('!')} ${w}\n`)
     accent_params = { H, C, L, name: 'Custom' }
   } else if (typeof flags.accent === 'string') {
     accent_params = PRESETS.find(p => p.name.toLowerCase() === flags.accent.toLowerCase())
@@ -110,6 +111,7 @@ async function init(flags = {}) {
       const C = parseFloat(await ask(rl, '  Chroma (0.12–0.24): '))
       const L = parseFloat(await ask(rl, '  Lightness (0.55–0.72): '))
       if ([H, C, L].some(isNaN)) { rl.close(); console.error('  Invalid values.'); process.exit(1) }
+      const w = hueWarning(H); if (w) console.log(`\n  ${dim('!')} ${w}`)
       accent_params = { H, C, L, name: 'Custom' }
       console.log()
     }

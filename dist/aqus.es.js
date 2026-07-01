@@ -2770,25 +2770,31 @@ function Breadcrumb({ items = [], onNavigate, style = {}, ...rest }) {
     ...style
   }, ...rest, children: norm.map((it, i) => {
     const last = i === norm.length - 1;
+    const linkStyle = {
+      border: "none",
+      background: "transparent",
+      cursor: "pointer",
+      padding: 0,
+      fontFamily: "inherit",
+      fontSize: "inherit",
+      color: "var(--text-muted)",
+      textDecoration: "none"
+    };
+    const hover = {
+      onMouseEnter: (e) => {
+        e.currentTarget.style.color = "var(--accent-text)";
+      },
+      onMouseLeave: (e) => {
+        e.currentTarget.style.color = "var(--text-muted)";
+      }
+    };
+    const navigate = (e) => {
+      if (!onNavigate) return;
+      if (it.href) e.preventDefault();
+      onNavigate(it.value ?? it.href ?? it.label, i);
+    };
     return /* @__PURE__ */ jsxs(React.Fragment, { children: [
-      last ? /* @__PURE__ */ jsx("span", { "aria-current": "page", style: { color: "var(--text)", fontWeight: 600 }, children: it.label }) : /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: () => onNavigate && onNavigate(it.value ?? it.label, i),
-          style: {
-            border: "none",
-            background: "transparent",
-            cursor: "pointer",
-            padding: 0,
-            fontFamily: "inherit",
-            fontSize: "inherit",
-            color: "var(--text-muted)"
-          },
-          onMouseEnter: (e) => e.currentTarget.style.color = "var(--accent-text)",
-          onMouseLeave: (e) => e.currentTarget.style.color = "var(--text-muted)",
-          children: it.label
-        }
-      ),
+      last ? /* @__PURE__ */ jsx("span", { "aria-current": "page", style: { color: "var(--text)", fontWeight: 600 }, children: it.label }) : it.href ? /* @__PURE__ */ jsx("a", { href: it.href, onClick: navigate, style: linkStyle, ...hover, children: it.label }) : /* @__PURE__ */ jsx("button", { onClick: navigate, style: linkStyle, ...hover, children: it.label }),
       !last && /* @__PURE__ */ jsx(LiquidBubble, { size: 4, color: "var(--text-muted)", animate: false })
     ] }, i);
   }) });
@@ -4412,7 +4418,11 @@ function Carousel({
             flex: 1,
             scrollbarWidth: "none",
             msOverflowStyle: "none",
-            padding: "4px 0"
+            // Block padding gives child Card shadows + hover-lift room to breathe:
+            // an overflow-x:auto container also clips overflow-y, so without this
+            // the shadow and translateY(-Npx) hover get sheared off. Small inline
+            // padding keeps the first/last card's side shadow from clipping too.
+            padding: "18px 6px"
           },
           children: items.map((child, i) => /* @__PURE__ */ jsx("div", { style: { flex: `0 0 ${itemWidth}`, scrollSnapAlign: "start", minWidth: 0 }, children: child }, i))
         }

@@ -8,7 +8,15 @@
 
    Rule: no color is arbitrary. Everything except the base
    palette is derived from the active accent.
+
+   LAYERING: all Aqus token defaults live in @layer aqus.tokens.
+   Unlayered consumer styles ALWAYS beat layered ones, regardless
+   of specificity or load order. So a plain `:root { --accent: … }`
+   override in your own (unlayered) CSS just works — no :root:root
+   hack, and no order-of-import flakiness under Vite dev.
    ============================================================ */
+
+@layer aqus.tokens {
 
 :root {
   /* ---- Tier 1 · Base Neutrals — Light (default) ---- */
@@ -133,6 +141,8 @@
   --skeleton-base:  oklch(0.255 0.022 256);
   --skeleton-shine: oklch(0.305 0.026 256);
 }
+
+} /* end @layer aqus.tokens */
 
 /* ============================================================
    Custom accent scopes

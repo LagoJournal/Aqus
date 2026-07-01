@@ -1,6 +1,6 @@
 {
   "name": "@agustin/aqus",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Aqus design system — Retro-Aero × Modern React component library",
   "type": "module",
   "main": "./dist/aqus.cjs.js",
@@ -36,7 +36,11 @@
   "sideEffects": ["*.css"],
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "@phosphor-icons/web": ">=2"
+  },
+  "peerDependenciesMeta": {
+    "@phosphor-icons/web": { "optional": true }
   },
   "devDependencies": {
     "vite": "^5.4.0",
