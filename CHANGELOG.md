@@ -6,6 +6,35 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning: [S
 
 ---
 
+## [0.2.1] — 2026-07-01
+
+Bugfix pass from real-world integration feedback (Fuchidle). No breaking removals — all new props/exports are additive.
+
+### Fixed
+- **Self-hosted fonts 404'd under Vite** — `src/tokens/fonts.css` `@font-face` `url()`s pointed one directory too shallow (`../assets/fonts` resolved to nonexistent `src/assets/fonts`); corrected to `../../assets/fonts`
+- **`NavBar`/`Footer`/`BlogCard`/`TestimonialCard`/`FilterBar` crashed under real ESM/CJS consumption** — these read sibling components off `window.AgusDesignSystem_492a6f`, a global only ever assigned by an external preview compiler (or a now-removed playground dev shim), never by the shipped npm package; switched to direct relative imports like every other component
+- **`Alert tone="accent"` title color** was fixed to `var(--text)` regardless of tone — now uses the tone's own foreground color, matching the pattern already used for the status dot
+- **Doc recipes in `AGENT_GUIDE.md`** referenced nonexistent tokens (`--text-primary`, `--text-secondary`, `--text-heading`, `--text-heading-sm`) and misused bare-size tokens inside the `font` shorthand (invalid CSS, silently dropped) — tokens are now real (see Added) and the remaining bare-size misuses switched to `fontSize`
+- **`GlassPanel`** children ignored flex/grid layout set via `style` (e.g. `justifyContent: 'space-between'` for a nav-style layout silently did nothing) — flex/grid layout keys now also forward to the inner content wrapper, and the wrapper stretches to fill the available space so distribution properties actually take effect
+- **`aqus init`/`aqus agent install` `-y` short flag** was silently non-functional (only `--yes` worked) — fixed in `parseFlags`
+
+### Added
+- **Base body/heading typography** — `body` now gets `--font-ui`, headings get `--font-display`, out of the box
+- **`--text-heading` / `--text-heading-sm`** composite tokens (weight + size/line-height + family) — valid directly inside the `font` shorthand
+- **`--text-primary` / `--text-secondary` / `--text-disabled` / `--text-inverse`** semantic text-color aliases (light + dark)
+- **`Wordmark`** — `text`/`glyph` props (default `'Aqu'`/`'s'` = "Aqus") so the rendered word is no longer hardcoded
+- **`NavBar`/`Footer`** — `brand`/`brandProps` props to override or customize the default Wordmark
+- **`StatCard`** — `wrap` prop as an escape hatch from the default single-line truncation
+- **`src/index.d.ts`** — aggregated barrel re-exporting every component's real prop types; `package.json` now has a `types` field and an `exports["."].types` condition, so `tsc` resolves the package with zero consumer shims
+- **`aqus init` / `aqus agent install`** — `--yes`/`-y`, `--accent=`, `--hue=`/`--chroma=`/`--lightness=`, `--agent[=project|global]`, `--no-agent`, `--global` flags for non-interactive/CI use
+
+### Changed
+- Repo URL casing normalized to match the actual GitHub remote (`LagoJournal/Aqus`) across `package.json`, `README.md`, `SKILL.md`, `docs/USER_GUIDE.md`, and the playground UI
+- Legacy `Agus` brand-string remnants in comment headers and prose renamed to `Aqus`
+- `Timeline`'s component comment now documents its accepted `status` values (`done`/`active`/anything else = pending/outline), matching what its `.d.ts` already specified
+
+---
+
 ## [0.2.0] — 2026-06-30
 
 Major update. Agent-first install flow, playground redesign, component fixes, expanded agent documentation.

@@ -219,6 +219,22 @@ function IconButton({
     }
   );
 }
+const LAYOUT_KEYS = [
+  "display",
+  "flexDirection",
+  "flexWrap",
+  "alignItems",
+  "justifyContent",
+  "alignContent",
+  "gap",
+  "rowGap",
+  "columnGap",
+  "gridTemplateColumns",
+  "gridTemplateRows",
+  "gridAutoFlow",
+  "gridAutoColumns",
+  "gridAutoRows"
+];
 function GlassPanel({
   as: Tag2 = "div",
   radius = "lg",
@@ -233,6 +249,10 @@ function GlassPanel({
     xl: "var(--radius-xl)",
     pill: "var(--radius-pill)"
   };
+  const innerStyle = {};
+  for (const key of LAYOUT_KEYS) {
+    if (style[key] !== void 0) innerStyle[key] = style[key];
+  }
   return /* @__PURE__ */ jsxs(
     Tag2,
     {
@@ -258,7 +278,7 @@ function GlassPanel({
           pointerEvents: "none",
           background: "linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass)"
         } }),
-        /* @__PURE__ */ jsx("div", { style: { position: "relative" }, children })
+        /* @__PURE__ */ jsx("div", { style: { position: "relative", flex: "1 1 auto", minWidth: 0, ...innerStyle }, children })
       ]
     }
   );
@@ -1965,7 +1985,7 @@ function Alert({
   }, ...rest, children: [
     /* @__PURE__ */ jsx("span", { style: { marginTop: 3, flex: "none" }, children: /* @__PURE__ */ jsx(LiquidBubble, { size: 11, color: t.dot }) }),
     /* @__PURE__ */ jsxs("div", { style: { flex: 1, minWidth: 0 }, children: [
-      title && /* @__PURE__ */ jsx("div", { style: { fontWeight: "var(--weight-semibold)", fontSize: "var(--text-body-sm)", color: "var(--text)" }, children: title }),
+      title && /* @__PURE__ */ jsx("div", { style: { fontWeight: "var(--weight-semibold)", fontSize: "var(--text-body-sm)", color: t.fg }, children: title }),
       children && /* @__PURE__ */ jsx("div", { style: { fontSize: "var(--text-body-sm)", color: "var(--text-muted)", marginTop: title ? 2 : 0, lineHeight: 1.5 }, children })
     ] }),
     onClose && /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Dismiss", style: {
@@ -3635,7 +3655,68 @@ function HeroSection({
     ] })
   ] });
 }
+function Wordmark({
+  text = "Aqu",
+  glyph = "s",
+  size = 56,
+  animate = true,
+  color = "var(--text)",
+  style = {},
+  ...rest
+}) {
+  const blob = Math.round(size * 1.06);
+  const sGlyph = Math.round(size * 0.76);
+  return /* @__PURE__ */ jsxs(
+    "span",
+    {
+      role: "img",
+      "aria-label": `${text}${glyph}`,
+      style: {
+        fontFamily: "var(--font-display)",
+        fontWeight: 800,
+        letterSpacing: "-0.04em",
+        lineHeight: 1,
+        fontSize: size,
+        display: "inline-flex",
+        alignItems: "baseline",
+        ...style
+      },
+      ...rest,
+      children: [
+        /* @__PURE__ */ jsx("span", { style: { color }, children: text }),
+        /* @__PURE__ */ jsxs("span", { "aria-hidden": "true", style: {
+          position: "relative",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: blob,
+          height: blob,
+          marginLeft: Math.round(size * 0.03),
+          verticalAlign: -Math.round(size * 0.19)
+        }, children: [
+          /* @__PURE__ */ jsx("span", { style: {
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(140deg, var(--accent-mid), var(--accent) 60%, var(--accent-hover))",
+            borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%",
+            animation: animate ? "agus-liquid var(--dur-liquid) var(--ease-inout) infinite" : "none",
+            boxShadow: "0 6px 16px rgba(0,0,0,0.22), inset 0 4px 10px rgba(255,255,255,0.42)"
+          } }),
+          /* @__PURE__ */ jsx("span", { style: {
+            position: "relative",
+            color: "var(--on-accent)",
+            fontSize: sGlyph,
+            fontWeight: 900,
+            textShadow: "0 -1px 2px rgba(0,0,0,0.25)"
+          }, children: glyph })
+        ] })
+      ]
+    }
+  );
+}
 function NavBar({
+  brand,
+  brandProps,
   links = [],
   action,
   activeHref,
@@ -3646,7 +3727,7 @@ function NavBar({
   style = {},
   ...rest
 }) {
-  const { Wordmark: Wordmark2 } = window.AgusDesignSystem_492a6f;
+  const brandNode = brand !== void 0 ? brand : /* @__PURE__ */ jsx(Wordmark, { size: 22, animate: false, ...brandProps });
   const [open, setOpen] = React.useState(false);
   const [compact, setCompact] = React.useState(false);
   const navRef = React.useRef(null);
@@ -3718,7 +3799,7 @@ function NavBar({
           onBrandClick(e);
         } : void 0,
         style: { position: "relative", display: "inline-flex", textDecoration: "none", flex: "none" },
-        children: /* @__PURE__ */ jsx(Wordmark2, { size: 22, animate: false })
+        children: brandNode
       }
     ),
     links.length > 0 && !compact && /* @__PURE__ */ jsx("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap", justifyContent: "center" }, children: links.map((l) => {
@@ -3787,12 +3868,14 @@ function NavBar({
   ] });
 }
 function Footer({
+  brand,
+  brandProps,
   columns = [],
   copyright,
   style = {},
   ...rest
 }) {
-  const { Wordmark: Wordmark2 } = window.AgusDesignSystem_492a6f;
+  const brandNode = brand !== void 0 ? brand : /* @__PURE__ */ jsx(Wordmark, { size: 22, animate: false, ...brandProps });
   const year = (/* @__PURE__ */ new Date()).getFullYear();
   return /* @__PURE__ */ jsx("footer", { style: {
     background: "var(--surface)",
@@ -3801,7 +3884,7 @@ function Footer({
     ...style
   }, ...rest, children: /* @__PURE__ */ jsx("div", { style: { maxWidth: "var(--container-max)", marginInline: "auto", padding: "var(--space-8) var(--space-5)" }, children: /* @__PURE__ */ jsxs("div", { style: { display: "grid", gridTemplateColumns: `auto repeat(${columns.length}, 1fr)`, gap: "var(--space-8)" }, children: [
     /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: "var(--space-3)" }, children: [
-      /* @__PURE__ */ jsx(Wordmark2, { size: 22, animate: false }),
+      brandNode,
       /* @__PURE__ */ jsx("p", { style: { fontSize: "var(--text-body-sm)", color: "var(--text-muted)", margin: 0, maxWidth: 220, lineHeight: "var(--leading-relaxed)" }, children: copyright || `© ${year} Aqus. All rights reserved.` })
     ] }),
     columns.map((col, ci) => /* @__PURE__ */ jsxs("div", { children: [
@@ -3825,6 +3908,7 @@ function StatCard({
   delta,
   up,
   icon,
+  wrap = false,
   style = {},
   ...rest
 }) {
@@ -3881,9 +3965,9 @@ function StatCard({
       fontSize: "var(--text-h1)",
       lineHeight: 1.1,
       color: "var(--text)",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
+      whiteSpace: wrap ? "normal" : "nowrap",
+      overflow: wrap ? "visible" : "hidden",
+      textOverflow: wrap ? "clip" : "ellipsis",
       minWidth: 0
     }, children: value }),
     delta !== void 0 && /* @__PURE__ */ jsxs("span", { style: {
@@ -3948,7 +4032,6 @@ function FilterBar({
   style = {},
   ...rest
 }) {
-  const { Tag: Tag2, Button: Button2 } = window.AgusDesignSystem_492a6f;
   if (!filters.length) return null;
   return /* @__PURE__ */ jsxs("div", { style: {
     display: "flex",
@@ -3960,7 +4043,7 @@ function FilterBar({
   }, ...rest, children: [
     /* @__PURE__ */ jsx("span", { style: { fontSize: "var(--text-caption)", color: "var(--text-muted)", fontWeight: 600, marginRight: 4 }, children: "Filters:" }),
     filters.map((f, i) => /* @__PURE__ */ jsx(
-      Tag2,
+      Tag,
       {
         tone: f.tone || "accent",
         size: "sm",
@@ -3970,7 +4053,7 @@ function FilterBar({
       f.id ?? i
     )),
     onClear && /* @__PURE__ */ jsx(
-      Button2,
+      Button,
       {
         variant: "ghost",
         size: "sm",
@@ -3990,7 +4073,6 @@ function TestimonialCard({
   style = {},
   ...rest
 }) {
-  const { Avatar: Avatar2, Badge: Badge2 } = window.AgusDesignSystem_492a6f;
   return /* @__PURE__ */ jsxs("div", { style: {
     position: "relative",
     overflow: "hidden",
@@ -4027,7 +4109,7 @@ function TestimonialCard({
         fontStyle: "italic"
       }, children: quote }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: "var(--space-3)" }, children: [
-        /* @__PURE__ */ jsx(Avatar2, { src: avatarSrc, name, initials: avatarInitials, size: 40 }),
+        /* @__PURE__ */ jsx(Avatar, { src: avatarSrc, name, initials: avatarInitials, size: 40 }),
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("div", { style: { fontWeight: "var(--weight-semibold)", fontSize: "var(--text-body-sm)", color: "var(--text)" }, children: name }),
           role && /* @__PURE__ */ jsx("div", { style: { fontSize: "var(--text-caption)", color: "var(--text-muted)" }, children: role })
@@ -4047,7 +4129,6 @@ function BlogCard({
   style = {},
   ...rest
 }) {
-  const { Badge: Badge2, Tag: Tag2 } = window.AgusDesignSystem_492a6f;
   const [hover, setHover] = React.useState(false);
   return /* @__PURE__ */ jsx(
     "a",
@@ -4087,7 +4168,7 @@ function BlogCard({
             position: "absolute",
             top: 12,
             left: 12
-          }, children: /* @__PURE__ */ jsx(Badge2, { tone: "accent", pill: true, children: "Featured" }) })
+          }, children: /* @__PURE__ */ jsx(Badge, { tone: "accent", pill: true, children: "Featured" }) })
         ] }),
         /* @__PURE__ */ jsxs("div", { style: { padding: "var(--space-5)" }, children: [
           /* @__PURE__ */ jsx("h3", { style: {
@@ -4109,7 +4190,7 @@ function BlogCard({
             overflow: "hidden"
           }, children: excerpt }),
           /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }, children: [
-            /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 6, flexWrap: "wrap" }, children: tags.map((t) => /* @__PURE__ */ jsx(Badge2, { tone: "neutral", children: t }, t)) }),
+            /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 6, flexWrap: "wrap" }, children: tags.map((t) => /* @__PURE__ */ jsx(Badge, { tone: "neutral", children: t }, t)) }),
             /* @__PURE__ */ jsxs("div", { style: { fontSize: "var(--text-caption)", color: "var(--text-muted)", whiteSpace: "nowrap", display: "flex", gap: 8 }, children: [
               date && /* @__PURE__ */ jsx("span", { children: date }),
               readTime && /* @__PURE__ */ jsxs("span", { children: [
@@ -4395,63 +4476,6 @@ function Monogram({
           color: "var(--on-accent)",
           textShadow: "0 -1px 2px rgba(0,0,0,0.25)"
         }, children: letter })
-      ]
-    }
-  );
-}
-function Wordmark({
-  size = 56,
-  animate = true,
-  color = "var(--text)",
-  style = {},
-  ...rest
-}) {
-  const blob = Math.round(size * 1.06);
-  const sGlyph = Math.round(size * 0.76);
-  return /* @__PURE__ */ jsxs(
-    "span",
-    {
-      role: "img",
-      "aria-label": "Aqus",
-      style: {
-        fontFamily: "var(--font-display)",
-        fontWeight: 800,
-        letterSpacing: "-0.04em",
-        lineHeight: 1,
-        fontSize: size,
-        display: "inline-flex",
-        alignItems: "baseline",
-        ...style
-      },
-      ...rest,
-      children: [
-        /* @__PURE__ */ jsx("span", { style: { color }, children: "Aqu" }),
-        /* @__PURE__ */ jsxs("span", { "aria-hidden": "true", style: {
-          position: "relative",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: blob,
-          height: blob,
-          marginLeft: Math.round(size * 0.03),
-          verticalAlign: -Math.round(size * 0.19)
-        }, children: [
-          /* @__PURE__ */ jsx("span", { style: {
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(140deg, var(--accent-mid), var(--accent) 60%, var(--accent-hover))",
-            borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%",
-            animation: animate ? "agus-liquid var(--dur-liquid) var(--ease-inout) infinite" : "none",
-            boxShadow: "0 6px 16px rgba(0,0,0,0.22), inset 0 4px 10px rgba(255,255,255,0.42)"
-          } }),
-          /* @__PURE__ */ jsx("span", { style: {
-            position: "relative",
-            color: "var(--on-accent)",
-            fontSize: sGlyph,
-            fontWeight: 900,
-            textShadow: "0 -1px 2px rgba(0,0,0,0.25)"
-          }, children: "s" })
-        ] })
       ]
     }
   );
