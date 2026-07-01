@@ -1,17 +1,25 @@
 import React from 'react';
+import { Wordmark } from '../brand/Wordmark.jsx';
 
 /**
  * Aqus — Footer
  * Page footer with link columns, the Wordmark, and copyright.
  * Flat Level-1 surface — never glass. Adapts to dark mode.
+ *
+ * Pass `brand` to render your own logo/name instead of the default
+ * Wordmark, or `brandProps` to tweak the default Wordmark.
  */
 export function Footer({
+  brand,
+  brandProps,
   columns = [],
   copyright,
   style = {},
   ...rest
 }) {
-  const { Wordmark } = window.AgusDesignSystem_492a6f;
+  const brandNode = brand !== undefined
+    ? brand
+    : <Wordmark size={22} animate={false} {...brandProps} />;
   const year = new Date().getFullYear();
   return (
     <footer style={{
@@ -24,7 +32,7 @@ export function Footer({
         <div style={{ display: 'grid', gridTemplateColumns: `auto repeat(${columns.length}, 1fr)`, gap: 'var(--space-8)' }}>
           {/* Wordmark column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            <Wordmark size={22} animate={false} />
+            {brandNode}
             <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--text-muted)', margin: 0, maxWidth: 220, lineHeight: 'var(--leading-relaxed)' }}>
               {copyright || `© ${year} Aqus. All rights reserved.`}
             </p>
