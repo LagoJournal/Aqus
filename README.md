@@ -141,7 +141,7 @@ Components, docs, and the agent skill are versioned together. Pinning a tag give
 
 ```bash
 npm install github:LagoJournal/Aqus           # latest
-npm install github:LagoJournal/Aqus#v0.2.1    # pinned
+npm install github:LagoJournal/Aqus#v0.3.0    # pinned
 ```
 
 See [`CHANGELOG.md`](CHANGELOG.md) for what changed between versions.
