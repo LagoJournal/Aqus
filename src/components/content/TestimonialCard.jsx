@@ -1,4 +1,6 @@
 import React from 'react';
+import { Avatar } from '../data/Avatar.jsx';
+import { Badge } from '../core/Badge.jsx';
 
 /**
  * Aqus — TestimonialCard
@@ -14,7 +16,6 @@ export function TestimonialCard({
   style = {},
   ...rest
 }) {
-  const { Avatar, Badge } = window.AgusDesignSystem_492a6f;
   return (
     <div style={{
       position: 'relative', overflow: 'hidden',

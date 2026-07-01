@@ -1,4 +1,6 @@
 import React from 'react';
+import { Badge } from '../core/Badge.jsx';
+import { Tag } from '../core/Tag.jsx';
 
 /**
  * Aqus — BlogCard
@@ -16,7 +18,6 @@ export function BlogCard({
   style = {},
   ...rest
 }) {
-  const { Badge, Tag } = window.AgusDesignSystem_492a6f;
   const [hover, setHover] = React.useState(false);
   return (
     <a href={href} style={{ textDecoration: 'none', display: 'block', ...style }}

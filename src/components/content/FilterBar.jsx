@@ -1,4 +1,6 @@
 import React from 'react';
+import { Tag } from '../core/Tag.jsx';
+import { Button } from '../core/Button.jsx';
 
 /**
  * Aqus — FilterBar
@@ -12,7 +14,6 @@ export function FilterBar({
   style = {},
   ...rest
 }) {
-  const { Tag, Button } = window.AgusDesignSystem_492a6f;
   if (!filters.length) return null;
   return (
     <div style={{
