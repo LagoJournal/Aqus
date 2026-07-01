@@ -1,8 +1,13 @@
 import React from 'react';
+import type { WordmarkProps } from '../brand/Wordmark';
 
 export interface NavLink { href: string; label: string; }
 
 export interface NavBarProps extends React.HTMLAttributes<HTMLElement> {
+  /** Overrides the default Wordmark entirely — pass your own logo/name node. */
+  brand?: React.ReactNode;
+  /** Props forwarded to the default Wordmark when `brand` is not set. */
+  brandProps?: Partial<WordmarkProps>;
   links?: NavLink[];
   /** Trailing node — typically a Button. */
   action?: React.ReactNode;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { LiquidBubble, LIQUID_BLOB } from '../core/LiquidBubble.jsx';
+import { Wordmark } from '../brand/Wordmark.jsx';
 
 /**
  * Aqus — NavBar
@@ -8,8 +9,14 @@ import { LiquidBubble, LIQUID_BLOB } from '../core/LiquidBubble.jsx';
  *
  * Mobile-first: below `compactAt` px the links collapse behind a
  * hamburger that opens a glass dropdown. The action slot stays inline.
+ *
+ * Pass `brand` to render your own logo/name instead of the default
+ * Wordmark, or `brandProps` to tweak the default Wordmark (e.g.
+ * `brandProps={{ text: 'Fuchid', glyph: 'le' }}`).
  */
 export function NavBar({
+  brand,
+  brandProps,
   links = [],
   action,
   activeHref,
@@ -20,7 +27,9 @@ export function NavBar({
   style = {},
   ...rest
 }) {
-  const { Wordmark } = window.AgusDesignSystem_492a6f;
+  const brandNode = brand !== undefined
+    ? brand
+    : <Wordmark size={22} animate={false} {...brandProps} />;
   const [open, setOpen] = React.useState(false);
   const [compact, setCompact] = React.useState(false);
   const navRef = React.useRef(null);
@@ -78,7 +87,7 @@ export function NavBar({
       <a href={homeHref}
         onClick={onBrandClick ? (e) => { e.preventDefault(); onBrandClick(e); } : undefined}
         style={{ position: 'relative', display: 'inline-flex', textDecoration: 'none', flex: 'none' }}>
-        <Wordmark size={22} animate={false} />
+        {brandNode}
       </a>
 
       {/* Inline links — hidden in compact mode */}
