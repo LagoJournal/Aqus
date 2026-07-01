@@ -428,7 +428,7 @@ export function SettingsPage({ user }) {
                   <Select label="Theme" value={theme} onChange={setTheme}
                     options={[{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }, { value: 'system', label: 'System' }]} />
                   <Stack direction="row" align="center" justify="space-between">
-                    <span style={{ font: 'var(--text-body-sm)', color: 'var(--text-primary)' }}>Email notifications</span>
+                    <span style={{ fontSize: 'var(--text-body-sm)', color: 'var(--text-primary)' }}>Email notifications</span>
                     <Switch checked={notifications} onChange={setNotifications} />
                   </Stack>
                   <Button variant="secondary" onClick={save}>Save preferences</Button>
@@ -441,8 +441,8 @@ export function SettingsPage({ user }) {
                   <Divider />
                   <Stack direction="row" align="center" justify="space-between">
                     <Stack gap={4}>
-                      <span style={{ font: 'var(--text-body-sm)', color: 'var(--text-primary)', fontWeight: 'var(--weight-medium)' }}>Delete account</span>
-                      <span style={{ font: 'var(--text-caption)', color: 'var(--text-secondary)' }}>Permanent — cannot be undone.</span>
+                      <span style={{ fontSize: 'var(--text-body-sm)', color: 'var(--text-primary)', fontWeight: 'var(--weight-medium)' }}>Delete account</span>
+                      <span style={{ fontSize: 'var(--text-caption)', color: 'var(--text-secondary)' }}>Permanent — cannot be undone.</span>
                     </Stack>
                     <Button variant="destructive" onClick={() => setDeleteOpen(true)}>Delete account</Button>
                   </Stack>
@@ -500,7 +500,7 @@ export function SignInPage({ onSignIn }) {
               <Stack gap={20}>
                 <Stack gap={4}>
                   <h1 style={{ margin: 0, font: 'var(--text-heading)', color: 'var(--text-primary)' }}>Sign in</h1>
-                  <p style={{ margin: 0, font: 'var(--text-body-sm)', color: 'var(--text-secondary)' }}>Welcome back.</p>
+                  <p style={{ margin: 0, fontSize: 'var(--text-body-sm)', color: 'var(--text-secondary)' }}>Welcome back.</p>
                 </Stack>
                 {error && <Badge tone="danger">{error}</Badge>}
                 <Input label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
