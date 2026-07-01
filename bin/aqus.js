@@ -20,6 +20,7 @@ const [,, cmd, ...rawArgs] = process.argv
 function parseFlags(argv) {
   const flags = {}
   for (const a of argv) {
+    if (a === '-y') { flags.y = true; continue }
     if (!a.startsWith('--')) continue
     const eq = a.indexOf('=')
     if (eq === -1) flags[a.slice(2)] = true
