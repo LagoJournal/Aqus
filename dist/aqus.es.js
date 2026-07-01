@@ -2116,7 +2116,7 @@ function ProgressCircle({
         Math.round(pct),
         /* @__PURE__ */ jsx("span", { style: { fontSize: Math.round(size * 0.15) }, children: "%" })
       ] }),
-      label && /* @__PURE__ */ jsx("span", { style: { fontFamily: "var(--font-ui)", fontSize: Math.round(size * 0.13), color: "var(--text-muted)", marginTop: 2 }, children: label })
+      label && /* @__PURE__ */ jsx("span", { style: { fontFamily: "var(--font-ui)", fontSize: Math.max(11, Math.round(size * 0.13)), color: "var(--text)", marginTop: 2 }, children: label })
     ] })
   ] });
 }
@@ -2773,13 +2773,19 @@ function Breadcrumb({ items = [], onNavigate, style = {}, ...rest }) {
     ] }, i);
   }) });
 }
-function Menu({ trigger, items = [], align = "left", style = {} }) {
+function Menu({ trigger, items = [], align = "auto", style = {} }) {
   const [open, setOpen] = React.useState(false);
   const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
+  function resolveAlign(r) {
+    if (align === "right") return "end";
+    if (align === "left") return "start";
+    if (!r) return "start";
+    return r.left > window.innerWidth * 0.55 ? "end" : "start";
+  }
   return /* @__PURE__ */ jsxs("div", { style: { position: "relative", display: "inline-flex", ...style }, children: [
     /* @__PURE__ */ jsx("span", { ref: anchorRef, onClick: () => setOpen((o) => !o), style: { display: "inline-flex", cursor: "pointer" }, children: trigger }),
     open && rect && /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsx("div", { ref: panelRef, role: "menu", style: {
-      ...placeAround(rect, "bottom", 6, align === "right" ? "end" : "start"),
+      ...placeAround(rect, "bottom", 6, resolveAlign(rect)),
       zIndex: Z_FLOATING,
       minWidth: 180,
       padding: 6,

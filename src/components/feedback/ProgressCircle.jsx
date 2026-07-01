@@ -42,7 +42,7 @@ export function ProgressCircle({
               {Math.round(pct)}<span style={{ fontSize: Math.round(size * 0.15) }}>%</span>
             </span>
           )}
-          {label && <span style={{ fontFamily: 'var(--font-ui)', fontSize: Math.round(size * 0.13), color: 'var(--text-muted)', marginTop: 2 }}>{label}</span>}
+          {label && <span style={{ fontFamily: 'var(--font-ui)', fontSize: Math.max(11, Math.round(size * 0.13)), color: 'var(--text)', marginTop: 2 }}>{label}</span>}
         </div>
       )}
     </div>

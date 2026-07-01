@@ -19,7 +19,9 @@ Read `docs/ux-laws.md` for the UX decision layer — 10 Laws of UX (Jakob, Fitts
 
 Read `docs/voice-rules.md` for the copy/voice layer — three registers (intentive/creative/technical), microcopy patterns for every component state (Button, EmptyState, Toast, Alert, Dialog, Tooltip, forms), universal casing/length/fluff rules, and a copy checklist. Every string in the UI has a rule here.
 
-**Workflow:** load AGENT_GUIDE + ux-laws + voice-rules → find matching View Recipe → adapt → output complete JSX → run UX laws checklist + copy checklist.
+**Workflow:** load AGENT_GUIDE + ux-laws + voice-rules → find matching View Recipe → adapt → output complete JSX → run UX laws checklist + Aqus bar checklist + copy checklist.
+
+**Document authority (highest → lowest):** token constraints (OKLCH ranges) → `docs/ux-laws.md` → `docs/voice-rules.md` → `AGENT_GUIDE.md` → `README.md` aesthetics.
 
 ## For design/branding questions
 
@@ -48,19 +50,37 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 - **brand** — Monogram, Wordmark
 - **charts** — BarChart, LineChart, DonutChart, Sparkline, ChartLegend · pure SVG, no deps · tooltips portal to body
 
+## 10 Non-negotiables
+
+1. **One accent** — override all 9 `--accent-*` tokens + `--accent-h` in `:root`. L 0.55–0.72, C 0.12–0.24. No second brand color. No hex literals.
+2. **Glass = structural chrome only** — `GlassPanel`, `NavBar`, `Dialog`, `Drawer`. `Card` uses flat `var(--surface)`. Never glass on content panels.
+3. **Round = LiquidBubble** — never `border-radius: 50%`. Every circular/blob element is `<LiquidBubble>`.
+4. **Tokens, not literals** — `var(--space-4)`, `var(--accent)`. Never `16px`, `#3b82f6`, or theme-specific aliases (`--cream`, `--navy-deep`).
+5. **Theme-adaptive** — use semantic aliases (`--bg`, `--surface`, `--text`, `--border`) so dark mode always works. Hardcoding a light-mode-only token is a bug.
+6. **Compose from primitives; never rebuild library components** — if `Button`, `Input`, `Select`, `Dialog`, or any catalog component exists, import it. A custom rebuild in a view is always wrong.
+7. **Liquid changes shape, never behavior** — the morph animation is decoration. Interaction outcomes must not depend on morph state.
+8. **One emphasis per region** — one accent/bold element per card or section. Emphasis = color + icon or weight. Color alone doesn't count.
+9. **Feedback < 400ms** — every user action shows immediate visible response. Latency ≥ 400ms requires Skeleton or optimistic UI.
+10. **Right register** — intentive by default, creative at peaks (hero/success), technical for docs/data. Never creative register on errors or destructive confirmations.
+
 ## Rules
 
-- **One accent in CSS** — override 9 `--accent-*` tokens + `--accent-h` (hue number) in `:root {}`. L: 0.55–0.72, C: 0.12–0.24. No second color. No hex.
 - **Chart colors derive from accent** — set `--accent-h` to the accent hue. Slots 2–8 auto-space at 45° via CSS `calc()`. Never hardcode chart hues.
 - **Mobile-first flag required** — before planning any view, confirm viewport target (mobile / desktop / responsive). If not stated in the prompt, ASK before writing any JSX.
 - **Plan layout before coding** — wireframe blocks → spacing rhythm → visual hierarchy → fill with components. No fixed pixel column widths. Use `minmax(0, 1fr)` and `auto-fit`. Add `wrap` to every `Stack direction="row"` with 3+ items.
 - **Eye rules** — one dominant element per surface (size → weight → colour → position). Equal-height cards in a grid; action buttons go *inside* the card pinned to the bottom, never as a sibling below. `minWidth: 0` on text children to stop overflow slivers. See AGENT_GUIDE "Layout & visual composition".
 - **UX laws** — one primary action per view (Hick); content chunked 5–9 (Miller); targets ≥ 44px spaced ≥ 8px (Fitts); all four states designed: empty/loading/error/success (Postel); delight at peak and end only (Peak–End); one emphasized element per region (Von Restorff); visible feedback < 400ms (Doherty). Full rules: `docs/ux-laws.md`.
 - **Z-index** — floating layer (menus, selects, tooltips, popovers) is z 600, above the modal tier (Dialog/Drawer 500); the library handles this, don't hand-lower it.
-- **Glass = structural** — NavBar, Dialog, Drawer, GlassPanel. Not content.
-- **Round = LiquidBubble** — never `border-radius: 50%`.
-- **Tokens, not literals.** Depth is earned.
-- **Compose from primitives** — never re-style raw HTML.
 - **Icons:** Phosphor (`<i class="ph ph-<name>">`) — no emoji in chrome.
 - **Motion:** physics-based springs. Data surfaces: micro-interactions only.
 - **Copy & voice** — intentive register by default (verb-led, plain); creative only at peaks (hero/success), backed by a plain line; technical for docs/data (exact numbers, no gloss). Buttons `verb + noun` ≤3 words. Errors: *what → why → fix*. No fluff (`just/simply/seamless/powerful`). Sentence case. No emoji in chrome. Full rules: `docs/voice-rules.md`.
+
+## The Aqus bar — ship gate
+
+Run before committing any view:
+- **Brand:** tokens not literals · theme-adaptive · glass = chrome · round = LiquidBubble · one accent · liquid = shape only · one emphasis per region
+- **Interaction:** mobile-first · no rebuilt components · one primary Button · targets ≥ 44px · all 4 states covered · feedback < 400ms
+- **Voice:** right register · sentence case · fluff cut · buttons `verb + noun` · errors `what → why → fix`
+- **A11y:** focus ring visible · destructive named by consequence · Dialog has label · color never sole signal
+
+Full checklist in `docs/AGENT_GUIDE.md` → "The Aqus bar".

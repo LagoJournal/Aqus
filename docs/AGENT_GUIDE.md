@@ -4,6 +4,20 @@
 
 ---
 
+## Document authority map
+
+| Document | Governs |
+|----------|---------|
+| Token constraints (OKLCH ranges, accent limits) | Color and accent — override everything |
+| `docs/ux-laws.md` | Interaction patterns — component selection, staging, emphasis |
+| `docs/voice-rules.md` | All copy — register, microcopy, casing, fluff rules |
+| This guide (AGENT_GUIDE.md) | Component catalog, view recipes, layout rules, constraints |
+| `README.md` / brand aesthetics | Visual direction — consult but defer to the four above |
+
+When documents conflict: token constraints → ux-laws → voice-rules → this guide → aesthetics.
+
+---
+
 ## How to use this guide
 
 1. Identify view type (dashboard, landing, form, settings, auth, etc.)
@@ -898,12 +912,17 @@ Full reference: `docs/voice-rules.md`. Quick rules for every string you write:
 | Glass = structural | `GlassPanel` / `NavBar` glass only. `Card` uses flat `surface` |
 | Round = LiquidBubble | `<LiquidBubble>` not `borderRadius: '50%'` |
 | Tokens not literals | `color: 'var(--text-primary)'` not `'#111'` |
+| Theme-adaptive | Use `--bg`, `--surface`, `--text`, `--border`. Never `--cream` or `--navy-deep` — dark mode must always work |
 | Elevation matches stacking | `Card` → `shadow-xs`. Raised → `shadow-sm`. Glass chrome → `shadow-glass` |
-| Compose, don't re-style | `<Button>` not styled `<button>`. `<Input>` not styled `<input>` |
+| Compose, don't re-implement | `<Button>` not styled `<button>`. `<Input>` not styled `<input>`. Never rebuild a library component inside a view |
+| Never rebuild library components | If `Button`, `Modal`, `Input`, or any catalog component exists, import it. Building a custom version from scratch is always wrong |
 | One primary Button per surface | One `variant="primary"` per card/modal/section |
-| Motion physics only | No ambient animation on data surfaces. Micro-interactions only |
+| Liquid changes shape not behavior | Liquid morphing is decoration. Never tie behavior or interaction to the morph state |
+| One emphasis per region | One accented element per card/section. Color alone does not constitute emphasis — pair with icon or weight |
+| Motion physics only | No ambient animation on data surfaces. Micro-interactions only. Feedback < 400ms |
 | Copy sentence case | "New project" not "New Project" |
 | No emoji in chrome | Phosphor icons only in UI |
+| Right register | Intentive (default), Creative (peaks only), Technical (docs/data). Never Creative tone on destructive actions |
 | Chart colors follow accent hue | Set `--accent-h` to the accent hue number. Slots 2–8 auto-derive at 45° steps via CSS `calc()`. Never hardcode chart hues — they must shift with the accent |
 | Mobile target required | State viewport target before writing JSX. Ask if not specified |
 | Plan layout before coding | Write layout intent (grid structure + breakpoint strategy) before first JSX line |
@@ -951,3 +970,56 @@ Full reference: `docs/voice-rules.md`. Quick rules for every string you write:
 - [ ] Exactly one emphasized element per region; emphasis pairs color with icon/weight *(Von Restorff)*
 - [ ] Irreducible complexity absorbed by the system (smart defaults, filters, CommandPalette) *(Tesler)*
 - [ ] Every action has visible feedback < 400ms; latency covered by Skeleton/Spinner/optimistic UI *(Doherty)*
+
+---
+
+## The Aqus bar — final review checklist
+
+Run this after writing JSX, before committing. Four bars, all must pass.
+
+### Brand & visual
+- [ ] Tokens not literals — no `#hex`, no raw pixel numbers for spacing/color
+- [ ] Theme-adaptive — only semantic tokens (`--bg`, `--surface`, `--text`, `--border`), never light/dark-specific literals
+- [ ] Glass = structural chrome only — `GlassPanel`/`NavBar`, not content cards
+- [ ] Round = `LiquidBubble` — no `border-radius: 50%` anywhere
+- [ ] One accent per surface — no two brand colors visible simultaneously
+- [ ] Liquid changes shape only — morph is decoration, never tied to behavior
+- [ ] One emphasis per region — one accented/bold element per card or section
+
+### Interaction & layout
+- [ ] Mobile-first — viewport target confirmed; `auto-fit` grid, `wrap` on row Stacks with 3+ items, `minWidth: 0` on text
+- [ ] No rebuilt components — every `Button`, `Input`, `Modal`, `Select` is imported from `@agustin/aqus`, never a styled raw element
+- [ ] One primary `Button` per surface
+- [ ] Targets ≥ 44px, spaced ≥ 8px
+- [ ] All states covered — loading (Skeleton), empty (EmptyState), error (Alert), success (Toast/inline)
+- [ ] Feedback < 400ms — every action shows immediate response
+
+### Voice
+- [ ] Right register — intentive by default, creative only at peak moments, technical for docs/data
+- [ ] Sentence case everywhere — no Title Case except eyebrow labels
+- [ ] Fluff cut — no `just`, `simply`, `seamless`, `powerful`, `leverage`, `unlock`
+- [ ] Buttons `verb + noun` ≤3 words; errors state `what → why → fix`
+
+### Accessibility
+- [ ] Focus ring visible (`var(--focus-ring)` — never `outline: none` without replacement)
+- [ ] Destructive actions named by consequence ("Delete entry", not "OK")
+- [ ] Dialog/Drawer has `aria-label` or `aria-labelledby`
+- [ ] Color never sole signal — pair with icon or text
+
+---
+
+## Common failure modes
+
+| Failure | What it looks like | Correct pattern |
+|---------|-------------------|-----------------|
+| Rebuilt component | `<button style={{borderRadius:8,background:'#3b82f6'}}>` | `<Button variant="primary">` |
+| Literal color | `color: '#10b981'` | `color: 'var(--success)'` |
+| Light-only alias | `background: 'var(--cream)'` | `background: 'var(--surface)'` |
+| Two accents | Green badge + blue button same card | One accent per surface |
+| Oversized SegmentedControl | 5-option SegmentedControl overflows on mobile | Max 4 options; use `Select` for 5+ |
+| Chart without `--accent-h` | Hard-coded chart hue doesn't shift with accent | Set `--accent-h` in `:root` |
+| Non-portaled menu | Menu inside glass NavBar becomes unreadable | Use `Menu` component (already portals) |
+| Ambient data animation | Chart bars breathing/pulsing | Motion on chrome only |
+| Creative register on error | "Oops! Looks like something went wrong 🎉" | Technical register for errors |
+| Fixed pixel columns | `gridTemplateColumns: '300px 300px'` | `minmax(min(100%, 280px), 1fr)` |
+| Circular bubble | `borderRadius: '50%', width:12, height:12` | `<LiquidBubble size={12} />` |

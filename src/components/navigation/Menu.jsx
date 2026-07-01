@@ -5,43 +5,56 @@ import { Portal, useAnchoredFloating, placeAround, Z_FLOATING } from '../../inte
  * Aqus — Menu
  * Action dropdown in a Level-3 glass panel. Pass a trigger node and
  * a list of items ({label, onClick, icon?, danger?, divider?}).
+ *
+ * align: 'auto' (default) detects from screen position — opens rightward
+ * when trigger is in the left 55% of the viewport, leftward otherwise.
+ * Pass 'left' or 'right' to force a direction.
  */
-export function Menu({ trigger, items = [], align = 'left', style = {} }) {
+export function Menu({ trigger, items = [], align = 'auto', style = {} }) {
   const [open, setOpen] = React.useState(false);
   const { anchorRef, panelRef, rect } = useAnchoredFloating(open, () => setOpen(false));
+
+  function resolveAlign(r) {
+    if (align === 'right') return 'end';
+    if (align === 'left')  return 'start';
+    // auto: open toward the center — avoids clipping at viewport edges
+    if (!r) return 'start';
+    return r.left > window.innerWidth * 0.55 ? 'end' : 'start';
+  }
 
   return (
     <div style={{ position: 'relative', display: 'inline-flex', ...style }}>
       <span ref={anchorRef} onClick={() => setOpen((o) => !o)} style={{ display: 'inline-flex', cursor: 'pointer' }}>{trigger}</span>
       {open && rect && (
         <Portal>
-        <div ref={panelRef} role="menu" style={{
-          ...placeAround(rect, 'bottom', 6, align === 'right' ? 'end' : 'start'), zIndex: Z_FLOATING, minWidth: 180,
-          padding: 6, borderRadius: 'var(--radius-md)',
-          background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), linear-gradient(var(--accent-glass), var(--accent-glass)), var(--glass-surface)',
-          WebkitBackdropFilter: 'blur(18px) saturate(1.6)', backdropFilter: 'blur(18px) saturate(1.6)',
-          border: '1px solid var(--glass-border-light)', boxShadow: 'var(--shadow-md)',
-          fontFamily: 'var(--font-ui)', animation: 'agus-enter var(--dur-ui) var(--ease-spring)',
-        }}>
-          {items.map((it, i) => it.divider ? (
-            <div key={i} style={{ height: 1, background: 'var(--border)', margin: '6px 4px' }} />
-          ) : (
-            <button key={i} role="menuitem"
-              onClick={() => { it.onClick && it.onClick(); setOpen(false); }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 9, width: '100%', textAlign: 'left',
-                padding: '8px 10px', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer',
-                background: 'transparent', fontFamily: 'inherit', fontSize: 'var(--text-body-sm)',
-                color: it.danger ? 'var(--danger)' : 'var(--text)',
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = it.danger ? 'var(--danger-light)' : 'var(--surface-raised)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >
-              {it.icon && <span style={{ display: 'inline-flex', flex: 'none' }}>{it.icon}</span>}
-              {it.label}
-            </button>
-          ))}
-        </div>
+          <div ref={panelRef} role="menu" style={{
+            ...placeAround(rect, 'bottom', 6, resolveAlign(rect)),
+            zIndex: Z_FLOATING, minWidth: 180,
+            padding: 6, borderRadius: 'var(--radius-md)',
+            background: 'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), linear-gradient(var(--accent-glass), var(--accent-glass)), var(--glass-surface)',
+            WebkitBackdropFilter: 'blur(18px) saturate(1.6)', backdropFilter: 'blur(18px) saturate(1.6)',
+            border: '1px solid var(--glass-border-light)', boxShadow: 'var(--shadow-md)',
+            fontFamily: 'var(--font-ui)', animation: 'agus-enter var(--dur-ui) var(--ease-spring)',
+          }}>
+            {items.map((it, i) => it.divider ? (
+              <div key={i} style={{ height: 1, background: 'var(--border)', margin: '6px 4px' }} />
+            ) : (
+              <button key={i} role="menuitem"
+                onClick={() => { it.onClick && it.onClick(); setOpen(false); }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 9, width: '100%', textAlign: 'left',
+                  padding: '8px 10px', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer',
+                  background: 'transparent', fontFamily: 'inherit', fontSize: 'var(--text-body-sm)',
+                  color: it.danger ? 'var(--danger)' : 'var(--text)',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = it.danger ? 'var(--danger-light)' : 'var(--surface-raised)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                {it.icon && <span style={{ display: 'inline-flex', flex: 'none' }}>{it.icon}</span>}
+                {it.label}
+              </button>
+            ))}
+          </div>
         </Portal>
       )}
     </div>

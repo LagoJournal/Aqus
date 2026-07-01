@@ -22,7 +22,7 @@ const ARCHIVE = [
   {
     id: 2,
     date: 'Jun 27, 2026',
-    mood: 'Excellent',
+    mood: 'Great',
     words: 220,
     excerpt: 'Completed the OKLCH token work. One hue now drives nine tokens — accent, hover, light, mid, text, glow, glass, focus ring, and on-accent. The chart palette auto-derives at 45° steps.',
     body: 'Completed the OKLCH token work. One hue now drives nine tokens — accent, hover, light, mid, text, glow, glass, focus ring, and on-accent. The chart palette auto-derives at 45° steps.\n\nThis is the cleanest the color architecture has ever been. No more per-component color overrides.',
@@ -30,7 +30,7 @@ const ARCHIVE = [
   {
     id: 3,
     date: 'Jun 25, 2026',
-    mood: 'Neutral',
+    mood: 'OK',
     words: 178,
     excerpt: 'Slow day. Debugged the chart tooltip issue — position: fixed elements trapped by a parent transform. Fixed by removing a no-op translateY(0) from Card.',
     body: 'Slow day. Debugged the chart tooltip issue — position: fixed elements trapped by a parent transform. Fixed by removing a no-op translateY(0) from Card. Portaled all chart tooltips to document.body as a belt-and-suspenders fix.\n\nSometimes a day is just debugging.',
@@ -46,14 +46,13 @@ const ARCHIVE = [
 ]
 
 const MOOD_OPTIONS = [
-  { value: 'Excellent', label: 'Excellent' },
-  { value: 'Good',      label: 'Good' },
-  { value: 'Neutral',   label: 'Neutral' },
-  { value: 'Low',       label: 'Low' },
-  { value: 'Hard',      label: 'Hard' },
+  { value: 'Great',   label: 'Great' },
+  { value: 'Good',    label: 'Good' },
+  { value: 'OK',      label: 'OK' },
+  { value: 'Low',     label: 'Low' },
 ]
 
-const MOOD_TONE = { Excellent: 'success', Good: 'accent', Neutral: 'neutral', Low: 'warning', Hard: 'danger' }
+const MOOD_TONE = { Great: 'success', Good: 'accent', OK: 'neutral', Low: 'warning' }
 
 const WORDS_DATA = [
   { x: 'Jun 22', words: 260 }, { x: 'Jun 25', words: 178 },
@@ -85,7 +84,7 @@ export function JournalExample() {
   const [reading, setReading] = React.useState(null)
 
   // Today's entry
-  const [mood,  setMood]  = React.useState('Good')
+  const [mood,  setMood]  = React.useState('Great')
   const [body,  setBody]  = React.useState('')
   const [saved, setSaved] = React.useState(false)
 
