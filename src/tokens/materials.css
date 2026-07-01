@@ -91,3 +91,12 @@
   box-shadow: 0 0 0 var(--border-focus) var(--accent),
               0 0 0 6px var(--focus-ring);
 }
+
+/* ---- NumberInput: hide native browser spin buttons ---- */
+/* Aqus provides its own ± buttons; the native arrows clash with the centered value. */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}

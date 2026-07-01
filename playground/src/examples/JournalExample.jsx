@@ -1,60 +1,67 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {
-  NavBar, Container, Section, Stack, Button, Avatar,
-  Tabs, SearchInput, Accordion, BlogCard, Prose, Textarea,
-  Tag, EmptyState, Input, Toast, Divider, Card,
+  NavBar, Container, Section, Stack, PageHeader, Button, Card,
+  Avatar, Badge, Tag, SearchInput, SegmentedControl, Textarea,
+  Timeline, Divider, EmptyState, Toast, Dialog, Prose, StatCard, LineChart,
 } from '@agustin/aqus'
 
-// ── Seed data ─────────────────────────────────────────────────────────────────
+// ── Data ─────────────────────────────────────────────────────────────────────
 
-const SEED = [
+const TODAY = 'Jun 30, 2026'
+
+const ARCHIVE = [
   {
     id: 1,
-    title: 'Designing the liquid bubble',
-    excerpt: 'Why every round element morphs instead of being a perfect circle.',
-    body: 'Every round element in Aqus is a slowly-morphing liquid bubble — never a perfect circle. One primitive keeps the identity consistent across the whole library.\n\nThe shape comes from an asymmetric border-radius that animates between a few keyframes, so it reads as organic without ever looking unstable.',
-    date: 'Jun 28, 2026',
-    readTime: '5 min',
-    tags: ['Design', 'Identity'],
-    author: 'Agustin Lago',
-    featured: true,
+    date: 'Jun 29, 2026',
+    mood: 'Good',
+    words: 312,
+    excerpt: 'Finished the glass recipe for the NavBar. Spent the afternoon working through blur levels — the dense variant at 48px reads as solid against scrolling content while still catching the light.',
+    body: 'Finished the glass recipe for the NavBar. Spent the afternoon working through blur levels — the dense variant at 48px reads as solid against scrolling content while still catching the light.\n\nThe tricky part was the background shorthand. A bare color token in a non-final layer makes the whole declaration invalid, so the accent tint has to wrap as a flat gradient. Learned that one the hard way.\n\nGood day overall. Shipped something that felt right.',
   },
   {
     id: 2,
-    title: 'Glass, but only where it counts',
-    excerpt: 'Structural chrome earns its blur.',
-    body: 'Blur and gloss belong on structural chrome — the nav, dialogs, drawers. Content stays flat and honest. A practical rule: if it scrolls with the page, it is content; if it frames the page, it can be glass.',
-    date: 'Jun 20, 2026',
-    readTime: '4 min',
-    tags: ['Material'],
-    author: 'Agustin Lago',
+    date: 'Jun 27, 2026',
+    mood: 'Excellent',
+    words: 220,
+    excerpt: 'Completed the OKLCH token work. One hue now drives nine tokens — accent, hover, light, mid, text, glow, glass, focus ring, and on-accent. The chart palette auto-derives at 45° steps.',
+    body: 'Completed the OKLCH token work. One hue now drives nine tokens — accent, hover, light, mid, text, glow, glass, focus ring, and on-accent. The chart palette auto-derives at 45° steps.\n\nThis is the cleanest the color architecture has ever been. No more per-component color overrides.',
   },
   {
     id: 3,
-    title: 'OKLCH accents in practice',
-    excerpt: 'One accent, nine tokens, infinite brands.',
-    body: 'One hue drives nine derived tokens. Pick a hue, set the lightness and chroma within the safe range, and every surface stays legible in light and dark. The chart palette spaces itself at 45° around the same hue.',
-    date: 'Jun 12, 2026',
-    readTime: '6 min',
-    tags: ['Color'],
-    author: 'Agustin Lago',
+    date: 'Jun 25, 2026',
+    mood: 'Neutral',
+    words: 178,
+    excerpt: 'Slow day. Debugged the chart tooltip issue — position: fixed elements trapped by a parent transform. Fixed by removing a no-op translateY(0) from Card.',
+    body: 'Slow day. Debugged the chart tooltip issue — position: fixed elements trapped by a parent transform. Fixed by removing a no-op translateY(0) from Card. Portaled all chart tooltips to document.body as a belt-and-suspenders fix.\n\nSometimes a day is just debugging.',
   },
   {
     id: 4,
-    title: 'Composing screens from primitives',
-    excerpt: 'Stop re-styling raw elements.',
-    body: 'Build views the way the example kits do: compose from Button, Card, Input, Stack. Never re-style a raw element. The agent that reads this library follows the same recipe.',
-    date: 'Jun 4, 2026',
-    readTime: '7 min',
-    tags: ['Patterns'],
-    author: 'Agustin Lago',
+    date: 'Jun 22, 2026',
+    mood: 'Good',
+    words: 260,
+    excerpt: 'Wrote the UX laws document — 10 laws mapped to concrete Aqus component rules. Miller, Hick, Von Restorff, Fitts, Postel, Doherty, Tesler, Peak-End, Jakob, Aesthetic-Usability.',
+    body: 'Wrote the UX laws document — 10 laws mapped to concrete Aqus component rules. Miller, Hick, Von Restorff, Fitts, Postel, Doherty, Tesler, Peak-End, Jakob, Aesthetic-Usability.\n\nThe goal: the agent reads the doc and knows *why* each rule exists, not just what to do. Decision-making built in.',
   },
 ]
 
-const TAGS = ['All', 'Design', 'Identity', 'Material', 'Color', 'Patterns']
+const MOOD_OPTIONS = [
+  { value: 'Excellent', label: 'Excellent' },
+  { value: 'Good',      label: 'Good' },
+  { value: 'Neutral',   label: 'Neutral' },
+  { value: 'Low',       label: 'Low' },
+  { value: 'Hard',      label: 'Hard' },
+]
 
-// ── Toast helper ──────────────────────────────────────────────────────────────
+const MOOD_TONE = { Excellent: 'success', Good: 'accent', Neutral: 'neutral', Low: 'warning', Hard: 'danger' }
+
+const WORDS_DATA = [
+  { x: 'Jun 22', words: 260 }, { x: 'Jun 25', words: 178 },
+  { x: 'Jun 27', words: 220 }, { x: 'Jun 29', words: 312 },
+]
+const WORDS_SERIES = [{ key: 'words', label: 'Words' }]
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function useToast() {
   const [t, setT] = React.useState({ show: false, title: '', tone: 'accent' })
@@ -65,397 +72,305 @@ function useToast() {
   return [t, fire]
 }
 
+function wordCount(text) {
+  return text.trim() ? text.trim().split(/\s+/).filter(Boolean).length : 0
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function JournalExample() {
-  const [nav,     setNav]     = React.useState('#feed')
-  const [entries, setEntries] = React.useState(SEED)
-  const [current, setCurrent] = React.useState(null)
-  const [cat,     setCat]     = React.useState('All')
+  const [nav,     setNav]     = React.useState('#today')
+  const [archive, setArchive] = React.useState(ARCHIVE)
   const [q,       setQ]       = React.useState('')
-  const [draft,   setDraft]   = React.useState({ title: '', body: '', tags: [], tagInput: '' })
-  const [tab,     setTab]     = React.useState('draft')
-  const [toast,   fireToast]  = useToast()
+  const [reading, setReading] = React.useState(null)
 
-  const section = nav.slice(1) // 'feed' | 'read' | 'write'
+  // Today's entry
+  const [mood,  setMood]  = React.useState('Good')
+  const [body,  setBody]  = React.useState('')
+  const [saved, setSaved] = React.useState(false)
 
-  // ── Filtering ──────────────────────────────────────────────────────────────
-  const noFilter = cat === 'All' && q === ''
-  const filtered = entries.filter(e =>
-    (cat === 'All' || e.tags.includes(cat)) &&
-    (q === '' ||
-      e.title.toLowerCase().includes(q.toLowerCase()) ||
-      e.excerpt.toLowerCase().includes(q.toLowerCase()))
+  const [toast, fireToast] = useToast()
+
+  const section = nav.slice(1)
+  const words   = wordCount(body)
+
+  const filteredArchive = archive.filter(e =>
+    q === '' ||
+    e.excerpt.toLowerCase().includes(q.toLowerCase()) ||
+    e.date.toLowerCase().includes(q.toLowerCase())
   )
-  const featuredEntry = entries.find(e => e.featured)
-  const gridEntries = noFilter
-    ? filtered.filter(e => !e.featured)
-    : filtered
-
-  // ── Helpers ────────────────────────────────────────────────────────────────
-  const addTag = () => {
-    const trimmed = draft.tagInput.trim()
-    if (!trimmed || draft.tags.includes(trimmed)) return
-    setDraft(d => ({ ...d, tags: [...d.tags, trimmed], tagInput: '' }))
-  }
 
   const publish = () => {
-    if (!draft.title.trim() || !draft.body.trim()) {
-      fireToast('Add a title and body.', 'warning')
-      return
+    if (!body.trim()) { fireToast('Write something first.', 'warning'); return }
+    const entry = {
+      id:      Date.now(),
+      date:    TODAY,
+      mood,
+      words,
+      excerpt: body.trim().slice(0, 140),
+      body:    body.trim(),
     }
-    const words = draft.body.trim().split(/\s+/).filter(Boolean).length
-    const readTime = `${Math.max(1, Math.round(words / 200))} min`
-    const newEntry = {
-      id: Date.now(),
-      title: draft.title.trim(),
-      body: draft.body.trim(),
-      excerpt: draft.body.trim().slice(0, 100),
-      date: 'Just now',
-      readTime,
-      tags: draft.tags,
-      author: 'Agustin Lago',
-    }
-    setEntries(es => [newEntry, ...es])
-    setDraft({ title: '', body: '', tags: [], tagInput: '' })
-    setTab('draft')
-    setNav('#feed')
-    fireToast('Published.')
+    setArchive(a => [entry, ...a])
+    setBody('')
+    setSaved(false)
+    setNav('#archive')
+    fireToast('Entry published.')
   }
 
-  const entry = entries.find(e => e.id === current)
+  const avgWords = archive.length
+    ? Math.round(archive.reduce((s, e) => s + e.words, 0) / archive.length)
+    : 0
+
+  const readingEntry = archive.find(e => e.id === reading)
 
   return (
     <div style={{ fontFamily: 'var(--font-ui)' }}>
       <NavBar
         links={[
-          { href: '#feed',  label: 'Feed' },
-          { href: '#read',  label: 'Read' },
-          { href: '#write', label: 'Write' },
+          { href: '#today',   label: 'Today' },
+          { href: '#archive', label: 'Archive' },
+          { href: '#insights',label: 'Insights' },
         ]}
         activeHref={nav}
         onLinkClick={(l) => setNav(l.href)}
         action={<Avatar name="Agustin Lago" size={32} />}
       />
 
-      <Section size="md">
-        <Container>
-          <Stack gap={5}>
+      {/* ── Today ─────────────────────────────────────────────────────────── */}
+      {section === 'today' && (
+        <Section size="md">
+          <Container>
+            <Stack gap={4}>
+              <PageHeader
+                eyebrow={TODAY}
+                title="Daily reflection"
+                subtitle="Write freely. Publish when ready."
+              />
 
-            {/* ── Feed ──────────────────────────────────────────────────── */}
-            {section === 'feed' && (
-              <Stack gap={4}>
-
-                {/* Filter row */}
-                <Stack direction="row" gap={2} wrap align="center">
-                  {TAGS.map(tag => (
-                    <Tag
-                      key={tag}
-                      tone="neutral"
-                      onClick={() => setCat(tag)}
-                      style={
-                        cat === tag
-                          ? { background: 'var(--accent)', color: 'var(--on-accent)', whiteSpace: 'nowrap' }
-                          : { whiteSpace: 'nowrap' }
-                      }
-                    >
-                      {tag}
-                    </Tag>
-                  ))}
-                  <div style={{ flex: 1, minWidth: 180 }}>
-                    <SearchInput value={q} onChange={setQ} placeholder="Search entries…" />
-                  </div>
-                </Stack>
-
-                {/* Featured card — only when no filter is active */}
-                {noFilter && featuredEntry && (
-                  <BlogCard
-                    title={featuredEntry.title}
-                    excerpt={featuredEntry.excerpt}
-                    date={featuredEntry.date}
-                    readTime={featuredEntry.readTime}
-                    tags={featuredEntry.tags}
-                    featured
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setCurrent(featuredEntry.id)
-                      setNav('#read')
-                    }}
-                  />
-                )}
-
-                {/* Entry grid */}
-                {filtered.length === 0 ? (
-                  <EmptyState
-                    icon={<i className="ph ph-magnifying-glass" />}
-                    title="No entries found"
-                    description="Try a different search term or category."
-                    action={
-                      <Button variant="secondary" onClick={() => { setCat('All'); setQ('') }}>
-                        Clear filters
-                      </Button>
-                    }
-                  />
-                ) : gridEntries.length > 0 && (
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
-                    gap: 20,
-                  }}>
-                    {gridEntries.map(e => (
-                      <BlogCard
-                        key={e.id}
-                        title={e.title}
-                        excerpt={e.excerpt}
-                        date={e.date}
-                        readTime={e.readTime}
-                        tags={e.tags}
-                        featured={e.featured}
-                        onClick={(ev) => {
-                          ev.preventDefault()
-                          setCurrent(e.id)
-                          setNav('#read')
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
-
-              </Stack>
-            )}
-
-            {/* ── Read ──────────────────────────────────────────────────── */}
-            {section === 'read' && (
-              <Stack gap={4}>
-                <div>
-                  <Button
-                    variant="ghost"
-                    icon={<i className="ph ph-arrow-left" />}
-                    onClick={() => setNav('#feed')}
-                  >
-                    Back to feed
-                  </Button>
-                </div>
-
-                {entry ? (
-                  <Stack gap={4}>
-
-                    {/* Article header */}
-                    <Card variant="resting" style={{ padding: 24 }}>
-                      <Stack gap={3}>
-                        <Stack direction="row" gap={3} align="center" wrap style={{ minWidth: 0 }}>
-                          <Avatar name={entry.author} size={40} />
-                          <Stack gap={0} style={{ minWidth: 0 }}>
-                            <span style={{
-                              fontWeight: 'var(--weight-semibold)',
-                              fontSize: 'var(--text-body-sm)',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                            }}>
-                              {entry.author}
-                            </span>
-                            <span className="sc-foot-note">{entry.date} · {entry.readTime}</span>
-                          </Stack>
-                        </Stack>
-                        <Stack direction="row" gap={2} wrap>
-                          {entry.tags.map(t => (
-                            <Tag key={t} tone="accent" style={{ whiteSpace: 'nowrap' }}>{t}</Tag>
-                          ))}
-                        </Stack>
-                      </Stack>
-                    </Card>
-
-                    {/* Body */}
-                    <Prose>
-                      <h1 style={{
-                        fontFamily: 'var(--font-display)',
-                        fontWeight: 800,
-                        fontSize: 'var(--text-h1)',
-                        color: 'var(--text)',
-                        margin: '0 0 var(--space-4)',
-                        lineHeight: 'var(--leading-snug)',
-                      }}>
-                        {entry.title}
-                      </h1>
-                      {entry.body.split('\n\n').map((para, i) => (
-                        <p key={i} style={{
-                          color: 'var(--text-muted)',
-                          lineHeight: 'var(--leading-relaxed)',
-                          margin: '0 0 var(--space-4)',
-                        }}>
-                          {para}
-                        </p>
-                      ))}
-                    </Prose>
-
-                    {/* Author notes accordion */}
-                    <Card variant="resting" style={{ padding: 20 }}>
-                      <Stack gap={3}>
-                        <strong>Author notes</strong>
-                        <Divider />
-                        <Accordion
-                          items={[
-                            {
-                              id: 'why',
-                              title: 'Why this matters',
-                              content: 'Every design decision in Aqus connects back to a single purpose: building interfaces that feel alive and coherent. This entry is part of that ongoing documentation.',
-                            },
-                            {
-                              id: 'next',
-                              title: "What's next",
-                              content: 'The next entry will explore how tokens compose into component-level decisions — and why the system makes certain tradeoffs along the way.',
-                            },
-                          ]}
-                        />
-                      </Stack>
-                    </Card>
-
-                  </Stack>
-                ) : (
-                  <EmptyState
-                    icon={<i className="ph ph-book-open" />}
-                    title="No entry selected"
-                    description="Go to the feed and click an entry to read it."
-                    action={
-                      <Button variant="secondary" onClick={() => setNav('#feed')}>Browse feed</Button>
-                    }
-                  />
-                )}
-              </Stack>
-            )}
-
-            {/* ── Write ─────────────────────────────────────────────────── */}
-            {section === 'write' && (
-              <Stack gap={4}>
-
-                <Tabs
-                  value={tab}
-                  onChange={setTab}
-                  tabs={[
-                    { value: 'draft',   label: 'Draft' },
-                    { value: 'preview', label: 'Preview' },
-                  ]}
-                />
-
-                {/* Draft form */}
-                {tab === 'draft' && (
-                  <Stack gap={3}>
-                    <Input
-                      label="Title"
-                      value={draft.title}
-                      onChange={(e) => setDraft(d => ({ ...d, title: e.target.value }))}
-                      placeholder="Entry title"
+              <Card variant="resting" style={{ padding: 24 }}>
+                <Stack gap={4}>
+                  {/* Mood */}
+                  <Stack gap={2}>
+                    <span style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--weight-medium)', color: 'var(--text-muted)' }}>
+                      How are you today?
+                    </span>
+                    <SegmentedControl
+                      value={mood}
+                      onChange={setMood}
+                      options={MOOD_OPTIONS}
                     />
+                  </Stack>
 
-                    {/* Tag entry row */}
-                    <Stack direction="row" gap={2} align="flex-end" wrap>
-                      <div style={{ flex: 1, minWidth: 160 }}>
-                        <Input
-                          label="Add tag"
-                          value={draft.tagInput}
-                          onChange={(e) => setDraft(d => ({ ...d, tagInput: e.target.value }))}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') { e.preventDefault(); addTag() }
-                          }}
-                          placeholder="e.g. Design"
-                        />
-                      </div>
+                  <Divider />
+
+                  {/* Body */}
+                  <Textarea
+                    label="Entry"
+                    value={body}
+                    onChange={(e) => { setBody(e.target.value); setSaved(false) }}
+                    rows={10}
+                    placeholder="Write your thoughts…"
+                  />
+
+                  {/* Word count + actions */}
+                  <Stack direction="row" justify="space-between" align="center" wrap gap={2}>
+                    <Stack direction="row" gap={2} align="center">
+                      <Badge tone={MOOD_TONE[mood]} pill dot>{mood}</Badge>
+                      {words > 0 && (
+                        <span className="sc-foot-note">{words} words</span>
+                      )}
+                      {saved && (
+                        <Badge tone="neutral" pill>Draft saved</Badge>
+                      )}
+                    </Stack>
+                    <Stack direction="row" gap={2}>
                       <Button
                         variant="secondary"
-                        size="sm"
-                        icon={<i className="ph ph-plus" />}
-                        onClick={addTag}
+                        icon={<i className="ph ph-floppy-disk" />}
+                        onClick={() => { if (body.trim()) { setSaved(true); fireToast('Draft saved.') } }}
                       >
-                        Add
+                        Save draft
+                      </Button>
+                      <Button
+                        variant="primary"
+                        icon={<i className="ph ph-paper-plane-right" />}
+                        onClick={publish}
+                      >
+                        Publish
                       </Button>
                     </Stack>
+                  </Stack>
+                </Stack>
+              </Card>
+            </Stack>
+          </Container>
+        </Section>
+      )}
 
-                    {draft.tags.length > 0 && (
-                      <Stack direction="row" gap={2} wrap>
-                        {draft.tags.map(t => (
-                          <Tag
-                            key={t}
-                            tone="accent"
-                            style={{ whiteSpace: 'nowrap' }}
-                            onRemove={() => setDraft(d => ({ ...d, tags: d.tags.filter(x => x !== t) }))}
+      {/* ── Archive ───────────────────────────────────────────────────────── */}
+      {section === 'archive' && (
+        <Section size="md">
+          <Container>
+            <Stack gap={4}>
+              <PageHeader
+                eyebrow="Archive"
+                title="Past entries"
+                subtitle={`${archive.length} ${archive.length === 1 ? 'entry' : 'entries'} published.`}
+                action={
+                  <Button variant="primary" icon={<i className="ph ph-pencil-simple" />} onClick={() => setNav('#today')}>
+                    Write today
+                  </Button>
+                }
+              />
+
+              <SearchInput value={q} onChange={setQ} placeholder="Search entries…" />
+
+              {filteredArchive.length === 0 ? (
+                <EmptyState
+                  icon={<i className="ph ph-book-open" />}
+                  title={q ? 'No entries match' : 'Nothing published yet'}
+                  description={q ? 'Try a different search term.' : 'Write and publish your first entry.'}
+                  action={
+                    q
+                      ? <Button variant="secondary" onClick={() => setQ('')}>Clear search</Button>
+                      : <Button variant="primary" onClick={() => setNav('#today')}>Start writing</Button>
+                  }
+                />
+              ) : (
+                <Card variant="resting" style={{ padding: 20 }}>
+                  <Timeline
+                    items={filteredArchive.map(e => ({
+                      title: e.date,
+                      description: e.excerpt,
+                      time: `${e.words}w`,
+                      status: 'done',
+                      action: (
+                        <Stack direction="row" gap={2} align="center" wrap>
+                          <Badge tone={MOOD_TONE[e.mood]}>{e.mood}</Badge>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setReading(e.id)}
                           >
-                            {t}
-                          </Tag>
-                        ))}
-                      </Stack>
-                    )}
+                            Read
+                          </Button>
+                        </Stack>
+                      ),
+                    }))}
+                  />
+                </Card>
+              )}
+            </Stack>
+          </Container>
+        </Section>
+      )}
 
-                    <Textarea
-                      label="Body"
-                      value={draft.body}
-                      onChange={(e) => setDraft(d => ({ ...d, body: e.target.value }))}
-                      rows={10}
-                      placeholder="Write your entry…"
+      {/* ── Insights ──────────────────────────────────────────────────────── */}
+      {section === 'insights' && (
+        <Section size="md">
+          <Container>
+            <Stack gap={4}>
+              <PageHeader
+                eyebrow="Insights"
+                title="Writing stats"
+                subtitle="Your reflection patterns over time."
+              />
+
+              {/* KPIs */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 16 }}>
+                <StatCard
+                  label="Writing streak"
+                  value={`${archive.length}d`}
+                  delta="personal best"
+                  up
+                  icon={<i className="ph ph-fire" />}
+                />
+                <StatCard
+                  label="Total entries"
+                  value={String(archive.length)}
+                  delta="since Jun 22"
+                  up
+                  icon={<i className="ph ph-book-open" />}
+                />
+                <StatCard
+                  label="Avg words"
+                  value={String(avgWords)}
+                  delta="per entry"
+                  up
+                  icon={<i className="ph ph-text-aa" />}
+                />
+              </div>
+
+              {/* Words per day chart */}
+              {archive.length > 0 && (
+                <Card variant="resting" style={{ padding: 20 }}>
+                  <Stack gap={3}>
+                    <strong>Words per entry</strong>
+                    <Divider />
+                    <LineChart
+                      data={WORDS_DATA}
+                      series={WORDS_SERIES}
+                      height={160}
+                      area
                     />
                   </Stack>
-                )}
+                </Card>
+              )}
 
-                {/* Preview */}
-                {tab === 'preview' && (
-                  <Card variant="resting" style={{ padding: 24 }}>
-                    <Prose>
-                      <h1 style={{
-                        fontFamily: 'var(--font-display)',
-                        fontWeight: 800,
-                        fontSize: 'var(--text-h1)',
-                        color: 'var(--text)',
-                        margin: '0 0 var(--space-4)',
-                        lineHeight: 'var(--leading-snug)',
-                      }}>
-                        {draft.title || 'Untitled'}
-                      </h1>
-                      {draft.body.trim()
-                        ? draft.body.split('\n\n').map((para, i) => (
-                            <p key={i} style={{
-                              color: 'var(--text-muted)',
-                              lineHeight: 'var(--leading-relaxed)',
-                              margin: '0 0 var(--space-4)',
-                            }}>
-                              {para}
-                            </p>
-                          ))
-                        : (
-                          <p style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                            Start writing in the Draft tab to see a preview here.
-                          </p>
-                        )
-                      }
-                    </Prose>
-                  </Card>
-                )}
-
-                {/* Actions */}
-                <Stack direction="row" gap={2} wrap>
-                  <Button
-                    variant="secondary"
-                    icon={<i className="ph ph-floppy-disk" />}
-                    onClick={() => fireToast('Draft saved.')}
-                  >
-                    Save draft
-                  </Button>
-                  <Button
-                    variant="primary"
-                    icon={<i className="ph ph-paper-plane-right" />}
-                    onClick={publish}
-                  >
-                    Publish
-                  </Button>
+              {/* Mood distribution */}
+              <Card variant="resting" style={{ padding: 20 }}>
+                <Stack gap={3}>
+                  <strong>Mood breakdown</strong>
+                  <Divider />
+                  <Stack direction="row" gap={2} wrap>
+                    {Object.entries(
+                      archive.reduce((acc, e) => {
+                        acc[e.mood] = (acc[e.mood] || 0) + 1
+                        return acc
+                      }, {})
+                    ).map(([m, count]) => (
+                      <Badge key={m} tone={MOOD_TONE[m]} pill>
+                        {m} · {count}
+                      </Badge>
+                    ))}
+                  </Stack>
+                  {archive.length === 0 && (
+                    <span className="sc-item-desc">Publish entries to see your mood patterns.</span>
+                  )}
                 </Stack>
+              </Card>
+            </Stack>
+          </Container>
+        </Section>
+      )}
 
-              </Stack>
-            )}
-
+      {/* ── Read dialog ───────────────────────────────────────────────────── */}
+      <Dialog
+        open={!!readingEntry}
+        onClose={() => setReading(null)}
+        title={readingEntry?.date ?? ''}
+        actions={
+          <Button variant="secondary" onClick={() => setReading(null)}>Close</Button>
+        }
+      >
+        {readingEntry && (
+          <Stack gap={3}>
+            <Stack direction="row" gap={2} align="center">
+              <Badge tone={MOOD_TONE[readingEntry.mood]} pill>{readingEntry.mood}</Badge>
+              <span className="sc-foot-note">{readingEntry.words} words</span>
+            </Stack>
+            <Prose>
+              {readingEntry.body.split('\n\n').map((para, i) => (
+                <p key={i} style={{ margin: '0 0 var(--space-3)', color: 'var(--text-muted)', lineHeight: 'var(--leading-relaxed)' }}>
+                  {para}
+                </p>
+              ))}
+            </Prose>
           </Stack>
-        </Container>
-      </Section>
+        )}
+      </Dialog>
 
-      {/* ── Toast ──────────────────────────────────────────────────────────── */}
+      {/* ── Toast ─────────────────────────────────────────────────────────── */}
       {toast.show && ReactDOM.createPortal(
         <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9999 }}>
           <Toast tone={toast.tone} title={toast.title} onClose={() => {}} />

@@ -3833,30 +3833,67 @@ function StatCard({
     padding: "var(--space-5)",
     boxShadow: "var(--shadow-xs)",
     fontFamily: "var(--font-ui)",
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--space-2)",
     ...style
   }, ...rest, children: [
-    /* @__PURE__ */ jsxRuntime.jsx("span", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, top: 0, height: "35%", background: "var(--gloss-card)", pointerEvents: "none" } }),
-    /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }, children: [
-      /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { flex: 1, minWidth: 0 }, children: [
-        /* @__PURE__ */ jsxRuntime.jsx("div", { style: { fontSize: "var(--text-label)", fontWeight: "var(--weight-medium)", color: "var(--text-muted)", marginBottom: "var(--space-2)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }, children: label }),
-        /* @__PURE__ */ jsxRuntime.jsx("span", { style: { display: "block", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "var(--text-display-lg)", lineHeight: 1.05, color: "var(--text)", overflowWrap: "anywhere" }, children: value }),
-        delta !== void 0 && /* @__PURE__ */ jsxRuntime.jsxs("span", { style: { display: "inline-flex", alignItems: "center", gap: 5, marginTop: "var(--space-2)", fontSize: "var(--text-label)", fontWeight: "var(--weight-semibold)", color: up ? "var(--success)" : "var(--danger)", whiteSpace: "nowrap" }, children: [
-          /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: 7, color: up ? "var(--success)" : "var(--danger)" }),
-          delta
-        ] })
-      ] }),
-      icon && /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
-        width: 40,
-        height: 40,
+    /* @__PURE__ */ jsxRuntime.jsx("span", { "aria-hidden": "true", style: {
+      position: "absolute",
+      insetInline: 0,
+      top: 0,
+      height: "35%",
+      background: "var(--gloss-card)",
+      pointerEvents: "none"
+    } }),
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }, children: [
+      /* @__PURE__ */ jsxRuntime.jsx("span", { style: {
+        fontSize: "var(--text-label)",
+        fontWeight: "var(--weight-medium)",
+        color: "var(--text-muted)",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        minWidth: 0
+      }, children: label }),
+      icon && /* @__PURE__ */ jsxRuntime.jsx("span", { style: {
+        width: 30,
+        height: 30,
+        flex: "none",
         borderRadius: "var(--radius-sm)",
         background: "var(--accent-glass)",
         color: "var(--accent)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: 20,
-        flex: "none"
+        fontSize: 15
       }, children: icon })
+    ] }),
+    /* @__PURE__ */ jsxRuntime.jsx("span", { style: {
+      position: "relative",
+      display: "block",
+      fontFamily: "var(--font-display)",
+      fontWeight: 800,
+      fontSize: "var(--text-h1)",
+      lineHeight: 1.1,
+      color: "var(--text)",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      minWidth: 0
+    }, children: value }),
+    delta !== void 0 && /* @__PURE__ */ jsxRuntime.jsxs("span", { style: {
+      position: "relative",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 4,
+      fontSize: "var(--text-label)",
+      fontWeight: "var(--weight-semibold)",
+      color: up ? "var(--success)" : "var(--danger)",
+      whiteSpace: "nowrap"
+    }, children: [
+      /* @__PURE__ */ jsxRuntime.jsx(LiquidBubble, { size: 6, color: up ? "var(--success)" : "var(--danger)" }),
+      delta
     ] })
   ] });
 }

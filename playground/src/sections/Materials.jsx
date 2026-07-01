@@ -86,18 +86,25 @@ export function Materials() {
             'radial-gradient(110% 110% at 88% 88%, var(--warning-light, oklch(0.92 0.12 80)), transparent 55%),' +
             'linear-gradient(135deg, var(--accent-mid), var(--accent))',
         }}>
-          {/* decorative blobs */}
+          {/* animated liquid blobs */}
           <span aria-hidden style={{
             position: 'absolute', top: 20, right: 60,
             width: 110, height: 110,
-            borderRadius: '42% 58% 63% 37% / 41% 44% 56% 59%',
             background: 'rgba(255,255,255,0.32)', filter: 'blur(2px)',
+            animation: 'sc-blob-a 9s ease-in-out infinite',
           }} />
           <span aria-hidden style={{
             position: 'absolute', bottom: 28, left: 44,
             width: 80, height: 80,
-            borderRadius: '60% 40% 38% 62% / 55% 62% 38% 45%',
             background: 'rgba(255,255,255,0.22)', filter: 'blur(2px)',
+            animation: 'sc-blob-b 13s ease-in-out infinite',
+          }} />
+          <span aria-hidden style={{
+            position: 'absolute', top: '50%', left: '50%',
+            width: 60, height: 60,
+            marginTop: -30, marginLeft: -30,
+            background: 'rgba(255,255,255,0.15)', filter: 'blur(3px)',
+            animation: 'sc-blob-c 7s ease-in-out infinite',
           }} />
 
           <Stack gap={4} align="center">
