@@ -33,6 +33,7 @@ Bugfix pass from real-world integration feedback (Fuchidle). No breaking removal
 - Legacy `Agus` brand-string remnants in comment headers and prose renamed to `Aqus`
 - `Timeline`'s component comment now documents its accepted `status` values (`done`/`active`/anything else = pending/outline), matching what its `.d.ts` already specified
 - **`SKILL.md`** — hardened the `aqus-design` agent skill so its rules survive a skipped doc read: mandatory pre-flight block (doc-read confirmation, viewport, layout intent, accent plan) required before any JSX, non-negotiables expanded from 10 to 12 (inlining "all four states" and "one primary action per view" so they're enforced even without reading `docs/`), and the Aqus-bar ship-gate checklist is now required in the same response as the JSX, not just recommended
+- Install examples now consistently use the unpinned `npm install github:LagoJournal/Aqus` (latest) form; version-pinned tags remain documented only as README's explicitly-labeled optional alternative, not as the default instruction elsewhere (`SKILL.md`, playground)
 
 ### Removed
 - **`docs/superpowers/` untracked and gitignored** — internal planning/spec docs from this repo's own development process were being published into the npm tarball via the old blanket `"docs"` entry in `package.json`'s `files` array; `files` now lists the 5 actual consumer-facing docs individually (`AGENT_GUIDE.md`, `USER_GUIDE.md`, `brand-guide.md`, `ux-laws.md`, `voice-rules.md`) instead of the whole `docs/` directory
