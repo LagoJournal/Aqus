@@ -46,7 +46,7 @@ Read `README.md` for the full system guide. Read `docs/brand-guide.md` for visua
 ## Install
 
 ```bash
-npm install github:LagoJournal/Aqus#v0.2.0
+npm install github:LagoJournal/Aqus#v0.2.1
 ```
 
 ```js
