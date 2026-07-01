@@ -1,11 +1,23 @@
 import React from 'react';
 
 /**
- * Agus — GlassPanel
+ * Aqus — GlassPanel
  * Vista Aero frosted-glass chrome: blur-behind, accent tint film,
  * inner top-gloss stripe, light-catching edges. The primary
  * structural surface for nav, modals, sidebars, hero cards.
+ *
+ * `style` layout keys (display, flex-related, align-related,
+ * justify-related, gap, grid-related) are forwarded to the inner
+ * content wrapper, not just the outer shell —
+ * so `<GlassPanel style={{ display: 'flex', justifyContent: 'space-between' }}>`
+ * actually lays out the children, not just the glass box itself.
  */
+const LAYOUT_KEYS = [
+  'display', 'flexDirection', 'flexWrap', 'alignItems', 'justifyContent',
+  'alignContent', 'gap', 'rowGap', 'columnGap',
+  'gridTemplateColumns', 'gridTemplateRows', 'gridAutoFlow', 'gridAutoColumns', 'gridAutoRows',
+];
+
 export function GlassPanel({
   as: Tag = 'div',
   radius = 'lg',
@@ -18,6 +30,10 @@ export function GlassPanel({
     md: 'var(--radius-md)', lg: 'var(--radius-lg)', xl: 'var(--radius-xl)',
     pill: 'var(--radius-pill)',
   };
+  const innerStyle = {};
+  for (const key of LAYOUT_KEYS) {
+    if (style[key] !== undefined) innerStyle[key] = style[key];
+  }
   return (
     <Tag
       style={{
@@ -40,7 +56,7 @@ export function GlassPanel({
         background:
           'linear-gradient(to bottom, var(--glass-inner-gloss) 0%, rgba(255,255,255,0) 42%), var(--accent-glass)',
       }} />
-      <div style={{ position: 'relative' }}>{children}</div>
+      <div style={{ position: 'relative', ...innerStyle }}>{children}</div>
     </Tag>
   );
 }
