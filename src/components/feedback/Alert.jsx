@@ -30,7 +30,7 @@ export function Alert({
     }} {...rest}>
       <span style={{ marginTop: 3, flex: 'none' }}><LiquidBubble size={11} color={t.dot} /></span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        {title && <div style={{ fontWeight: 'var(--weight-semibold)', fontSize: 'var(--text-body-sm)', color: 'var(--text)' }}>{title}</div>}
+        {title && <div style={{ fontWeight: 'var(--weight-semibold)', fontSize: 'var(--text-body-sm)', color: t.fg }}>{title}</div>}
         {children && <div style={{ fontSize: 'var(--text-body-sm)', color: 'var(--text-muted)', marginTop: title ? 2 : 0, lineHeight: 1.5 }}>{children}</div>}
       </div>
       {onClose && (
