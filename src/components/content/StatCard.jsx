@@ -12,6 +12,7 @@ export function StatCard({
   delta,
   up,
   icon,
+  wrap = false,
   style = {},
   ...rest
 }) {
@@ -72,9 +73,9 @@ export function StatCard({
         fontSize: 'var(--text-h1)',
         lineHeight: 1.1,
         color: 'var(--text)',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
+        whiteSpace: wrap ? 'normal' : 'nowrap',
+        overflow: wrap ? 'visible' : 'hidden',
+        textOverflow: wrap ? 'clip' : 'ellipsis',
         minWidth: 0,
       }}>
         {value}

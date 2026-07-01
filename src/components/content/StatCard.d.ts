@@ -9,6 +9,8 @@ export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   up?: boolean;
   /** Optional Phosphor icon node. */
   icon?: React.ReactNode;
+  /** Allow the value to wrap instead of truncating with an ellipsis. Default false. */
+  wrap?: boolean;
 }
 
 /** Single KPI tile: big number + label + delta (liquid bubble indicator). */
