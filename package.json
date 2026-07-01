@@ -12,13 +12,19 @@
     },
     "./styles.css": "./styles.css"
   },
+  "bin": {
+    "aqus": "./bin/aqus.js"
+  },
   "files": [
     "dist",
     "src",
+    "bin",
+    "lib",
     "styles.css",
     "assets/fonts",
     "docs",
     "SKILL.md",
+    "postinstall.js",
     "_adherence.oxlintrc.json"
   ],
   "sideEffects": ["*.css"],
@@ -32,7 +38,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "postinstall": "node postinstall.js"
   },
   "repository": {
     "type": "git",
