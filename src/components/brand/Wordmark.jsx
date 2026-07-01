@@ -5,8 +5,14 @@ import React from 'react';
  * "Aqus" with the distinctive terminal "s" dissolved into the
  * liquid mark — a morphing aqua drop tinted by the active accent.
  * Bonds the wordmark to the locked liquid identity.
+ *
+ * Renders `text` + `glyph` (defaults "Aqu" + "s" = "Aqus"). Override
+ * both to brand this component for another product, e.g.
+ * <Wordmark text="Fuchid" glyph="le" />.
  */
 export function Wordmark({
+  text = 'Aqu',
+  glyph = 's',
   size = 56,
   animate = true,
   color = 'var(--text)',
@@ -18,7 +24,7 @@ export function Wordmark({
   return (
     <span
       role="img"
-      aria-label="Aqus"
+      aria-label={`${text}${glyph}`}
       style={{
         fontFamily: 'var(--font-display)',
         fontWeight: 800,
@@ -31,7 +37,7 @@ export function Wordmark({
       }}
       {...rest}
     >
-      <span style={{ color }}>Aqu</span>
+      <span style={{ color }}>{text}</span>
       <span aria-hidden="true" style={{
         position: 'relative',
         display: 'inline-flex',
@@ -56,7 +62,7 @@ export function Wordmark({
           fontSize: sGlyph,
           fontWeight: 900,
           textShadow: '0 -1px 2px rgba(0,0,0,0.25)',
-        }}>s</span>
+        }}>{glyph}</span>
       </span>
     </span>
   );
