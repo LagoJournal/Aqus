@@ -3,8 +3,9 @@ import { LiquidBubble } from '../core/LiquidBubble.jsx';
 
 /**
  * Aqus — Timeline
- * Vertical event log / stepper. Each step's node is a LiquidBubble:
- * filled = completed, outline = pending, spinner = active/in-progress.
+ * Vertical event log / stepper. Each item's `status` drives the node:
+ * 'done' = filled bubble, 'active' = spinner bubble, anything else
+ * (including 'pending', the default) = outline bubble.
  */
 export function Timeline({
   items = [],
