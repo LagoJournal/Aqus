@@ -207,7 +207,7 @@ const CATALOG = [
       <ContextMenu items={[{ label: 'Cut', shortcut: '⌘X' }, { label: 'Copy', shortcut: '⌘C' }, { divider: true }, { label: 'Delete', tone: 'danger' }]}>
         <div style={{ padding: '18px 22px', border: '1px dashed var(--border)', borderRadius: 12, color: 'var(--text-muted)', fontSize: 14 }}>Right-click here</div>
       </ContextMenu>],
-    ['Accordion', 'Collapsible sections.', <div style={{ width: '100%' }}><Accordion items={[{ title: 'What is Aqus?', content: 'A Retro-Aero × Modern design system.' }, { title: 'How do I install it?', content: 'npm install github:LagoJournal/Aqus#v0.1.0' }]} /></div>],
+    ['Accordion', 'Collapsible sections.', <div style={{ width: '100%' }}><Accordion items={[{ title: 'What is Aqus?', content: 'A Retro-Aero × Modern design system.' }, { title: 'How do I install it?', content: 'npm install github:LagoJournal/Aqus' }]} /></div>],
     ['Pagination', 'Page navigation with bubble markers.', <PaginationDemo />],
     ['Stepper', 'Multi-step flow indicator.', <div style={{ width: '100%' }}><Stepper current={1} steps={[{ label: 'Account' }, { label: 'Profile' }, { label: 'Review' }]} /></div>],
   ]],
