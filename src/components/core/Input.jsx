@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Agus — Input
+ * Aqus — Input
  * Flat Level-1 text field (interior content, never glass).
  * Accent focus ring with the soft Aero glow halo.
  */

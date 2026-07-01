@@ -1,4 +1,4 @@
-Pill-shaped Aqua button with inner top-gloss, two-shadow depth, and spring press feedback — the primary call-to-action across every Agus surface.
+Pill-shaped Aqua button with inner top-gloss, two-shadow depth, and spring press feedback — the primary call-to-action across every Aqus surface.
 
 ```jsx
 <Button variant="primary" size="md" onClick={save}>Save changes</Button>

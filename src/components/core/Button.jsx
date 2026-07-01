@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Agus — Button
+ * Aqus — Button
  * Aqua glass pill with inner top-gloss, two-shadow depth, and
  * physics-based press feedback. One accent per surface.
  */

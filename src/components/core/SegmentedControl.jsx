@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Agus — SegmentedControl
+ * Aqus — SegmentedControl
  * Aqua horizontal pill with a smooth sliding accent indicator.
  * The active segment fills; others stay ghost.
  */

@@ -1,12 +1,12 @@
 /* ============================================================
-   Agus — Design System · Global entry point
+   Aqus — Design System · Global entry point
    ------------------------------------------------------------
    Consumers link THIS file only. It is a manifest of @imports;
    never add rules here directly.
 
    Aesthetic: 50/50 Retro Aero (Apple Aqua + Vista glass +
    Windows Live warmth + Sony Ericsson liquid identity) × Modern
-   restraint. A personal brand for "Agus".
+   restraint. A personal brand for "Aqus".
    ============================================================ */
 
 @import url("src/tokens/fonts.css");

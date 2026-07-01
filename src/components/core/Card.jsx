@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Agus — Card
+ * Aqus — Card
  * Elevation-tiered content surface with optional Aqua top-sheen.
  * Resting (L1) → Interactive hover lift (L2) → Featured glass (L3).
  */
