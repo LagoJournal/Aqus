@@ -23,8 +23,7 @@ const GLASS_LEVELS = {
     label: 'Dense',
     vars: {
       '--glass-blur': '48px',
-      '--glass-surface': 'rgba(255,255,255,0.82)',
-      '--glass-inner-gloss': 'rgba(255,255,255,0.28)',
+      '--glass-surface': 'var(--glass-surface-dense)',
     },
     note: '48px blur. Near-opaque. The NavBar uses this level so it reads as solid over scrolling content.',
   },

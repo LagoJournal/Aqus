@@ -84,9 +84,9 @@ export function placeAround(rect, placement = 'bottom', offset = 6, align = 'sta
     case 'top':
       return { ...base, bottom: window.innerHeight - rect.top + offset, ...crossX(rect, align) };
     case 'left':
-      return { ...base, right: window.innerWidth - rect.left + offset, top: rect.top + rect.height / 2, transform: 'translateY(-50%)' };
+      return { ...base, right: window.innerWidth - rect.left + offset, top: rect.top + rect.height / 2, translate: '0 -50%' };
     case 'right':
-      return { ...base, left: rect.right + offset, top: rect.top + rect.height / 2, transform: 'translateY(-50%)' };
+      return { ...base, left: rect.right + offset, top: rect.top + rect.height / 2, translate: '0 -50%' };
     case 'bottom':
     default:
       return { ...base, top: rect.bottom + offset, ...crossX(rect, align) };
@@ -94,7 +94,9 @@ export function placeAround(rect, placement = 'bottom', offset = 6, align = 'sta
 }
 
 function crossX(rect, align) {
-  if (align === 'center') return { left: rect.left + rect.width / 2, transform: 'translateX(-50%)' };
-  if (align === 'end') return { left: rect.right, transform: 'translateX(-100%)' };
+  // Use standalone `translate` (not `transform`) so it doesn't conflict
+  // with `transform`-based enter animations on the panel element.
+  if (align === 'center') return { left: rect.left + rect.width / 2, translate: '-50% 0' };
+  if (align === 'end') return { left: rect.right, translate: '-100% 0' };
   return { left: rect.left };
 }

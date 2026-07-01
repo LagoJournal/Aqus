@@ -44,7 +44,8 @@
   --glass-blur-thin:  4px;
   --glass-blur:       18px;  /* frosted — default for most chrome */
   --glass-blur-dense: 48px;  /* dense — used by the NavBar bar */
-  --glass-surface: rgba(255,255,255,0.62);  /* base surface @ ~62% */
+  --glass-surface: rgba(255,255,255,0.62);       /* base surface @ ~62% */
+  --glass-surface-dense: rgba(255,255,255,0.82); /* dense preset — near-opaque */
   --glass-border-light: rgba(255,255,255,0.30);
   --glass-border-dark:  rgba(0,0,0,0.10);
   --glass-inner-gloss:  rgba(255,255,255,0.20);
@@ -62,7 +63,8 @@
     0 6px 22px rgba(0,0,0,0.28),
     inset 0 1px 0 rgba(255,255,255,0.07);
 
-  --glass-surface: oklch(0.215 0.024 256 / 0.88);   /* navy surface @ 88% — resists strongly coloured backdrops */
+  --glass-surface: oklch(0.215 0.024 256 / 0.88);         /* navy surface @ 88% */
+  --glass-surface-dense: oklch(0.215 0.024 256 / 0.96);   /* dense: near-opaque dark navy */
   --glass-border-light: rgba(255,255,255,0.12);
   --glass-border-dark:  rgba(0,0,0,0.24);
   --glass-inner-gloss:  rgba(255,255,255,0.08);
