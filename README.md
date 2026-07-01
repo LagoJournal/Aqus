@@ -2,6 +2,8 @@
 
 Retro-Aero × Modern React component library. 76 components + 5 pure-SVG charts, full TypeScript types, OKLCH design tokens, self-hosted fonts.
 
+**Playground:** [aqus.agustinlago.xyz](https://aqus.agustinlago.xyz)
+
 **Designed to be used with the Aqus Claude agent** — a trained skill that knows every component, UX law, and brand rule. Install the package, run `npx aqus init`, and the agent configures everything and builds views for you.
 
 **Aesthetic:** 50/50 Aqua-era depth × modern restraint. Glass and gloss on structural chrome (nav, modals, drawers); flat and clean everywhere else. Signature element: the liquid bubble — every circular element is a slowly-morphing organic shape, never a perfect circle.
