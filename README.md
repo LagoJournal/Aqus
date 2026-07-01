@@ -13,7 +13,7 @@ Retro-Aero × Modern React component library. 76 components + 5 pure-SVG charts,
 ## Install
 
 ```bash
-npm install github:LagoJournal/aqus
+npm install github:LagoJournal/Aqus
 npx aqus init
 ```
 
@@ -130,8 +130,8 @@ Full reference: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)
 Components, docs, and the agent skill are versioned together. Pinning a tag gives you a matched set.
 
 ```bash
-npm install github:LagoJournal/aqus           # latest
-npm install github:LagoJournal/aqus#v0.2.0    # pinned
+npm install github:LagoJournal/Aqus           # latest
+npm install github:LagoJournal/Aqus#v0.2.0    # pinned
 ```
 
 See [`CHANGELOG.md`](CHANGELOG.md) for what changed between versions.

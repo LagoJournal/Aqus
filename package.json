@@ -45,7 +45,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LagoJournal/aqus.git"
+    "url": "https://github.com/LagoJournal/Aqus.git"
   },
   "author": "Agustin Lago <lagoagustindev@gmail.com>",
   "keywords": ["design-system", "react", "aqua", "retro-aero", "component-library"],
