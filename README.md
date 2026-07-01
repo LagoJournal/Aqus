@@ -1,102 +1,89 @@
 # Aqus
 
-Retro-Aero × Modern React component library. Glass and gloss on structural chrome (nav, modals, cards); flat and clean everywhere else. 76 components + 5 pure-SVG charts, full TypeScript types, CSS design tokens, self-hosted fonts.
+Retro-Aero × Modern React component library. 76 components + 5 pure-SVG charts, full TypeScript types, OKLCH design tokens, self-hosted fonts.
 
-**Aesthetic:** 50/50 Aqua-era depth × modern restraint. Signature element: the liquid bubble — every round element is a slowly-morphing organic blob, never a perfect circle.
+**Designed to be used with the Aqus Claude agent** — a trained skill that knows every component, UX law, and brand rule. Install the package, run `npx aqus init`, and the agent configures everything and builds views for you.
+
+**Aesthetic:** 50/50 Aqua-era depth × modern restraint. Glass and gloss on structural chrome (nav, modals, drawers); flat and clean everywhere else. Signature element: the liquid bubble — every circular element is a slowly-morphing organic shape, never a perfect circle.
 
 ---
 
 ## Install
 
 ```bash
-# Pin a version (recommended — get components + docs locked together)
-npm install github:LagoJournal/aqus#v0.1.0
-
-# Always latest main (use for active development on Aqus itself)
 npm install github:LagoJournal/aqus
-
-# Local sibling path (monorepo or side-by-side dev)
-npm install file:../aqus
+npx aqus init
 ```
+
+`init` does everything in one interactive prompt:
+- Picks your accent color (10 presets or custom H / C / L)
+- Writes `aqus.css` with all 9 tokens derived for light and dark mode
+- Injects `@agustin/aqus/styles.css` import into your entry point (auto-detected)
+- Installs the Aqus design agent for Claude Code (if present)
 
 ---
 
-## How to use
+## The design agent
+
+Once installed (`npx aqus init` or `npx aqus agent install`), the agent skill activates in Claude Code as `/aqus-design`. It knows:
+
+- Every component — when to use it, what props it takes, what it looks like
+- 10 UX laws translated into concrete component rules (Fitts, Hick, Miller, Doherty…)
+- Brand rules — glass only on chrome, liquid shape ≠ liquid behavior, one accent
+- Voice system — three registers, microcopy patterns, copy checklist
+
+**Workflow:** describe the UI you want → the agent reads the docs, picks a view recipe, composes complete JSX, and runs the Aqus bar checklist before handing it to you.
+
+Agent docs: [`docs/AGENT_GUIDE.md`](docs/AGENT_GUIDE.md) · [`docs/ux-laws.md`](docs/ux-laws.md) · [`docs/voice-rules.md`](docs/voice-rules.md)
+
+---
+
+## Manual setup
+
+If you prefer not to use the CLI:
 
 ### 1. Import global CSS
 
-Once, at your app root (`main.jsx`, `_app.tsx`, `layout.tsx`):
+Once, at your app root:
 
 ```js
 import '@agustin/aqus/styles.css'
 ```
 
-This loads all design tokens — colors, typography, spacing, elevation, motion, and material recipes.
+### 2. Set your accent
 
-### 2. Set your accent color
-
-Add to your root CSS:
+`npx aqus init` writes this automatically. To do it manually, add to your root CSS:
 
 ```css
 :root {
-  /* Override all 9 tokens to set your brand accent.
-     Default is cobalt. Constraints: L 0.55–0.72, C 0.12–0.24. */
-  --accent:        oklch(0.60 0.20 255);
-  --accent-hover:  oklch(0.64 0.20 255);
-  --accent-light:  oklch(0.92 0.06 255);
-  --accent-mid:    oklch(0.75 0.14 255);
-  --accent-text:   oklch(0.30 0.16 255);
-  --accent-glow:   oklch(0.60 0.20 255 / 0.35);
-  --accent-glass:  oklch(0.60 0.20 255 / 0.08);
-  --focus-ring:    oklch(0.60 0.20 255 / 0.50);
-  --on-accent:     oklch(1.00 0.00 0);
+  /* One hue drives all 9 tokens. Constraints: L 0.55–0.72, C 0.12–0.24. */
+  --accent-h:      265;
+  --accent:        oklch(0.60 0.21 265);
+  --accent-hover:  oklch(0.54 0.23 265);
+  --accent-light:  oklch(0.92 0.074 265);
+  --accent-mid:    oklch(0.78 0.116 265);
+  --accent-text:   oklch(0.25 0.053 265);
+  --accent-glow:   oklch(0.60 0.21 265 / 0.25);
+  --accent-glass:  oklch(0.60 0.21 265 / 0.12);
+  --focus-ring:    oklch(0.60 0.25 265 / 0.80);
+  --on-accent:     oklch(0.99 0.005 265);
 }
 ```
 
-Never introduce a second brand color. Never use hex — OKLCH only.
+The derivation formula and dark-mode variants are in [`src/tokens/ACCENT.md`](src/tokens/ACCENT.md).
 
-### 3. Import components
-
-```jsx
-import { Button, Card, NavBar, Dialog, Stack } from '@agustin/aqus'
-
-export function MyPage() {
-  return (
-    <>
-      <NavBar logo={<Wordmark />} nav={[{ label: 'Home', href: '/' }]} />
-      <Stack gap={24}>
-        <Card>
-          <Button variant="primary">Get started</Button>
-        </Card>
-      </Stack>
-    </>
-  )
-}
-```
-
-### 4. Dark mode
+### 3. Dark mode
 
 ```html
 <html data-theme="dark">
 ```
 
-Or toggle in JS:
-```js
-document.documentElement.dataset.theme = 'dark'
-```
+### 4. Icons
 
-### 5. Icons
-
-Aqus uses [Phosphor Icons](https://phosphoricons.com/) for UI icons:
+Aqus uses [Phosphor Icons](https://phosphoricons.com/):
 
 ```html
-<!-- Add to <head> -->
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
-```
-
-```jsx
-<Button icon={<i className="ph ph-plus" />}>New project</Button>
-<IconButton icon={<i className="ph ph-gear" />} label="Settings" />
 ```
 
 ---
@@ -115,41 +102,34 @@ Aqus uses [Phosphor Icons](https://phosphoricons.com/) for UI icons:
 | **layout** | Container, Stack, Section, Prose, PageHeader, HeroSection, NavBar, Footer |
 | **content** | StatCard, FeatureCard, FilterBar, TestimonialCard, BlogCard, MediaCard, NotificationItem, Carousel |
 | **brand** | Monogram, Wordmark |
-| **charts** | BarChart, LineChart, DonutChart, Sparkline, ChartLegend (pure SVG, accent-derived palette) |
+| **charts** | BarChart, LineChart, DonutChart, Sparkline, ChartLegend — pure SVG, no deps, accent-derived palette |
 
-Each component has a `.d.ts` (TypeScript props contract) and a `.prompt.md` (what/when + example) in `src/components/`.
-
-→ Full reference: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)
+Full reference: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)
 
 ---
 
-## Design rules (short version)
+## Core rules
 
-1. **One accent** — set 9 `--accent-*` tokens in `:root {}`. L: 0.55–0.72, C: 0.12–0.24.
-2. **Glass = structural only** — NavBar, Dialog, Drawer, Popover, GlassPanel. Content on flat `surface`.
+1. **One accent** — override all 9 `--accent-*` tokens + `--accent-h`. L 0.55–0.72, C 0.12–0.24. No hex.
+2. **Glass = structural chrome only** — NavBar, Dialog, Drawer, GlassPanel. Content uses flat `var(--surface)`.
 3. **Round = LiquidBubble** — never `border-radius: 50%`.
-4. **Tokens, not literals** — `var(--spacing-4)` not `16px`. `var(--accent)` not a hex color.
-5. **Compose from primitives** — never re-style raw `<button>`, `<input>`, `<div>`.
-6. **Motion physics** — spring entrances, hover lift, glassy fades. No ambient animation on data.
-7. **Copy: sentence case, terse, no emoji in UI.**
+4. **Tokens, not literals** — `var(--space-4)`, `var(--accent)`. Never `16px` or `#3b82f6`.
+5. **Theme-adaptive** — use `--bg`, `--surface`, `--text`, `--border`. Never light/dark-specific aliases.
+6. **Compose from primitives** — `<Button>` not `<button>`. Never rebuild a library component in a view.
+7. **Liquid = shape only** — the morph animation is decoration. Interaction never depends on morph state.
+8. **One emphasis per region** — one accent element per card or section. Pair color with icon or weight.
+9. **Feedback < 400ms** — every action needs immediate visible response.
+10. **Right register** — intentive by default, creative at peaks only, technical for docs/data.
 
 ---
 
 ## Versioning
 
-Each git tag is a self-contained release. Components and documentation are versioned together — pinning a tag gives you matching guides.
+Components, docs, and the agent skill are versioned together. Pinning a tag gives you a matched set.
 
 ```bash
-npm install github:LagoJournal/aqus#v0.1.0   # lock to this release
-npm install github:LagoJournal/aqus#v0.2.0   # opt into next release
+npm install github:LagoJournal/aqus           # latest
+npm install github:LagoJournal/aqus#v0.2.0    # pinned
 ```
 
 See [`CHANGELOG.md`](CHANGELOG.md) for what changed between versions.
-
----
-
-## For Claude / AI agents
-
-To compose a view using Aqus: read [`docs/AGENT_GUIDE.md`](docs/AGENT_GUIDE.md). It contains the full component catalog, view recipes, and composition rules tuned for LLM use.
-
-Or invoke the `aqus-design` skill — it routes view composition tasks to the agent guide automatically.
