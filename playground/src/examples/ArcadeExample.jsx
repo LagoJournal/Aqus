@@ -206,5 +206,70 @@ function PondGame({ addPearls, addCatch, hasLegendary }) {
     </Stack>
   )
 }
-function SpinWheel() { return null }
+// ── Game 2: Lucky Spin ───────────────────────────────────────────────
+// 8 segments · costs 5 pearls · transform-only spin (hue never animates)
+const SEGMENTS = [
+  { label: '+2', act: (g) => g.addPearls(2) },
+  { label: '—', act: () => {} },
+  { label: '+5', act: (g) => g.addPearls(5) },
+  { label: 'fish', act: (g) => g.addCatch(makeCatch('uncommon')) },
+  { label: '—', act: () => {} },
+  { label: '+10', act: (g) => g.addPearls(10) },
+  { label: '—', act: () => {} },
+  { label: 'JACKPOT', act: (g) => g.addPearls(25) },
+]
+const SEG_COLORS = ['oklch(0.6 0.12 230)', 'oklch(0.35 0.03 260)', 'oklch(0.6 0.12 200)', 'oklch(0.6 0.14 160)', 'oklch(0.35 0.03 260)', 'oklch(0.6 0.12 260)', 'oklch(0.35 0.03 260)', 'oklch(0.7 0.16 85)']
+
+function SpinWheel({ pearls, spend, addPearls, addCatch }) {
+  const [rot, setRot] = React.useState(0)
+  const [spinning, setSpinning] = React.useState(false)
+  const [result, setResult] = React.useState(null)
+  const reduced = React.useMemo(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, [])
+
+  const spin = () => {
+    if (spinning || pearls < 5) return
+    spend(5); setResult(null); setSpinning(true)
+    const seg = Math.floor(Math.random() * 8)
+    const target = rot + 360 * 4 + (360 - seg * 45 - 22.5) - (rot % 360)
+    const finish = () => {
+      SEGMENTS[seg].act({ addPearls, addCatch })
+      setResult(SEGMENTS[seg].label)
+      setSpinning(false)
+    }
+    if (reduced) { setRot(target); finish() }
+    else { setRot(target); setTimeout(finish, 2450) }
+  }
+
+  const wheelBg = `conic-gradient(${SEGMENTS.map((s, i) => `${SEG_COLORS[i]} ${i * 45}deg ${(i + 1) * 45}deg`).join(', ')})`
+  return (
+    <Stack gap={3}>
+      <div style={{ position: 'relative', width: 220, height: 220, margin: '0 auto' }}>
+        <span aria-hidden style={{ position: 'absolute', top: -6, left: '50%', transform: 'translateX(-50%)', zIndex: 2, width: 0, height: 0, borderLeft: '9px solid transparent', borderRight: '9px solid transparent', borderTop: '14px solid var(--accent)' }} />
+        <div aria-hidden style={{
+          width: '100%', height: '100%', borderRadius: '50%',
+          background: wheelBg,
+          border: '4px solid var(--border)',
+          transform: `rotate(${rot}deg)`,
+          transition: reduced || !spinning ? 'none' : 'transform 2.4s var(--ease-spring)',
+        }} />
+        <span className="foil-bubble chrome" style={{ position: 'absolute', left: '50%', top: '50%', width: 44, height: 44, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }} />
+      </div>
+      <Stack direction="row" wrap gap={2} align="center" style={{ justifyContent: 'center' }}>
+        <button className="fx-aero agus-focusable" onClick={spin} disabled={spinning || pearls < 5}
+          style={{ ...aeroBtn, opacity: spinning || pearls < 5 ? 0.6 : 1 }}>
+          Spin — 5 pearls
+        </button>
+        {pearls < 5 && !spinning && <span className="sc-item-desc">Not enough pearls — go fish.</span>}
+        {result && result !== '—' && result !== 'JACKPOT' && <span className="sc-item-desc">Won: {result === 'fish' ? 'a bonus fish → aquarium' : `${result} pearls`}</span>}
+        {result === '—' && <span className="sc-item-desc">Blank. The pond gives, the wheel takes.</span>}
+        {result === 'JACKPOT' && (
+          <Stack direction="row" gap={2} align="center">
+            <span className="foil-text-zine foil-text-glitch" style={{ fontSize: 'var(--text-h4)' }}>JACKPOT +25</span>
+            <span className="foil-sparkle pop" />
+          </Stack>
+        )}
+      </Stack>
+    </Stack>
+  )
+}
 function Aquarium() { return null }
