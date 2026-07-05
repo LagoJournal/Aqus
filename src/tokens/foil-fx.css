@@ -1,0 +1,84 @@
+/* ============================================================
+   Aqus — Foil FX · Optics layer  (Liquid Identity DLC)
+   ------------------------------------------------------------
+   foil = metal (luminance) + spectrum (hue) + light (--lx --ly)
+        + grit (ribs · grain). Remove any layer → cheap finish.
+   The light is the liquid: it drifts, leans to the pointer, or
+   passes once. Hue NEVER spins — the hue-rotation filter is
+   banned library-wide.
+
+   GATE: every ruleset below the PRIMITIVES block is scoped to
+   the data-liquid attribute (stamp it on <html> or any subtree
+   root). foil-fx.js reads localStorage['aqus-liquid'] and stamps it.
+   With the DLC off, elements fall back to the OFF-STATE rules —
+   nothing may become invisible or unreadable.
+   ============================================================ */
+
+/* ============ PRIMITIVES (ungated — registration is harmless) */
+
+@property --lx { syntax: "<percentage>"; inherits: true; initial-value: 32%; }
+@property --ly { syntax: "<percentage>"; inherits: true; initial-value: 18%; }
+
+:root {
+  /* Achromatic silver ridge field — always oversized (300%+) and
+     panned by the light point so ridges travel under the rainbow. */
+  --fx-metal: linear-gradient(118deg,
+    oklch(0.92 0 0) 0%,  oklch(0.60 0 0) 9%,  oklch(0.88 0 0) 21%,
+    oklch(0.52 0 0) 33%, oklch(0.96 0 0) 47%, oklch(0.58 0 0) 61%,
+    oklch(0.90 0 0) 74%, oklch(0.50 0 0) 88%, oklch(0.86 0 0) 100%);
+
+  /* Full-spectrum conic anchored AT the light point. Arrives via
+     background-blend-mode: color — hue+chroma only, no luminance. */
+  --fx-spectrum: conic-gradient(from 210deg at var(--lx) var(--ly),
+    oklch(0.72 0.20 350), oklch(0.68 0.23 300), oklch(0.64 0.20 245),
+    oklch(0.76 0.15 205), oklch(0.80 0.19 140), oklch(0.87 0.17 105),
+    oklch(0.78 0.16 40),  oklch(0.72 0.20 350));
+
+  /* Pastel interference version for pearl. */
+  --fx-nacre: conic-gradient(from 210deg at var(--lx) var(--ly),
+    oklch(0.90 0.06 350), oklch(0.90 0.07 300), oklch(0.90 0.06 245),
+    oklch(0.90 0.06 205), oklch(0.90 0.07 140), oklch(0.90 0.06 105),
+    oklch(0.90 0.06 40),  oklch(0.90 0.06 350));
+
+  /* Warm heat conic for aurora. */
+  --fx-heat: conic-gradient(from 210deg at var(--lx) var(--ly),
+    oklch(0.70 0.19 350), oklch(0.78 0.18 25), oklch(0.86 0.16 90),
+    oklch(0.70 0.19 350), oklch(0.66 0.20 305), oklch(0.70 0.19 350));
+
+  /* Photographic grain — 160px fractal-noise tile, desaturated. */
+  --fx-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+
+  --fx-dur-light: 16s;      /* ambient drift */
+  --fx-dur-shine: 3200ms;   /* one-way pass  */
+}
+
+/* ============ OFF-STATE fallbacks (ungated — acceptance: nothing
+   invisible or unreadable with the DLC off) */
+.fx-aero { background: var(--accent); color: var(--on-accent); }           /* OFF-STATE */
+.fx-frame { border: 1px solid var(--border); border-radius: var(--radius-lg); } /* OFF-STATE */
+.fx-text-holo, .fx-text-chrome { color: var(--text); }                     /* OFF-STATE */
+
+/* ============ LIGHT BEHAVIORS (gated) ======================== */
+
+/* Drift — the light wanders a slow closed path. */
+@keyframes fx-drift {
+  0%, 100% { --lx: 32%; --ly: 18%; }
+  25%      { --lx: 68%; --ly: 30%; }
+  50%      { --lx: 58%; --ly: 72%; }
+  75%      { --lx: 22%; --ly: 55%; }
+}
+[data-liquid] .fx-live { animation: fx-drift var(--fx-dur-light) var(--ease-inout) infinite; }
+/* Lean — JS adds .fx-hold while the pointer owns the light. */
+[data-liquid] .fx-hold { animation-play-state: paused; }
+
+/* ============ SOLID FINISHES ================================= */
+/* (appended by integration tasks) */
+
+/* ============ GLAZE — .fx-finish ============================= */
+/* (appended by integration tasks) */
+
+/* ============ FRAME · AERO · SHINE · TEXT ==================== */
+/* (appended by integration tasks) */
+
+/* ============ CRT · GLASS · BRIDGES · REDUCED MOTION ========= */
+/* (appended by integration tasks) */
