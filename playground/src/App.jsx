@@ -7,6 +7,7 @@ import { Usage } from './sections/Usage.jsx'
 import { Glossary } from './sections/Glossary.jsx'
 import { Examples } from './sections/Examples.jsx'
 import { LiquidIdentity } from './sections/LiquidIdentity.jsx'
+import { FoilCompositions } from './sections/FoilCompositions.jsx'
 
 const NAV_LINKS = [
   { href: '#overview',   label: 'Overview' },
@@ -143,6 +144,7 @@ export function App() {
         <Brandbook />
         <Materials />
         <LiquidIdentity />
+        <FoilCompositions />
         <Usage />
         <Glossary />
         <Examples hue={hue} theme={theme} />

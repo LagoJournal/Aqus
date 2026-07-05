@@ -84,7 +84,7 @@ export function LiquidIdentity() {
             {/* Solid finishes */}
             <div>
               <span className="sc-item-cat" style={subLabel}>Solid finishes — foil is the object; keep them small</span>
-              <div className="sc-grid-4">
+              <div className="sc-grid sc-grid-4">
                 {['fx-holo', 'fx-chrome', 'fx-pearl', 'fx-aurora', 'fx-prism', 'fx-dew', 'fx-tile'].map(f => (
                   <div key={f} className={`${f} fx-live`} style={{ borderRadius: 'var(--radius-md)', minHeight: 90, position: 'relative', border: '1px solid var(--border)' }}>
                     <span style={{ position: 'absolute', bottom: 8, left: 10, zIndex: 9, fontFamily: 'var(--font-mono)', fontSize: 'var(--text-mini)', fontWeight: 600, color: f === 'fx-pearl' || f === 'fx-dew' ? 'oklch(0.25 0.02 270)' : 'oklch(0.98 0 0)', textShadow: f === 'fx-pearl' || f === 'fx-dew' ? 'none' : '0 1px 3px oklch(0 0 0 / 0.4)' }}>{f}</span>
