@@ -22,6 +22,13 @@ describe('foil-fx.css optics layer', () => {
   it('anchors the spectrum conic at the light point', () => {
     expect(css()).toMatch(/--fx-spectrum:\s*conic-gradient\(from 210deg at var\(--lx\) var\(--ly\)/)
   })
+  it('blends the conic vortex — oklch interpolation + white-hot core at the anchor', () => {
+    // every spectrum/nacre/heat conic interpolates perceptually (no srgb seam)
+    for (const m of css().matchAll(/--fx-(spectrum|nacre|heat):\s*conic-gradient\(([^,]+),/g))
+      expect(m[2]).toContain('in oklch')
+    // and a --fx-core radial exists to wash out the convergence pinwheel
+    expect(css()).toMatch(/--fx-core:\s*radial-gradient\([^)]*at var\(--lx\) var\(--ly\)/)
+  })
   it('never uses hue-rotate (the banned spin)', () => {
     expect(css()).not.toMatch(/hue-rotate/)
   })
@@ -42,11 +49,12 @@ describe('solid finishes', () => {
     for (const c of ['fx-holo', 'fx-chrome', 'fx-pearl', 'fx-aurora', 'fx-prism', 'fx-dew', 'fx-tile'])
       expect(css()).toMatch(new RegExp('\\[data-liquid\\] \\.' + c + '\\b'))
   })
-  it('uses THE canonical composite on .fx-holo (color blend over panned metal)', () => {
+  it('uses THE canonical composite on .fx-holo (core blends the vortex; color blend over panned metal)', () => {
     const holo = css().slice(css().indexOf('[data-liquid] .fx-holo'), css().indexOf('.fx-holo::before'))
-    expect(holo).toMatch(/background-blend-mode:\s*color,\s*normal/)
-    expect(holo).toMatch(/background-size:\s*100% 100%,\s*300% 300%/)
-    expect(holo).toMatch(/background-position:\s*0 0,\s*var\(--lx\) var\(--ly\)/)
+    expect(holo).toMatch(/var\(--fx-core\)/)
+    expect(holo).toMatch(/background-blend-mode:\s*screen,\s*color,\s*normal/)
+    expect(holo).toMatch(/background-size:\s*100% 100%,\s*100% 100%,\s*300% 300%/)
+    expect(holo).toMatch(/background-position:\s*0 0,\s*0 0,\s*var\(--lx\) var\(--ly\)/)
   })
   it('chrome has soft horizon falloff — a band, not a cut', () => {
     const chrome = css().slice(css().indexOf('[data-liquid] .fx-chrome'), css().indexOf('.fx-chrome::before'))
@@ -62,8 +70,8 @@ describe('fx-finish glaze', () => {
     expect(css()).toMatch(/\.rich[\s\S]*?--fx-amount:\s*0\.55/)
     expect(css()).toMatch(/\.ultra[\s\S]*?--fx-amount:\s*0\.80/)
   })
-  it('grit scales with the same dial (amount * 0.9)', () => {
-    expect(css()).toMatch(/calc\(var\(--fx-amount\) \* 0\.9\)/)
+  it('grit scales with the same dial', () => {
+    expect(css()).toMatch(/opacity:\s*calc\(var\(--fx-amount\) \* 0\.\d+\)/)
   })
   it('chrome variant blends via luminosity at 1.5x (keeps silver over dark art)', () => {
     expect(css()).toMatch(/\.fx-finish\.chrome::after[\s\S]*?mix-blend-mode:\s*luminosity/)

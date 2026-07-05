@@ -28,22 +28,29 @@
     oklch(0.90 0 0) 74%, oklch(0.50 0 0) 88%, oklch(0.86 0 0) 100%);
 
   /* Full-spectrum conic anchored AT the light point. Arrives via
-     background-blend-mode: color — hue+chroma only, no luminance. */
-  --fx-spectrum: conic-gradient(from 210deg at var(--lx) var(--ly),
+     background-blend-mode: color — hue+chroma only, no luminance.
+     `in oklch` = perceptual interpolation (no srgb banding seam). */
+  --fx-spectrum: conic-gradient(from 210deg at var(--lx) var(--ly) in oklch,
     oklch(0.72 0.20 350), oklch(0.68 0.23 300), oklch(0.64 0.20 245),
     oklch(0.76 0.15 205), oklch(0.80 0.19 140), oklch(0.87 0.17 105),
     oklch(0.78 0.16 40),  oklch(0.72 0.20 350));
 
   /* Pastel interference version for pearl. */
-  --fx-nacre: conic-gradient(from 210deg at var(--lx) var(--ly),
-    oklch(0.90 0.06 350), oklch(0.90 0.07 300), oklch(0.90 0.06 245),
-    oklch(0.90 0.06 205), oklch(0.90 0.07 140), oklch(0.90 0.06 105),
-    oklch(0.90 0.06 40),  oklch(0.90 0.06 350));
+  --fx-nacre: conic-gradient(from 210deg at var(--lx) var(--ly) in oklch,
+    oklch(0.90 0.09 350), oklch(0.90 0.10 300), oklch(0.90 0.09 245),
+    oklch(0.90 0.09 205), oklch(0.90 0.10 140), oklch(0.90 0.09 105),
+    oklch(0.90 0.09 40),  oklch(0.90 0.09 350));
 
   /* Warm heat conic for aurora. */
-  --fx-heat: conic-gradient(from 210deg at var(--lx) var(--ly),
+  --fx-heat: conic-gradient(from 210deg at var(--lx) var(--ly) in oklch,
     oklch(0.70 0.19 350), oklch(0.78 0.18 25), oklch(0.86 0.16 90),
     oklch(0.70 0.19 350), oklch(0.66 0.20 305), oklch(0.70 0.19 350));
+
+  /* White-hot core at the light point — screens over the conic's
+     convergence pinwheel so the vortex blends into the specular.
+     Always the FIRST layer of any composite that shows the spectrum. */
+  --fx-core: radial-gradient(34% 26% at var(--lx) var(--ly),
+    oklch(0.99 0 0 / 0.92), oklch(0.99 0 0 / 0.4) 40%, transparent 72%);
 
   /* Photographic grain — 160px fractal-noise tile, desaturated. */
   --fx-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
@@ -77,18 +84,18 @@
 /* -- Holo: the canonical composite + grit + specular bloom ---- */
 [data-liquid] .fx-holo {
   position: relative;
-  background: var(--fx-spectrum), var(--fx-metal);
-  background-size: 100% 100%, 300% 300%;
-  background-position: 0 0, var(--lx) var(--ly);
-  background-blend-mode: color, normal;   /* ← THE trick: hue only lands on the metal */
+  background: var(--fx-core), var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;   /* ← THE trick: hue only lands on the metal; core blends the conic vortex */
 }
 [data-liquid] .fx-holo::before {          /* grit: diffraction ribs + grain */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background:
     repeating-linear-gradient(115deg,
-      oklch(1 0 0 / 0.9) 0 1px, oklch(0 0 0 / 0.9) 1px 2px, transparent 2px 4.5px),
+      oklch(1 0 0 / 0.45) 0 1px, oklch(0 0 0 / 0.45) 1px 2px, transparent 2px 3.5px),
     var(--fx-grain);
-  mix-blend-mode: overlay; opacity: 0.55;
+  mix-blend-mode: overlay; opacity: 0.35;
 }
 [data-liquid] .fx-holo::after {           /* specular bloom + mirrored counter-bloom */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -131,10 +138,10 @@
 [data-liquid] .fx-pearl {
   position: relative;
   background:
-    radial-gradient(80% 60% at 24% 30%, oklch(0.93 0.04 350 / 0.55), transparent 60%),
-    radial-gradient(70% 55% at 76% 36%, oklch(0.92 0.04 205 / 0.5), transparent 58%),
-    radial-gradient(75% 60% at 50% 78%, oklch(0.93 0.04 140 / 0.45), transparent 60%),
-    oklch(0.96 0.01 85);
+    radial-gradient(80% 60% at 24% 30%, oklch(0.90 0.09 350 / 0.75), transparent 62%),
+    radial-gradient(70% 55% at 76% 36%, oklch(0.88 0.09 205 / 0.7), transparent 60%),
+    radial-gradient(75% 60% at 50% 78%, oklch(0.90 0.09 140 / 0.6), transparent 62%),
+    oklch(0.95 0.015 85);
 }
 [data-liquid] .fx-pearl::before {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -150,10 +157,10 @@
 /* -- Aurora: the heat conic on the same metal model */
 [data-liquid] .fx-aurora {
   position: relative;
-  background: var(--fx-heat), var(--fx-metal);
-  background-size: 100% 100%, 300% 300%;
-  background-position: 0 0, var(--lx) var(--ly);
-  background-blend-mode: color, normal;
+  background: var(--fx-core), var(--fx-heat), var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
 }
 [data-liquid] .fx-aurora::after {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -164,10 +171,10 @@
 /* -- Prism: holo cut by two off-center hard-stop facet fans */
 [data-liquid] .fx-prism {
   position: relative;
-  background: var(--fx-spectrum), var(--fx-metal);
-  background-size: 100% 100%, 300% 300%;
-  background-position: 0 0, var(--lx) var(--ly);
-  background-blend-mode: color, normal;
+  background: var(--fx-core), var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
 }
 [data-liquid] .fx-prism::before {         /* shattered facets — no SVG, no tiling, no seams */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -199,7 +206,7 @@
     radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 55% 84% / 48px 48px no-repeat,
     radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 90% 86% / 24px 24px no-repeat,
     radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 26% 4% / 32px 32px no-repeat,
-    oklch(0.85 0.035 220 / 0.55);
+    linear-gradient(150deg, oklch(0.82 0.07 230 / 0.75), oklch(0.78 0.10 200 / 0.65));
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
 }
@@ -212,17 +219,17 @@
 /* -- Tile: holo mosaic with wet grout ---- */
 [data-liquid] .fx-tile {
   position: relative;
-  background: var(--fx-spectrum), var(--fx-metal);
-  background-size: 100% 100%, 300% 300%;
-  background-position: 0 0, var(--lx) var(--ly);
-  background-blend-mode: color, normal;
+  background: var(--fx-core), var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
 }
 [data-liquid] .fx-tile::before {          /* grout + per-cell wet top-gloss */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background:
-    repeating-linear-gradient(to right,  oklch(0 0 0 / 0.35) 0 2px, transparent 2px 28px),
-    repeating-linear-gradient(to bottom, oklch(0 0 0 / 0.35) 0 2px, transparent 2px 28px),
-    repeating-linear-gradient(to bottom, oklch(1 0 0 / 0.30) 2px 8px, oklch(0 0 0 / 0.12) 20px 28px);
+    repeating-linear-gradient(to right,  oklch(0 0 0 / 0.16) 0 2px, transparent 2px 28px),
+    repeating-linear-gradient(to bottom, oklch(0 0 0 / 0.16) 0 2px, transparent 2px 28px),
+    repeating-linear-gradient(to bottom, oklch(1 0 0 / 0.16) 2px 8px, oklch(0 0 0 / 0.07) 20px 28px);
   mix-blend-mode: overlay;
 }
 [data-liquid] .fx-tile::after {
@@ -243,21 +250,24 @@
   content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none;
   background:
     repeating-linear-gradient(115deg,
-      oklch(1 0 0 / 0.9) 0 1px, oklch(0 0 0 / 0.9) 1px 2px, transparent 2px 4.5px),
+      oklch(1 0 0 / 0.45) 0 1px, oklch(0 0 0 / 0.45) 1px 2px, transparent 2px 3.5px),
     var(--fx-grain);
   mix-blend-mode: overlay;
-  opacity: calc(var(--fx-amount) * 0.9);
+  opacity: calc(var(--fx-amount) * 0.55);
 }
 
-[data-liquid] .fx-finish::after {         /* z5 — sheen: bloom + spectrum + metal */
+[data-liquid] .fx-finish::after {         /* z5 — sheen: core + bloom + spectrum + metal.
+   The core radial whites out the conic's convergence point so the
+   vortex blends into the specular instead of reading as a pinwheel. */
   content: ""; position: absolute; inset: 0; z-index: 5; border-radius: inherit; pointer-events: none;
   background:
+    var(--fx-core),
     radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
     var(--fx-spectrum),
     var(--fx-metal);
-  background-size: 100% 100%, 100% 100%, 300% 300%;
-  background-position: 0 0, 0 0, var(--lx) var(--ly);
-  background-blend-mode: screen, color, normal;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, screen, color, normal;
   mix-blend-mode: overlay;
   opacity: var(--fx-amount);
   filter: saturate(1.15);
@@ -272,21 +282,23 @@
 /* Variants — swap only the spectrum */
 [data-liquid] .fx-finish.pearl::after {
   background:
+    var(--fx-core),
     radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
     var(--fx-nacre),
     var(--fx-metal);
-  background-size: 100% 100%, 100% 100%, 300% 300%;
-  background-position: 0 0, 0 0, var(--lx) var(--ly);
-  background-blend-mode: screen, color, normal;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, screen, color, normal;
 }
 [data-liquid] .fx-finish.aurora::after {
   background:
+    var(--fx-core),
     radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
     var(--fx-heat),
     var(--fx-metal);
-  background-size: 100% 100%, 100% 100%, 300% 300%;
-  background-position: 0 0, 0 0, var(--lx) var(--ly);
-  background-blend-mode: screen, color, normal;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, screen, color, normal;
 }
 /* Chrome glaze: metal only, luminosity — keeps chrome silver over
    dark art in dark mode. Give chrome demos a fixed steel base. */
@@ -308,7 +320,7 @@
   position: absolute; inset: 0; z-index: 6; border-radius: inherit; pointer-events: none;
   background:
     repeating-linear-gradient(116deg,
-      transparent 0 34px, oklch(1 0 0 / 0.5) 34px 35px, transparent 35px 89px),
+      transparent 0 60px, oklch(1 0 0 / 0.16) 60px 61px, transparent 61px 150px),
     radial-gradient(2px 2px at 12% 22%, oklch(1 0 0), transparent),
     radial-gradient(2px 2px at 78% 14%, oklch(1 0 0), transparent),
     radial-gradient(1.5px 1.5px at 32% 64%, oklch(1 0 0), transparent),
@@ -320,7 +332,7 @@
   mix-blend-mode: screen;
   animation: fx-twinkle 3.2s var(--ease-inout) infinite;
 }
-@keyframes fx-twinkle { 0%, 100% { opacity: 0.38; } 50% { opacity: 0.72; } }
+@keyframes fx-twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.5; } }
 
 /* Scrim — any text over a finish rides above the glaze pseudos
    (z4–5) on a bottom-up dark gradient; put text content at z7. */
@@ -337,12 +349,13 @@
   position: relative; border: none; padding: 5px;
   border-radius: var(--radius-lg);
   background:
+    var(--fx-core),
     radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.8), transparent 64%),
     var(--fx-spectrum),
     var(--fx-metal);
-  background-size: 100% 100%, 100% 100%, 300% 300%;
-  background-position: 0 0, 0 0, var(--lx) var(--ly);
-  background-blend-mode: screen, color, normal;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, screen, color, normal;
 }
 [data-liquid] .fx-frame > * { border-radius: calc(var(--radius-lg) - 5px); }
 [data-liquid] .fx-frame.thin { padding: 2.5px; }
@@ -357,12 +370,13 @@
 }
 [data-liquid] .fx-frame.pearl {
   background:
+    var(--fx-core),
     radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.8), transparent 64%),
     var(--fx-nacre),
     var(--fx-metal);
-  background-size: 100% 100%, 100% 100%, 300% 300%;
-  background-position: 0 0, 0 0, var(--lx) var(--ly);
-  background-blend-mode: screen, color, normal;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, screen, color, normal;
 }
 
 /* -- Aero: the frutiger action surface. ACCENT-driven; the
@@ -414,10 +428,10 @@
 /* -- Text fills: only on display type sitting ON a surface
    (law 5: foil the container, not floating letters). */
 [data-liquid] .fx-text-holo {
-  background: var(--fx-spectrum), var(--fx-metal);
-  background-size: 100% 100%, 300% 300%;
-  background-position: 0 0, var(--lx) var(--ly);
-  background-blend-mode: color, normal;
+  background: var(--fx-core), var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
   -webkit-background-clip: text; background-clip: text;
   color: transparent; -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 2px 6px oklch(0 0 0 / 0.35));
@@ -488,10 +502,10 @@
    any hue animation. */
 [data-liquid] .foil-sticker.holo,
 [data-liquid] .foil-sticker.label.holo {
-  background: var(--fx-spectrum), var(--fx-metal);
-  background-size: 100% 100%, 300% 300%;
-  background-position: 0 0, var(--lx) var(--ly);
-  background-blend-mode: color, normal;
+  background: var(--fx-core), var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
   animation: none;
 }
 [data-liquid] .foil-sticker.chrome {
@@ -502,17 +516,17 @@
   animation: none;
 }
 [data-liquid] .foil-bubble.holo {
-  background: var(--fx-spectrum), var(--fx-metal);
-  background-size: 100% 100%, 300% 300%;
-  background-position: 0 0, var(--lx) var(--ly);
-  background-blend-mode: color, normal;
+  background: var(--fx-core), var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
   animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
 }
 [data-liquid] .foil-bubble.iris {
-  background: var(--fx-nacre), var(--fx-metal);
-  background-size: 100% 100%, 300% 300%;
-  background-position: 0 0, var(--lx) var(--ly);
-  background-blend-mode: color, normal;
+  background: var(--fx-core), var(--fx-nacre), var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
   animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
 }
 [data-liquid] .foil-bubble.chrome {
