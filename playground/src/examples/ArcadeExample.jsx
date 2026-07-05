@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Button, Badge, Tag, Stack, SegmentedControl } from '@agustin/aqus'
+import { Card, Badge, Tag, Stack, SegmentedControl } from '@agustin/aqus'
 import { AqusFoil } from '@agustin/aqus/foil-fx'
 
 /**
@@ -272,4 +272,55 @@ function SpinWheel({ pearls, spend, addPearls, addCatch }) {
     </Stack>
   )
 }
-function Aquarium() { return null }
+// ── Game 3: Aquarium ─────────────────────────────────────────────────
+// fx-glass liquid tank; fish = punk bubbles by rarity; ≤5 shown (budget)
+const BUBBLE_VARIANT = { common: '', uncommon: 'iris', rare: 'holo', legendary: 'chrome' }
+const SPOTS = [[14, 30], [38, 55], [60, 25], [76, 60], [28, 72]]
+
+function Aquarium({ catches, pearls, spend, grow }) {
+  const [fedId, setFedId] = React.useState(null)
+  const shown = catches.slice(0, 5)
+
+  const feed = () => {
+    if (pearls < 1 || catches.length === 0) return
+    spend(1)
+    const f = catches[Math.floor(Math.random() * catches.length)]
+    grow(f.id); setFedId(f.id + '-' + Date.now()) // key change retriggers glint
+  }
+
+  if (catches.length === 0) {
+    return (
+      <Card style={{ textAlign: 'center', padding: 'var(--space-7)' }}>
+        <Stack gap={2} align="center">
+          <span style={{ fontSize: 34 }}>🎣</span>
+          <strong>Nothing swimming yet</strong>
+          <span className="sc-item-desc">Cast a line in the Pond — every catch lands here.</span>
+        </Stack>
+      </Card>
+    )
+  }
+
+  return (
+    <Stack gap={3}>
+      <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', minHeight: 210, background: 'linear-gradient(165deg, oklch(0.5 0.1 220), oklch(0.35 0.12 255) 60%, oklch(0.28 0.1 275))' }}>
+        {/* the glass front of the tank — light-aware, chromatic fringes */}
+        <div key={fedId} className={`fx-glass liquid fx-live ${fedId ? 'fx-shine glint' : ''}`} style={{ position: 'absolute', inset: 10, borderRadius: 'var(--radius-lg)', zIndex: 2, pointerEvents: 'none' }} />
+        {shown.map((c, i) => (
+          <span key={c.id} title={c.name}
+            className={`foil-bubble ${BUBBLE_VARIANT[c.rarity]} ${i % 2 ? 'foil-float' : 'foil-drift'}`}
+            style={{ position: 'absolute', left: `${SPOTS[i][0]}%`, top: `${SPOTS[i][1]}%`, width: 22 + c.size * 10, height: 22 + c.size * 10, zIndex: 1, fontSize: 12 + c.size * 4 }}>
+            {c.emoji}
+          </span>
+        ))}
+        {catches.length > 5 && <Tag style={{ position: 'absolute', right: 10, bottom: 10, zIndex: 3 }}>+{catches.length - 5} more</Tag>}
+        {catches.some(c => c.rarity === 'legendary') && <span className="foil-sparkle blink" style={{ position: 'absolute', right: 24, top: 18, zIndex: 3 }} />}
+      </div>
+      <Stack direction="row" wrap gap={2} align="center">
+        <button className="fx-aero agus-focusable" onClick={feed} disabled={pearls < 1} style={{ ...aeroBtn, opacity: pearls < 1 ? 0.6 : 1 }}>
+          Feed — 1 pearl
+        </button>
+        <span className="sc-item-desc">Feeding grows a random fish (3 sizes). Rarity shows as the bubble's finish.</span>
+      </Stack>
+    </Stack>
+  )
+}
