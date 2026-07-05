@@ -3,11 +3,13 @@ import { Section, Container, SegmentedControl, Badge } from '@agustin/aqus'
 import { DashboardExample } from '../examples/DashboardExample.jsx'
 import { ProfileExample } from '../examples/ProfileExample.jsx'
 import { JournalExample } from '../examples/JournalExample.jsx'
+import { ArcadeExample } from '../examples/ArcadeExample.jsx'
 
 const VIEWS = {
   dashboard: { label: 'Dashboard', node: <DashboardExample /> },
   journal:   { label: 'Journal',   node: <JournalExample /> },
   profile:   { label: 'Profile',   node: <ProfileExample /> },
+  arcade:    { label: 'Arcade',    node: <ArcadeExample /> },
 }
 
 function darkAccentVars(h) {
