@@ -6,11 +6,13 @@ import { Materials } from './sections/Materials.jsx'
 import { Usage } from './sections/Usage.jsx'
 import { Glossary } from './sections/Glossary.jsx'
 import { Examples } from './sections/Examples.jsx'
+import { LiquidIdentity } from './sections/LiquidIdentity.jsx'
 
 const NAV_LINKS = [
   { href: '#overview',   label: 'Overview' },
   { href: '#brand',      label: 'Brand' },
   { href: '#materials',  label: 'Glass' },
+  { href: '#liquid',     label: 'Liquid' },
   { href: '#usage',      label: 'Usage' },
   { href: '#glossary',   label: 'Components' },
   { href: '#examples',   label: 'Examples' },
@@ -140,6 +142,7 @@ export function App() {
         <Hero onPrimary={() => scrollTo('usage')} onSecondary={() => scrollTo('glossary')} />
         <Brandbook />
         <Materials />
+        <LiquidIdentity />
         <Usage />
         <Glossary />
         <Examples hue={hue} theme={theme} />

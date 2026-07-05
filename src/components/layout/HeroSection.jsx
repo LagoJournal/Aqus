@@ -33,13 +33,14 @@ export function HeroSection({
         position: 'absolute', width: '36%', aspectRatio: '1 / 1', right: '-4%', top: '-12%',
         background: 'linear-gradient(140deg, var(--accent-mid), var(--accent))', opacity: 0.18,
         borderRadius: '42% 58% 63% 37% / 41% 44% 56% 59%',
-        animation: 'agus-liquid 11s var(--ease-inout) infinite', filter: 'blur(4px)',
+        // calc off --dur-liquid (10s) so reduced-motion (token → 0ms) freezes it
+        animation: 'agus-liquid calc(var(--dur-liquid) * 1.1) var(--ease-inout) infinite', filter: 'blur(4px)',
       }} />
       <span aria-hidden="true" style={{
         position: 'absolute', width: '22%', aspectRatio: '1 / 1', right: '18%', bottom: '-18%',
         background: 'var(--accent-glass)',
         borderRadius: '42% 58% 63% 37% / 41% 44% 56% 59%',
-        animation: 'agus-liquid 9s var(--ease-inout) infinite', animationDelay: '-4s',
+        animation: 'agus-liquid calc(var(--dur-liquid) * 0.9) var(--ease-inout) infinite', animationDelay: '-4s',
       }} />
       <div style={{ position: 'relative', maxWidth: align === 'center' ? 680 : 640, marginInline: align === 'center' ? 'auto' : undefined }}>
         {eyebrow && (

@@ -1,0 +1,543 @@
+/* ============================================================
+   Aqus — Foil FX · Optics layer  (Liquid Identity DLC)
+   ------------------------------------------------------------
+   foil = metal (luminance) + spectrum (hue) + light (--lx --ly)
+        + grit (ribs · grain). Remove any layer → cheap finish.
+   The light is the liquid: it drifts, leans to the pointer, or
+   passes once. Hue NEVER spins — the hue-rotation filter is
+   banned library-wide.
+
+   GATE: every ruleset below the PRIMITIVES block is scoped to
+   the data-liquid attribute (stamp it on <html> or any subtree
+   root). foil-fx.js reads localStorage['aqus-liquid'] and stamps it.
+   With the DLC off, elements fall back to the OFF-STATE rules —
+   nothing may become invisible or unreadable.
+   ============================================================ */
+
+/* ============ PRIMITIVES (ungated — registration is harmless) */
+
+@property --lx { syntax: "<percentage>"; inherits: true; initial-value: 32%; }
+@property --ly { syntax: "<percentage>"; inherits: true; initial-value: 18%; }
+
+:root {
+  /* Achromatic silver ridge field — always oversized (300%+) and
+     panned by the light point so ridges travel under the rainbow. */
+  --fx-metal: linear-gradient(118deg,
+    oklch(0.92 0 0) 0%,  oklch(0.60 0 0) 9%,  oklch(0.88 0 0) 21%,
+    oklch(0.52 0 0) 33%, oklch(0.96 0 0) 47%, oklch(0.58 0 0) 61%,
+    oklch(0.90 0 0) 74%, oklch(0.50 0 0) 88%, oklch(0.86 0 0) 100%);
+
+  /* Full-spectrum conic anchored AT the light point. Arrives via
+     background-blend-mode: color — hue+chroma only, no luminance. */
+  --fx-spectrum: conic-gradient(from 210deg at var(--lx) var(--ly),
+    oklch(0.72 0.20 350), oklch(0.68 0.23 300), oklch(0.64 0.20 245),
+    oklch(0.76 0.15 205), oklch(0.80 0.19 140), oklch(0.87 0.17 105),
+    oklch(0.78 0.16 40),  oklch(0.72 0.20 350));
+
+  /* Pastel interference version for pearl. */
+  --fx-nacre: conic-gradient(from 210deg at var(--lx) var(--ly),
+    oklch(0.90 0.06 350), oklch(0.90 0.07 300), oklch(0.90 0.06 245),
+    oklch(0.90 0.06 205), oklch(0.90 0.07 140), oklch(0.90 0.06 105),
+    oklch(0.90 0.06 40),  oklch(0.90 0.06 350));
+
+  /* Warm heat conic for aurora. */
+  --fx-heat: conic-gradient(from 210deg at var(--lx) var(--ly),
+    oklch(0.70 0.19 350), oklch(0.78 0.18 25), oklch(0.86 0.16 90),
+    oklch(0.70 0.19 350), oklch(0.66 0.20 305), oklch(0.70 0.19 350));
+
+  /* Photographic grain — 160px fractal-noise tile, desaturated. */
+  --fx-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+
+  --fx-dur-light: 16s;      /* ambient drift */
+  --fx-dur-shine: 3200ms;   /* one-way pass  */
+}
+
+/* ============ OFF-STATE fallbacks (ungated — acceptance: nothing
+   invisible or unreadable with the DLC off) */
+.fx-aero { background: var(--accent); color: var(--on-accent); }           /* OFF-STATE */
+.fx-frame { border: 1px solid var(--border); border-radius: var(--radius-lg); } /* OFF-STATE */
+.fx-text-holo, .fx-text-chrome { color: var(--text); }                     /* OFF-STATE */
+
+/* ============ LIGHT BEHAVIORS (gated) ======================== */
+
+/* Drift — the light wanders a slow closed path. */
+@keyframes fx-drift {
+  0%, 100% { --lx: 32%; --ly: 18%; }
+  25%      { --lx: 68%; --ly: 30%; }
+  50%      { --lx: 58%; --ly: 72%; }
+  75%      { --lx: 22%; --ly: 55%; }
+}
+[data-liquid] .fx-live { animation: fx-drift var(--fx-dur-light) var(--ease-inout) infinite; }
+/* Lean — JS adds .fx-hold while the pointer owns the light. */
+[data-liquid] .fx-hold { animation-play-state: paused; }
+
+/* ============ SOLID FINISHES ================================= */
+/* Foil IS the object here — keep these surfaces small.          */
+
+/* -- Holo: the canonical composite + grit + specular bloom ---- */
+[data-liquid] .fx-holo {
+  position: relative;
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;   /* ← THE trick: hue only lands on the metal */
+}
+[data-liquid] .fx-holo::before {          /* grit: diffraction ribs + grain */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(115deg,
+      oklch(1 0 0 / 0.9) 0 1px, oklch(0 0 0 / 0.9) 1px 2px, transparent 2px 4.5px),
+    var(--fx-grain);
+  mix-blend-mode: overlay; opacity: 0.55;
+}
+[data-liquid] .fx-holo::after {           /* specular bloom + mirrored counter-bloom */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.72), transparent 64%),
+    radial-gradient(60% 45% at calc(100% - var(--lx)) calc(100% - var(--ly)), oklch(1 0 0 / 0.16), transparent 58%);
+  mix-blend-mode: screen;
+}
+
+/* -- Chrome: Y2K horizon metal. Fixed steel base — NEVER theme vars.
+   Fast mid-grey falloff 44→52% (a band, not a cut — cuts read as seams). */
+[data-liquid] .fx-chrome {
+  position: relative;
+  background: linear-gradient(to bottom,
+    oklch(0.88 0.03 235) 0%,   /* cool sky        */
+    oklch(0.72 0.05 230) 24%,
+    oklch(0.86 0.09 60)  36%,  /* warm sunset band */
+    oklch(0.60 0.02 250) 44%,  /* falloff begins   */
+    oklch(0.36 0.01 250) 52%,  /* …through horizon */
+    oklch(0.28 0.02 255) 70%,  /* deep ground      */
+    oklch(0.44 0.03 250) 84%,  /* re-reflection    */
+    oklch(0.24 0.01 255) 100%);
+}
+[data-liquid] .fx-chrome::before {        /* wide vertical wobble bands — no grain (reads as dirt) */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: repeating-linear-gradient(to right,
+    oklch(1 0 0 / 0.10) 0 44px, oklch(0 0 0 / 0.10) 44px 96px, oklch(1 0 0 / 0.06) 96px 130px);
+  mix-blend-mode: overlay;
+}
+[data-liquid] .fx-chrome::after {         /* one blurred specular, sweeping */
+  content: ""; position: absolute; top: -20%; bottom: -20%; left: -70%; width: 45%;
+  border-radius: inherit; pointer-events: none;
+  background: linear-gradient(105deg, transparent, oklch(1 0 0 / 0.35), transparent);
+  filter: blur(18px); transform: skewX(-12deg);
+  animation: fx-sweep calc(var(--fx-dur-shine) * 2.2) var(--ease-inout) infinite;
+}
+@keyframes fx-sweep { 0% { left: -70%; } 55%, 100% { left: 135%; } }
+
+/* -- Pearl: warm white ground + interference zones + nacre whisper */
+[data-liquid] .fx-pearl {
+  position: relative;
+  background:
+    radial-gradient(80% 60% at 24% 30%, oklch(0.93 0.04 350 / 0.55), transparent 60%),
+    radial-gradient(70% 55% at 76% 36%, oklch(0.92 0.04 205 / 0.5), transparent 58%),
+    radial-gradient(75% 60% at 50% 78%, oklch(0.93 0.04 140 / 0.45), transparent 60%),
+    oklch(0.96 0.01 85);
+}
+[data-liquid] .fx-pearl::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: var(--fx-nacre);
+  mix-blend-mode: soft-light;
+}
+[data-liquid] .fx-pearl::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.6), transparent 64%);
+  mix-blend-mode: screen;
+}
+
+/* -- Aurora: the heat conic on the same metal model */
+[data-liquid] .fx-aurora {
+  position: relative;
+  background: var(--fx-heat), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+}
+[data-liquid] .fx-aurora::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(70% 52% at var(--lx) var(--ly), oklch(0.95 0.05 60 / 0.6), transparent 64%);
+  mix-blend-mode: screen;
+}
+
+/* -- Prism: holo cut by two off-center hard-stop facet fans */
+[data-liquid] .fx-prism {
+  position: relative;
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+}
+[data-liquid] .fx-prism::before {         /* shattered facets — no SVG, no tiling, no seams */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    conic-gradient(from 20deg at 68% 30%,
+      oklch(1 0 0 / 0.9) 0 24deg, oklch(0 0 0 / 0.9) 24deg 52deg,
+      oklch(1 0 0 / 0.9) 52deg 88deg, oklch(0 0 0 / 0.9) 88deg 120deg, transparent 120deg),
+    conic-gradient(from 200deg at 18% 78%,
+      oklch(0 0 0 / 0.9) 0 30deg, oklch(1 0 0 / 0.9) 30deg 64deg,
+      oklch(0 0 0 / 0.9) 64deg 98deg, transparent 98deg);
+  mix-blend-mode: overlay; opacity: 0.9;
+}
+[data-liquid] .fx-prism::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.72), transparent 64%);
+  mix-blend-mode: screen;
+}
+
+/* -- Dew: lens beads over frosted water. Each bead:
+   specular-top → clear body → dark rim. Sizes 24–58px, scattered. */
+[data-liquid] .fx-dew {
+  position: relative;
+  background:
+    radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 12% 18% / 44px 44px no-repeat,
+    radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 62% 8% / 30px 30px no-repeat,
+    radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 34% 52% / 58px 58px no-repeat,
+    radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 82% 48% / 26px 26px no-repeat,
+    radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 8% 76% / 36px 36px no-repeat,
+    radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 55% 84% / 48px 48px no-repeat,
+    radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 90% 86% / 24px 24px no-repeat,
+    radial-gradient(closest-side at 50% 38%, oklch(1 0 0 / 0.85) 12%, oklch(1 0 0 / 0.1) 34%, oklch(0 0 0 / 0.22) 92%, transparent 100%) 26% 4% / 32px 32px no-repeat,
+    oklch(0.85 0.035 220 / 0.55);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+[data-liquid] .fx-dew::after {            /* bloom behind the drops */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 1), transparent 64%);
+  mix-blend-mode: screen; opacity: 0.35;
+}
+
+/* -- Tile: holo mosaic with wet grout ---- */
+[data-liquid] .fx-tile {
+  position: relative;
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+}
+[data-liquid] .fx-tile::before {          /* grout + per-cell wet top-gloss */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(to right,  oklch(0 0 0 / 0.35) 0 2px, transparent 2px 28px),
+    repeating-linear-gradient(to bottom, oklch(0 0 0 / 0.35) 0 2px, transparent 2px 28px),
+    repeating-linear-gradient(to bottom, oklch(1 0 0 / 0.30) 2px 8px, oklch(0 0 0 / 0.12) 20px 28px);
+  mix-blend-mode: overlay;
+}
+[data-liquid] .fx-tile::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.6), transparent 64%);
+  mix-blend-mode: screen;
+}
+
+/* ============ GLAZE — .fx-finish ============================= */
+/* THE core recipe for anything large. Two pseudo-layers over
+   REAL art — the art must read through. If the picture dies,
+   ease off the dial. One dial: whisper·soft·rich·ultra.
+   Exactly ONE ultra per view. Never nest .fx-finish in .fx-finish. */
+
+[data-liquid] .fx-finish { position: relative; --fx-amount: 0.30; }
+
+[data-liquid] .fx-finish::before {        /* z4 — grit only */
+  content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(115deg,
+      oklch(1 0 0 / 0.9) 0 1px, oklch(0 0 0 / 0.9) 1px 2px, transparent 2px 4.5px),
+    var(--fx-grain);
+  mix-blend-mode: overlay;
+  opacity: calc(var(--fx-amount) * 0.9);
+}
+
+[data-liquid] .fx-finish::after {         /* z5 — sheen: bloom + spectrum + metal */
+  content: ""; position: absolute; inset: 0; z-index: 5; border-radius: inherit; pointer-events: none;
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    var(--fx-spectrum),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+  mix-blend-mode: overlay;
+  opacity: var(--fx-amount);
+  filter: saturate(1.15);
+}
+
+/* The intensity ladder — glaze and grit scale together */
+[data-liquid] .fx-finish.whisper { --fx-amount: 0.14; }  /* backgrounds, lists, chips */
+[data-liquid] .fx-finish.soft    { --fx-amount: 0.30; }  /* default card finish       */
+[data-liquid] .fx-finish.rich    { --fx-amount: 0.55; }  /* features, covers          */
+[data-liquid] .fx-finish.ultra   { --fx-amount: 0.80; }  /* ONE hero per view         */
+
+/* Variants — swap only the spectrum */
+[data-liquid] .fx-finish.pearl::after {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    var(--fx-nacre),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+}
+[data-liquid] .fx-finish.aurora::after {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    var(--fx-heat),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+}
+/* Chrome glaze: metal only, luminosity — keeps chrome silver over
+   dark art in dark mode. Give chrome demos a fixed steel base. */
+[data-liquid] .fx-finish.chrome::after {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, normal;
+  mix-blend-mode: luminosity;
+  opacity: calc(var(--fx-amount) * 1.5);
+}
+
+/* Cosmos = fx-finish ultra + this dedicated overlay CHILD
+   (<i class="fx-cosmos-rays"></i>) — a child because .fx-finish
+   owns both pseudos. Sparse 116° rays + twinkling foil flecks. */
+[data-liquid] .fx-cosmos-rays {
+  position: absolute; inset: 0; z-index: 6; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(116deg,
+      transparent 0 34px, oklch(1 0 0 / 0.5) 34px 35px, transparent 35px 89px),
+    radial-gradient(2px 2px at 12% 22%, oklch(1 0 0), transparent),
+    radial-gradient(2px 2px at 78% 14%, oklch(1 0 0), transparent),
+    radial-gradient(1.5px 1.5px at 32% 64%, oklch(1 0 0), transparent),
+    radial-gradient(2px 2px at 88% 58%, oklch(1 0 0), transparent),
+    radial-gradient(1.5px 1.5px at 55% 38%, oklch(1 0 0), transparent),
+    radial-gradient(2px 2px at 22% 86%, oklch(1 0 0), transparent),
+    radial-gradient(1.5px 1.5px at 66% 90%, oklch(1 0 0), transparent),
+    radial-gradient(2px 2px at 44% 8%, oklch(1 0 0), transparent);
+  mix-blend-mode: screen;
+  animation: fx-twinkle 3.2s var(--ease-inout) infinite;
+}
+@keyframes fx-twinkle { 0%, 100% { opacity: 0.38; } 50% { opacity: 0.72; } }
+
+/* Scrim — any text over a finish rides above the glaze pseudos
+   (z4–5) on a bottom-up dark gradient; put text content at z7. */
+[data-liquid] .scrim {
+  position: absolute; inset: 0; z-index: 6; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(to top, oklch(0 0 0 / 0.62), transparent 55%);
+}
+
+/* ============ FRAME · AERO · SHINE · TEXT ==================== */
+
+/* -- Frame: the TCG holo edge. The primary way to mark a rare
+   without glazing it twice (foil-over-foil is the forbidden stack). */
+[data-liquid] .fx-frame {
+  position: relative; border: none; padding: 5px;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.8), transparent 64%),
+    var(--fx-spectrum),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+}
+[data-liquid] .fx-frame > * { border-radius: calc(var(--radius-lg) - 5px); }
+[data-liquid] .fx-frame.thin { padding: 2.5px; }
+[data-liquid] .fx-frame.thin > * { border-radius: calc(var(--radius-lg) - 2.5px); }
+[data-liquid] .fx-frame.chrome {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.8), transparent 64%),
+    var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, normal;
+}
+[data-liquid] .fx-frame.pearl {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.8), transparent 64%),
+    var(--fx-nacre),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+}
+
+/* -- Aero: the frutiger action surface. ACCENT-driven; the
+   spectrum never touches it (accent owns interaction). For
+   buttons, toggles, active tabs — action only. */
+[data-liquid] .fx-aero {
+  position: relative;
+  background:
+    radial-gradient(120% 85% at 50% 0%, var(--accent-mid), var(--accent) 55%, var(--accent-hover)),
+    radial-gradient(90% 40% at 50% 108%, oklch(1 0 0 / 0.35), transparent 70%);
+  color: var(--on-accent);
+  box-shadow:
+    inset 0 -12px 22px oklch(0 0 0 / 0.28),   /* deep well        */
+    0 4px 14px var(--accent-glow);
+}
+[data-liquid] .fx-aero::before {          /* inset caplet highlight */
+  content: ""; position: absolute; inset: 2px 2px auto 2px; height: 48%;
+  border-radius: inherit; border-bottom-left-radius: 50% 60%; border-bottom-right-radius: 50% 60%;
+  background: linear-gradient(to bottom, oklch(1 0 0 / 0.92), oklch(1 0 0 / 0.02));
+  pointer-events: none;
+}
+[data-liquid] .fx-aero::after {           /* accent underglow */
+  content: ""; position: absolute; inset: 60% -6% -18% -6%; border-radius: inherit;
+  background: radial-gradient(60% 80% at 50% 100%, var(--accent-glow), transparent 70%);
+  mix-blend-mode: screen; pointer-events: none;
+}
+
+/* -- Shine: one-way specular pass — crosses ONCE, then rests.
+   Transform/position only (cheap). Never reverses. */
+[data-liquid] .fx-shine { position: relative; overflow: hidden; }
+[data-liquid] .fx-shine::before {
+  content: ""; position: absolute; top: -20%; bottom: -20%; left: -70%; width: 56%;
+  background: linear-gradient(105deg, transparent, oklch(1 0 0 / 0.34), transparent);
+  filter: blur(14px); transform: skewX(-12deg); pointer-events: none;
+  animation: fx-pass var(--fx-dur-shine) var(--ease-out) 1 forwards;
+}
+[data-liquid] .fx-shine.sheen::before {
+  width: 110%; filter: blur(22px);
+  background: linear-gradient(105deg, transparent, oklch(1 0 0 / 0.20), transparent);
+  animation-duration: calc(var(--fx-dur-shine) * 2.6);
+}
+[data-liquid] .fx-shine.glint::before {
+  width: 22%; filter: blur(4px);
+  background: linear-gradient(105deg, transparent, oklch(1 0 0 / 0.9), transparent);
+  animation-duration: calc(var(--fx-dur-shine) * 0.5);
+}
+@keyframes fx-pass { to { left: 135%; } }  /* travels once and HOLDS */
+
+/* -- Text fills: only on display type sitting ON a surface
+   (law 5: foil the container, not floating letters). */
+[data-liquid] .fx-text-holo {
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 6px oklch(0 0 0 / 0.35));
+}
+[data-liquid] .fx-text-chrome {
+  background: linear-gradient(to bottom,
+    oklch(0.90 0.02 235) 0%, oklch(0.70 0.03 230) 30%,
+    oklch(0.55 0.02 250) 46%, oklch(0.35 0.01 250) 54%,
+    oklch(0.65 0.02 250) 72%, oklch(0.30 0.01 255) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 6px oklch(0 0 0 / 0.35));
+}
+
+/* ============ CRT · GLASS · BRIDGES · REDUCED MOTION ========= */
+
+/* -- CRT: a real tube, not a line pattern. */
+[data-liquid] .fx-crt { position: relative; overflow: hidden; }
+[data-liquid] .fx-crt::before {           /* z7 — scanlines + RGB phosphor grille */
+  content: ""; position: absolute; inset: 0; z-index: 7; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, oklch(0 0 0 / 0.28) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(to right,
+      oklch(0.6 0.25 25 / 0.13) 0 2px, oklch(0.7 0.24 145 / 0.13) 2px 4px, oklch(0.55 0.2 262 / 0.13) 4px 6px);
+}
+[data-liquid] .fx-crt::after {            /* z8 — curved glass vignette + bloom + refresh band */
+  content: ""; position: absolute; inset: 0; z-index: 8; border-radius: inherit; pointer-events: none;
+  background:
+    radial-gradient(120% 120% at 50% 50%, transparent 58%, oklch(0 0 0 / 0.45) 100%),
+    radial-gradient(60% 45% at 50% 42%, oklch(1 0 0 / 0.10), transparent 70%),
+    linear-gradient(to bottom, transparent 0, oklch(1 0 0 / 0.06) 50%, transparent 110px) no-repeat 0 -110px / 100% 110px;
+}
+[data-liquid] .fx-crt.scan::after { animation: fx-roll 5.5s linear infinite; }
+@keyframes fx-roll {
+  0%        { background-position: 0 0, 0 0, 0 -110px; }
+  70%, 100% { background-position: 0 0, 0 0, 0 calc(100% + 110px); }
+}
+
+/* -- Glass: light-aware frost (Aqus glass tokens + bloom at the light) */
+[data-liquid] .fx-glass {
+  position: relative;
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border-light);
+  border-bottom-color: var(--glass-border-dark);
+  box-shadow: var(--shadow-glass);
+}
+[data-liquid] .fx-glass::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 1), transparent 64%);
+  mix-blend-mode: screen; opacity: 0.30;
+}
+/* Liquid glass: heavier frost + chromatic fringes. Needs lively content behind. */
+[data-liquid] .fx-glass.liquid {
+  -webkit-backdrop-filter: blur(12px) saturate(1.9) brightness(1.05);
+  backdrop-filter: blur(12px) saturate(1.9) brightness(1.05);
+  box-shadow:
+    var(--shadow-glass),
+    inset 2px 0 3px -1px oklch(0.66 0.26 345 / 0.4),   /* magenta left fringe */
+    inset -2px 0 3px -1px oklch(0.85 0.13 210 / 0.4),  /* cyan right fringe   */
+    inset 0 8px 12px -6px oklch(1 0 0 / 0.6);          /* thicker caplet      */
+}
+
+/* -- Punk bridges: zine objects inherit FX optics when the DLC
+   is on. Stickers freeze (print doesn't wobble); bubbles keep
+   ONLY the agus-liquid morph — composite motion never re-adds
+   any hue animation. */
+[data-liquid] .foil-sticker.holo,
+[data-liquid] .foil-sticker.label.holo {
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+  animation: none;
+}
+[data-liquid] .foil-sticker.chrome {
+  background: linear-gradient(to bottom,
+    oklch(0.88 0.03 235) 0%, oklch(0.60 0.02 250) 44%,
+    oklch(0.36 0.01 250) 52%, oklch(0.28 0.02 255) 100%);
+  color: oklch(0.95 0 0);
+  animation: none;
+}
+[data-liquid] .foil-bubble.holo {
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
+}
+[data-liquid] .foil-bubble.iris {
+  background: var(--fx-nacre), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
+}
+[data-liquid] .foil-bubble.chrome {
+  background: var(--fx-metal);
+  background-size: 300% 300%;
+  background-position: var(--lx) var(--ly);
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
+}
+/* Motion classes on bridged objects: morph + punk motion, never hue */
+[data-liquid] .foil-bubble.holo.foil-breathe,
+[data-liquid] .foil-bubble.iris.foil-breathe {
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite,
+             foil-breathe 4.5s var(--ease-inout) infinite;
+}
+[data-liquid] .foil-bubble.holo.foil-float,
+[data-liquid] .foil-bubble.iris.foil-float {
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite,
+             foil-float 6s var(--ease-inout) infinite;
+}
+
+/* -- Reduced motion: the light freezes in a good spot
+   (initial --lx 32% / --ly 18%); nothing spins, so nothing
+   needs replacing. */
+@media (prefers-reduced-motion: reduce) {
+  [data-liquid] .fx-live, [data-liquid] .fx-shine::before,
+  [data-liquid] .fx-chrome::after, [data-liquid] .fx-cosmos-rays,
+  [data-liquid] .fx-crt.scan::after { animation: none !important; }
+}

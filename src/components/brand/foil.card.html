@@ -1,0 +1,91 @@
+<!-- @dsCard group="Brand" viewport="700x1400" name="Liquid Identity" subtitle="Foil FX DLC — the four-layer formula, finishes, ladder, light, aero, frame, CRT, toggle" -->
+<!DOCTYPE html>
+<html lang="en" data-liquid>
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<script src="../../_theme-toggle.js"></script>
+<script type="module" src="../../foil-fx.js"></script>
+<style>
+  html, body { margin: 0; }
+  body {
+    font-family: var(--font-ui); color: var(--text);
+    background: radial-gradient(120% 80% at 10% -10%, var(--surface-raised), var(--bg));
+    padding: 26px;
+  }
+  .grid { display: flex; flex-direction: column; gap: 26px; max-width: 648px; }
+  .row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 12px; }
+  .cap { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+  .sw { width: 120px; height: 72px; border-radius: var(--radius-md); position: relative; }
+  .art {
+    background: linear-gradient(140deg, oklch(0.45 0.18 280), oklch(0.65 0.2 200) 50%, oklch(0.8 0.16 120));
+    border-radius: var(--radius-lg); min-height: 120px; position: relative; overflow: hidden;
+  }
+  .on-art { position: absolute; inset: auto 0 0 0; z-index: 7; padding: 12px 14px; color: oklch(0.98 0 0); font-weight: 700; }
+  .cell { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+</style>
+</head>
+<body>
+<div class="grid">
+
+  <div>
+    <p class="eyebrow">The four-layer formula — metal + spectrum + light + grit</p>
+    <div class="row">
+      <div class="cell"><div class="sw" style="background: var(--fx-metal); background-size: 300% 300%; background-position: 32% 18%;"></div><span class="cap">metal (luminance)</span></div>
+      <div class="cell"><div class="sw" style="background: var(--fx-spectrum), var(--fx-metal); background-size: 100% 100%, 300% 300%; background-position: 0 0, 32% 18%; background-blend-mode: color, normal;"></div><span class="cap">+ spectrum (color blend)</span></div>
+      <div class="cell"><div class="sw fx-holo fx-live"></div><span class="cap">+ light + grit = holo</span></div>
+    </div>
+  </div>
+
+  <div>
+    <p class="eyebrow">Solid finishes — foil IS the object; keep them small</p>
+    <div class="row">
+      <div class="cell"><div class="sw fx-holo fx-live"></div><span class="cap">fx-holo</span></div>
+      <div class="cell"><div class="sw fx-chrome"></div><span class="cap">fx-chrome</span></div>
+      <div class="cell"><div class="sw fx-pearl fx-live"></div><span class="cap">fx-pearl</span></div>
+      <div class="cell"><div class="sw fx-aurora fx-live"></div><span class="cap">fx-aurora</span></div>
+      <div class="cell"><div class="sw fx-prism fx-live"></div><span class="cap">fx-prism</span></div>
+      <div class="cell"><div class="sw fx-dew"></div><span class="cap">fx-dew</span></div>
+      <div class="cell"><div class="sw fx-tile fx-live"></div><span class="cap">fx-tile</span></div>
+    </div>
+  </div>
+
+  <div>
+    <p class="eyebrow">The glaze ladder — one dial over real art</p>
+    <div class="row">
+      <div class="cell" style="flex:1; min-width: 140px;"><div class="art fx-finish whisper"></div><span class="cap">whisper 0.14</span></div>
+      <div class="cell" style="flex:1; min-width: 140px;"><div class="art fx-finish soft"></div><span class="cap">soft 0.30</span></div>
+      <div class="cell" style="flex:1; min-width: 140px;"><div class="art fx-finish rich"></div><span class="cap">rich 0.55</span></div>
+    </div>
+  </div>
+
+  <div>
+    <p class="eyebrow">The ultra hero — one per view (frame + glaze + cosmos + scrim)</p>
+    <div class="fx-frame fx-live" data-tilt>
+      <div class="art fx-finish ultra fx-shine sheen" style="min-height: 160px;">
+        <div class="scrim"></div>
+        <i class="fx-cosmos-rays"></i>
+        <div class="on-art">Ultra-rare hero <span class="cap" style="color: oklch(0.9 0 0 / 0.75)">· drift, lean, one pass</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <p class="eyebrow">Aero action (accent, never spectrum) · punk bridges · CRT</p>
+    <div class="row">
+      <button class="fx-aero fx-shine glint agus-focusable" style="border: none; border-radius: var(--radius-pill); padding: 12px 24px; font-family: var(--font-ui); font-weight: 700; cursor: pointer;">Play the season</button>
+      <span class="foil-sticker holo">Rare drop</span>
+      <span class="foil-bubble iris foil-breathe" style="width: 48px; height: 48px;"></span>
+      <div class="sw fx-crt scan" style="background: linear-gradient(140deg, oklch(0.3 0.08 280), oklch(0.5 0.12 200));"></div>
+    </div>
+  </div>
+
+  <div>
+    <p class="eyebrow">The toggle — remove data-liquid and everything falls back to calm</p>
+    <span class="cap">AqusFoil.enable() / disable() / toggle() — persisted via localStorage['aqus-liquid']</span>
+  </div>
+
+</div>
+</body>
+</html>

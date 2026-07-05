@@ -29,13 +29,13 @@ Read `docs/AGENT_GUIDE.md` before composing any view. It contains:
 - View recipes (landing, dashboard, settings, auth, analytics/charts, empty states)
 - Page anatomy
 - Hard constraints and anti-patterns
-- 10-step composition process + UX laws checklist
+- 11-step composition process + UX laws checklist
 
 Read `docs/ux-laws.md` for the UX decision layer — 10 Laws of UX (Jakob, Fitts, Hick, Miller, Postel, Peak–End, Aesthetic–Usability, Von Restorff, Tesler, Doherty) translated into concrete Aqus rules: which component to use when, how to stage complexity, where to place emphasis, how to make every interaction feel fast. Required reading for any non-trivial view.
 
 Read `docs/voice-rules.md` for the copy/voice layer — three registers (intentive/creative/technical), microcopy patterns for every component state (Button, EmptyState, Toast, Alert, Dialog, Tooltip, forms), universal casing/length/fluff rules, and a copy checklist. Every string in the UI has a rule here.
 
-**Workflow:** load AGENT_GUIDE + ux-laws + voice-rules → find matching View Recipe → adapt → output complete JSX → run UX laws checklist + Aqus bar checklist + copy checklist.
+**Workflow:** load AGENT_GUIDE + ux-laws + voice-rules → find matching View Recipe → adapt → output complete JSX → run UX laws checklist + Aqus bar checklist + copy checklist. If the consumer app has the Liquid Identity DLC on (`[data-liquid]` present / `AqusFoil.enable()` called), also load the "Liquid Identity" section of AGENT_GUIDE — don't force foil reading into calm-app flows.
 
 **Document authority (highest → lowest):** token constraints (OKLCH ranges) → `docs/ux-laws.md` → `docs/voice-rules.md` → `AGENT_GUIDE.md` → `README.md` aesthetics.
 
@@ -101,13 +101,37 @@ import { Button, Card, NavBar, ... } from '@agustin/aqus'
 
 ```
 AQUS BAR
-- Brand:       [✓/✗] tokens not literals  [✓/✗] theme-adaptive  [✓/✗] glass = chrome  [✓/✗] round = LiquidBubble  [✓/✗] one accent  [✓/✗] liquid = shape only  [✓/✗] one emphasis per region
+- Brand:       [✓/✗] tokens not literals  [✓/✗] theme-adaptive  [✓/✗] glass = chrome  [✓/✗] round = LiquidBubble  [✓/✗] one accent  [✓/✗] liquid = shape only  [✓/✗] one emphasis per region  [✓/✗] foil budget (if DLC on: 1 ultra, no foil-over-foil, hue never spins)
 - Interaction: [✓/✗] mobile-first  [✓/✗] no horizontal scroll at 320px  [✓/✗] no rebuilt components  [✓/✗] one primary Button  [✓/✗] targets ≥ 44px  [✓/✗] all 4 states covered  [✓/✗] feedback < 400ms
 - Voice:       [✓/✗] right register  [✓/✗] sentence case  [✓/✗] fluff cut  [✓/✗] buttons verb+noun  [✓/✗] errors what→why→fix
 - A11y:        [✓/✗] focus ring visible  [✓/✗] destructive named by consequence  [✓/✗] Dialog has label  [✓/✗] color never sole signal
 ```
 
 Any `✗` means fix it before ending the response, not after. Full checklist detail in `docs/AGENT_GUIDE.md` → "The Aqus bar".
+
+## Liquid Identity — the Foil FX DLC (opt-in)
+
+Foil is the loud half of Aqus: rarity, celebration, merch, heroes, play — never reading surfaces. It ships OFF. Turn on: `AqusFoil.enable()` (stamps `[data-liquid]` on `<html>`); wire pointer-lean with `AqusFoil.wire()` after DOM injection.
+
+**The law of the stack:** foil = metal (luminance) + spectrum (hue) + light (`--lx --ly`) + grit. Remove any layer → cheap finish.
+
+**The eight laws:**
+1. Metal under every rainbow — never a flat rainbow fill.
+2. Light moves; hue never spins. Drift (`.fx-live`), lean (JS), or pass once (`.fx-shine`). The hue-rotation filter is banned.
+3. Glaze, don't paint — large surfaces wear `.fx-finish` over real art; if the picture dies, ease off.
+4. One dial, one ultra — whisper·soft·rich·ultra; exactly one ultra hero per view.
+5. Foil the whole container, never floating letters.
+6. Accent ≠ spectrum — accent owns interaction (`.fx-aero`, links, focus); spectrum owns surfaces. Never swap.
+7. Punk is a sticker, not a theme — 1–2 zine objects per view; print stays ink; glitch at peaks only.
+8. Calm on the read — body copy, forms, tables, logs stay plain; reduced motion freezes gracefully.
+
+**Per-view budget:** 1 ultra · ≤3 rich · 1 pass · ≤5 bubbles · ≤2 sparkles · ≤2 punk objects · 0 foil-over-foil. Different roles (frame + glaze + light + weather + punk) stack freely.
+
+**Contrast:** text over a finish sits on a `.scrim` (z6) with text at z7. Chrome's mid-band is dark — ride the bright sky or invert to light ink. Chrome sits on a fixed steel base, never a theme variable.
+
+**Off-state acceptance:** with the DLC off, nothing may become invisible or unreadable. Check it both ways.
+
+Run `npx aqus lint` on your views. Full class catalog and recipes in `docs/AGENT_GUIDE.md` → "Liquid Identity".
 
 ## Worked example — compliant turn
 

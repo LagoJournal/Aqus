@@ -1,0 +1,173 @@
+/* ============================================================
+   Aqus — Foil · Punk / object layer  (always available)
+   ------------------------------------------------------------
+   The zine half of Aqus Foil: stickers, bubbles, bursts,
+   sparkles, riso print, halftone, scratch weather. Plain ink
+   and shapes — NO foil optics here. When the Liquid Identity
+   DLC is on, foil-fx.css upgrades .holo/.iris/.chrome variants
+   of these objects with the real metal+spectrum composite.
+   Laws: punk is a sticker, not a theme — 1–2 per view; print
+   stays ink; glitch at peaks only.
+   ============================================================ */
+
+:root {
+  /* ---- Foil art palette (FX consumes these for art bases) ---- */
+  --foil-cyan:    oklch(0.85 0.13 210);
+  --foil-violet:  oklch(0.60 0.22 300);
+  --foil-magenta: oklch(0.66 0.26 345);
+  --foil-lime:    oklch(0.88 0.21 130);
+  --foil-sky:     oklch(0.80 0.11 230);
+  --foil-flare:   oklch(0.86 0.16 85);
+  --foil-punch:   oklch(0.62 0.24 25);
+  --foil-ink:     oklch(0.22 0.02 270);
+}
+
+/* ---- Sticker: die-cut zine object, placed ON the world ---- */
+.foil-sticker {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  background: oklch(0.98 0.005 270);
+  color: var(--foil-ink);
+  font-family: var(--font-ui); font-weight: 800;
+  font-size: var(--text-body-sm); letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border: 2px solid var(--foil-ink);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 3px oklch(0.98 0.005 270), 0 4px 10px oklch(0 0 0 / 0.25); /* die-cut white edge */
+  transform: rotate(-2deg);
+}
+.foil-sticker.label { border-radius: 4px; transform: rotate(1.5deg); }
+.foil-sticker.cut {
+  border-radius: 0;
+  clip-path: polygon(2% 8%, 12% 0%, 30% 5%, 50% 0%, 72% 6%, 90% 1%, 100% 12%,
+                     96% 40%, 100% 66%, 94% 92%, 70% 100%, 45% 95%, 20% 100%, 0% 88%, 4% 50%);
+  box-shadow: 0 4px 10px oklch(0 0 0 / 0.25);
+}
+.foil-sticker.chrome {
+  background: linear-gradient(to bottom, oklch(0.92 0 0), oklch(0.65 0 0) 48%, oklch(0.85 0 0) 52%, oklch(0.55 0 0));
+  color: var(--foil-ink);
+}
+
+/* ---- Bubble: the liquid drop as a punk object ---- */
+.foil-bubble {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px;
+  background:
+    radial-gradient(65% 45% at 32% 22%, oklch(1 0 0 / 0.85), transparent 58%),
+    linear-gradient(155deg, var(--foil-sky), var(--foil-cyan));
+  border: 1px solid oklch(1 0 0 / 0.55);
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
+  box-shadow: inset 0 -8px 14px oklch(0 0 0 / 0.12), 0 6px 14px oklch(0 0 0 / 0.18);
+}
+/* Punk-object motions — position/scale only, never hue */
+.foil-float   { animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite, foil-float 6s var(--ease-inout) infinite; }
+.foil-breathe { animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite, foil-breathe 4.5s var(--ease-inout) infinite; }
+.foil-drift   { animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite, foil-drift 14s var(--ease-inout) infinite; }
+.foil-wobble  { animation: foil-wobble 3.5s var(--ease-inout) infinite; }
+
+/* ---- Field & cluster: scatter containers for bubbles ---- */
+.foil-field { position: relative; overflow: hidden; }
+.foil-field > .foil-bubble { position: absolute; }
+.foil-cluster { display: flex; align-items: center; }
+.foil-cluster > .foil-bubble + .foil-bubble { margin-left: -18px; }
+
+/* ---- Burst: zine starburst badge ---- */
+.foil-burst {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 92px; height: 92px; padding: 12px; text-align: center;
+  background: repeating-conic-gradient(var(--foil-flare) 0deg 12deg, var(--foil-punch) 12deg 24deg);
+  color: var(--foil-ink);
+  font-family: var(--font-ui); font-weight: 900; font-size: var(--text-caption);
+  text-transform: uppercase; letter-spacing: 0.03em;
+  border-radius: 50%;
+  clip-path: polygon(50% 0%, 59% 12%, 72% 5%, 75% 19%, 90% 18%, 86% 32%, 100% 38%,
+                     90% 50%, 100% 62%, 86% 68%, 90% 82%, 75% 81%, 72% 95%, 59% 88%,
+                     50% 100%, 41% 88%, 28% 95%, 25% 81%, 10% 82%, 14% 68%, 0% 62%,
+                     10% 50%, 0% 38%, 14% 32%, 10% 18%, 25% 19%, 28% 5%, 41% 12%);
+}
+
+/* ---- Sparkle: 4-point foil star (≤2 per view) ---- */
+.foil-sparkle {
+  display: inline-block; width: 16px; height: 16px;
+  background: linear-gradient(135deg, oklch(1 0 0), var(--foil-cyan));
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+}
+.foil-sparkle.blink { animation: foil-blink 2.4s var(--ease-inout) infinite; }
+.foil-sparkle.pop   { animation: foil-pop 700ms var(--ease-spring) both; }
+
+/* ---- Riso: overprinted zine ink ---- */
+.foil-riso { position: relative; color: var(--foil-ink); mix-blend-mode: multiply; }
+.foil-riso-offset { text-shadow: 2px -2px 0 var(--foil-punch); }
+
+/* ---- Halftone: print dot fields ---- */
+.foil-halftone {
+  background-image: radial-gradient(var(--foil-ink) 1px, transparent 1.5px);
+  background-size: 7px 7px;
+}
+.foil-halftone-cmyk {
+  background-image:
+    radial-gradient(oklch(0.75 0.14 210 / 0.7) 1px, transparent 1.5px),
+    radial-gradient(oklch(0.66 0.26 345 / 0.7) 1px, transparent 1.5px),
+    radial-gradient(oklch(0.86 0.16 85 / 0.7) 1px, transparent 1.5px);
+  background-size: 7px 7px, 7px 7px, 7px 7px;
+  background-position: 0 0, 2px 3px, 4px 1px;
+}
+
+/* ---- Zine display text ---- */
+.foil-text-zine {
+  font-family: var(--font-ui); font-weight: 900; text-transform: uppercase;
+  letter-spacing: -0.01em; color: var(--foil-ink);
+  transform: skewX(-4deg);
+  text-shadow: 3px 3px 0 var(--foil-cyan);
+}
+/* Glitch at peaks only — runs a finite number of times, never ambient */
+.foil-text-glitch { position: relative; animation: foil-glitch 900ms steps(2, jump-none) 3; }
+
+/* ---- Label: ink stamp ---- */
+.foil-label {
+  display: inline-block; padding: 2px 8px;
+  border: 2px solid var(--foil-ink); border-radius: 3px;
+  color: var(--foil-ink);
+  font-family: var(--font-ui); font-weight: 800; font-size: var(--text-mini);
+  text-transform: uppercase; letter-spacing: var(--tracking-wide);
+  transform: rotate(-1deg);
+}
+
+/* ---- Scratch: worn-surface weather overlay ---- */
+.foil-scratch { position: relative; }
+.foil-scratch::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(72deg,  transparent 0 14px, oklch(1 0 0 / 0.35) 14px 14.6px, transparent 14.6px 34px),
+    repeating-linear-gradient(281deg, transparent 0 23px, oklch(1 0 0 / 0.22) 23px 23.5px, transparent 23.5px 51px);
+  mix-blend-mode: overlay; opacity: 0.5;
+}
+
+/* ---- Glass alias (visually superseded by .fx-glass when DLC on) ---- */
+.foil-glass {
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border-light);
+  border-bottom-color: var(--glass-border-dark);
+  box-shadow: var(--shadow-glass);
+}
+
+/* ---- Punk keyframes (position/scale/opacity only) ---- */
+@keyframes foil-float   { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+@keyframes foil-breathe { 0%, 100% { scale: 1; } 50% { scale: 1.06; } }
+@keyframes foil-drift   { 0%, 100% { translate: 0 0; } 33% { translate: 10px -6px; } 66% { translate: -8px 4px; } }
+@keyframes foil-wobble  { 0%, 100% { rotate: -2deg; } 50% { rotate: 2deg; } }
+@keyframes foil-blink   { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@keyframes foil-pop     { 0% { scale: 0; opacity: 0; } 70% { scale: 1.3; } 100% { scale: 1; opacity: 1; } }
+@keyframes foil-glitch  {
+  0%, 100% { clip-path: inset(0); transform: skewX(-4deg) translate(0); }
+  25%      { clip-path: inset(12% 0 58% 0); transform: skewX(-4deg) translate(-3px); }
+  50%      { clip-path: inset(48% 0 22% 0); transform: skewX(-4deg) translate(3px); }
+  75%      { clip-path: inset(70% 0 4% 0);  transform: skewX(-4deg) translate(-2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foil-float, .foil-breathe, .foil-drift, .foil-wobble,
+  .foil-sparkle.blink, .foil-text-glitch { animation: none !important; }
+}

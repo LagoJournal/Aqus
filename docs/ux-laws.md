@@ -297,6 +297,9 @@ A repeatable recipe that satisfies the laws above when composing any screen:
   (end-markers, ring, legend swatches, tooltips) — never as every data point.
 - **Whitespace is structure.** Use `Stack`/`Section` gaps to create the chunk
   boundaries Miller and Common Region rely on; don't crowd.
+- **Foil is chrome, not content.** The Liquid Identity DLC obeys the same split:
+  finishes on heroes/cards/celebration, never on body copy, forms, tables, or
+  logs. Budget: one ultra per view.
 
 ### Accessibility (cross-cutting)
 - Color is never the only signal — pair with icon, text, weight, or shape.
