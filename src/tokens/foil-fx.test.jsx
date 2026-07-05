@@ -36,3 +36,21 @@ describe('foil-fx.css optics layer', () => {
     expect(css()).toMatch(/\.fx-hold[\s\S]*?animation-play-state:\s*paused/)
   })
 })
+
+describe('solid finishes', () => {
+  it('declares all seven solid finishes, gated', () => {
+    for (const c of ['fx-holo', 'fx-chrome', 'fx-pearl', 'fx-aurora', 'fx-prism', 'fx-dew', 'fx-tile'])
+      expect(css()).toMatch(new RegExp('\\[data-liquid\\] \\.' + c + '\\b'))
+  })
+  it('uses THE canonical composite on .fx-holo (color blend over panned metal)', () => {
+    const holo = css().slice(css().indexOf('[data-liquid] .fx-holo'), css().indexOf('.fx-holo::before'))
+    expect(holo).toMatch(/background-blend-mode:\s*color,\s*normal/)
+    expect(holo).toMatch(/background-size:\s*100% 100%,\s*300% 300%/)
+    expect(holo).toMatch(/background-position:\s*0 0,\s*var\(--lx\) var\(--ly\)/)
+  })
+  it('chrome has soft horizon falloff — a band, not a cut', () => {
+    const chrome = css().slice(css().indexOf('[data-liquid] .fx-chrome'), css().indexOf('.fx-chrome::before'))
+    expect(chrome).toMatch(/44%/) // falloff begins
+    expect(chrome).toMatch(/52%/) // falloff ends
+  })
+})
