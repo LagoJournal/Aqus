@@ -98,6 +98,20 @@ Or via CDN in your HTML:
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
 ```
 
+### 5. Liquid Identity (Foil FX DLC) — optional
+
+The loud half of Aqus: trading-card-foil optics, gated behind one attribute. Same tokens, same restraint on the read — now the shimmer has a body and the light behaves like water.
+
+```js
+import { AqusFoil } from '@agustin/aqus/foil-fx'
+AqusFoil.enable()        // stamps [data-liquid] on <html>, persisted via localStorage
+AqusFoil.wire(container) // after injecting .fx-live / [data-tilt] nodes (idempotent)
+```
+
+With the DLC **off** (the default), every `fx-*` element falls back to core Aqus — plain art, accent button, hairline frame; nothing breaks. With it **on**: surfaces gain rarity (`fx-finish` whisper→ultra), actions go wet (`fx-aero`), and one light point drifts through every foiled surface. Hue never spins.
+
+`npx aqus lint` checks the foil laws in your views (no `hue-rotate`, one `ultra` per view, no foil-over-foil).
+
 ---
 
 ## Component library

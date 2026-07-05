@@ -988,6 +988,91 @@ Full reference: `docs/voice-rules.md`. Quick rules for every string you write:
 
 ---
 
+## Liquid Identity — the Foil FX DLC
+
+The loud half of Aqus, opt-in. Enable: `AqusFoil.enable()` from `@agustin/aqus/foil-fx` stamps `[data-liquid]` on `<html>` (persisted); `AqusFoil.wire(container)` wires pointer-lean/tilt after DOM injection (idempotent). Ships OFF: with the gate absent every `fx-*` class falls back to core Aqus (plain art, accent button, hairline frame) — nothing may become invisible or unreadable in either state.
+
+### The physical model
+
+| Layer | Role | Implementation |
+|---|---|---|
+| **Metal** | luminance | achromatic silver ridge field (`--fx-metal`), oversized 300% & panned by the light |
+| **Spectrum** | hue | conic rainbow blended `background-blend-mode: color` — only hue+chroma land on the metal |
+| **Light** | life | one point `--lx/--ly` that drifts, leans to the pointer, or passes once |
+| **Grit** | material | diffraction ribs + photographic grain (`--fx-grain`), overlay-blended |
+
+**The law of the stack:** foil = metal + spectrum + light + grit. Remove any layer → cheap finish. A flat rainbow gradient is the anti-pattern this system exists to kill.
+
+### The three light behaviors (the light is the liquid)
+
+- **Drift** — ambient: `.fx-live` wanders the light on a slow 16s closed path. The JS randomizes each surface's resting origin so no two surfaces share a light spot.
+- **Lean** — responsive: the light follows the pointer while on the card (`.fx-hold` pauses the drift); `[data-tilt]` adds ≤7° perspective tilt. Resumes wandering on leave.
+- **Pass** — event: `.fx-shine` (+ `.sheen` wide/slow, `.glint` narrow/fast) crosses **once, one way**, then rests.
+
+**Hue never spins. Nothing oscillates or strobes.** The hue-rotation filter is banned everywhere.
+
+### Class catalog
+
+| Class | What | Use |
+|---|---|---|
+| `.fx-holo` | canonical composite + grit + bloom | small solid foil objects |
+| `.fx-chrome` | Y2K horizon metal, soft 44→52% falloff | badges, tickers (fixed steel base, never theme vars) |
+| `.fx-pearl` / `.fx-aurora` | nacre / heat variants | calm rare / warm rare |
+| `.fx-prism` | holo cut by hard-stop facet fans | shattered-film accents |
+| `.fx-dew` / `.fx-tile` | lens beads / wet mosaic | texture panels |
+| `.fx-finish` + `.whisper/.soft/.rich/.ultra` | THE glaze over real art — one dial (0.14/0.30/0.55/0.80) | any large surface; variants `.pearl/.aurora/.chrome` swap only the spectrum |
+| `.fx-cosmos-rays` | overlay **child** `<i>` for the ultra hero | cosmos = `fx-finish ultra` + this child |
+| `.fx-frame` (+`.thin/.chrome/.pearl`) | TCG holo rim worn as padding | mark a rare without glazing twice |
+| `.fx-aero` | frutiger action surface — **accent-driven, spectrum never touches it** | buttons, toggles, active tabs |
+| `.fx-crt` (+`.scan`) | scanlines + RGB grille + rolling refresh | video/retro frames |
+| `.fx-glass` (+`.liquid`) | light-aware frost, chromatic fringes | overlays with lively content behind |
+| `.fx-text-holo` / `.fx-text-chrome` | composite clipped to glyphs | display type ON a surface only |
+| `.scrim` | bottom-up dark gradient at z6 | under any text over a finish (text at z7) |
+| `.foil-sticker.holo` `.foil-bubble.holo/.iris/.chrome` | punk objects upgraded to real optics | bridges; stickers freeze, bubbles keep only the morph |
+
+### The eight laws
+
+1. **Metal under every rainbow.** Spectrum arrives as hue on a silver body — never a flat rainbow fill.
+2. **Light moves; hue never spins.** Drift, lean, or pass once.
+3. **Glaze, don't paint.** Large surfaces wear foil as `.fx-finish` over real art. If the picture dies, ease off.
+4. **One dial, one ultra.** whisper·soft·rich·ultra; exactly one ultra hero per view.
+5. **Foil the whole container.** Never letters floating alone.
+6. **Accent ≠ spectrum.** Accent owns interaction; spectrum owns surfaces. Never swap.
+7. **Punk is a sticker, not a theme.** 1–2 zine objects per view; print stays ink; glitch at peaks only.
+8. **Calm on the read.** Body copy, forms, tables, logs stay plain. Contrast holds everywhere; reduced motion freezes the light in place.
+
+**Per-view budget:** 1 ultra · ≤3 rich · 1 pass · ≤5 bubbles · ≤2 sparkles · ≤2 punk objects · **0 foil-over-foil** (two full finishes on one element is the one forbidden stack; different roles — frame + glaze + light + weather + punk — stack freely).
+
+**Contrast rules:** text over a finish sits on a `.scrim` (z6, above the glaze pseudos at z4–5), text at z7. Chrome's mid-band is dark — content rides the bright sky (push the horizon low for thin bands) or inverts to light ink with a text-shadow. Chrome surfaces sit on a fixed steel base, never a theme-dependent one.
+
+### Recipes
+
+```html
+<!-- ultra-rare hero (the one per view) -->
+<div class="fx-frame fx-live" data-tilt>
+  <div class="tcard my-art fx-finish ultra fx-shine sheen">
+    <div class="scrim"></div>
+    <i class="fx-cosmos-rays"></i>
+    <div class="on-art">…title, meta…</div>
+  </div>
+</div>
+
+<!-- default catalog card -->
+<div class="tcard my-art fx-finish soft fx-live" data-tilt>…</div>
+
+<!-- action button (accent, never spectrum) -->
+<button class="fx-aero fx-shine glint">Play the season</button>
+
+<!-- video frame -->
+<div class="vid fx-crt scan">…art…</div>
+```
+
+**Semantic conventions (reuse before inventing):** rarity = edition (ultra 1-of-1 → soft catalog) in commerce; finish = state (chrome shipped · pearl calm candidate · soft holo churn · aurora degraded heat) in ops dashboards — logs/tables stay plain; foil = chart heat in rankings.
+
+Adherence: `npx aqus lint [dir]` flags the hue-rotation filter, >1 `ultra` per document, and nested `fx-finish`.
+
+---
+
 ## The Aqus bar — final review checklist
 
 Run this after writing JSX, before committing. Four bars, all must pass.
@@ -1000,6 +1085,7 @@ Run this after writing JSX, before committing. Four bars, all must pass.
 - [ ] One accent per surface — no two brand colors visible simultaneously
 - [ ] Liquid changes shape only — morph is decoration, never tied to behavior
 - [ ] One emphasis per region — one accented/bold element per card or section
+- [ ] Foil budget (if the Liquid Identity DLC is on) — exactly one `ultra`, no foil-over-foil, hue never spins, off-state still readable
 
 ### Interaction & layout
 - [ ] **Tested at 320px** — mentally (or in a 320px-wide frame) render the view at the narrowest phone; **zero horizontal scroll**. Every `minmax` min-track is `min(100%, N)`; every chip/Badge row wraps; no fixed-px column.
@@ -1041,3 +1127,6 @@ Run this after writing JSX, before committing. Four bars, all must pass.
 | Fixed-px `minmax` min-track | `repeat(auto-fit, minmax(280px, 1fr))` — overflows every phone < 280px + padding | `repeat(auto-fit, minmax(min(100%, 280px), 1fr))` |
 | Nowrap chip in a flex row | `<Badge>` / chip with `whiteSpace:'nowrap'` in a row → overflows narrow | Let it wrap (Badge wraps by default); `flexWrap:'wrap'` on the row |
 | Circular bubble | `borderRadius: '50%', width:12, height:12` | `<LiquidBubble size={12} />` |
+| Flat rainbow fill | `background: linear-gradient(red, orange, …)` as "foil" | metal + spectrum composite (`.fx-holo` / `.fx-finish`) |
+| Spinning hue | animating the hue-rotation filter | the light moves (`.fx-live` / `.fx-shine`), hue never spins |
+| Foil on reading surface | `.fx-finish` on a form, table, or log | foil is rarity/celebration chrome only — calm on the read |
