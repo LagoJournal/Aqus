@@ -109,6 +109,7 @@
    Fast mid-grey falloff 44→52% (a band, not a cut — cuts read as seams). */
 [data-liquid] .fx-chrome {
   position: relative;
+  overflow: hidden;   /* the sweeping specular must never escape the surface */
   background: linear-gradient(to bottom,
     oklch(0.88 0.03 235) 0%,   /* cool sky        */
     oklch(0.72 0.05 230) 24%,
@@ -119,10 +120,15 @@
     oklch(0.44 0.03 250) 84%,  /* re-reflection    */
     oklch(0.24 0.01 255) 100%);
 }
-[data-liquid] .fx-chrome::before {        /* wide vertical wobble bands — no grain (reads as dirt) */
+[data-liquid] .fx-chrome::before {        /* wide vertical wobble bands — no grain (reads as dirt).
+   Every stop is a ramp and first==last so the repeat wraps
+   seamlessly: soft undulation, never hard vertical lines. */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: repeating-linear-gradient(to right,
-    oklch(1 0 0 / 0.10) 0 44px, oklch(0 0 0 / 0.10) 44px 96px, oklch(1 0 0 / 0.06) 96px 130px);
+    oklch(1 0 0 / 0.07) 0px,
+    oklch(0 0 0 / 0.07) 40px,
+    oklch(1 0 0 / 0.04) 85px,
+    oklch(1 0 0 / 0.07) 130px);
   mix-blend-mode: overlay;
 }
 [data-liquid] .fx-chrome::after {         /* one blurred specular, sweeping */
