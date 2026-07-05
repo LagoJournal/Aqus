@@ -195,20 +195,16 @@
   background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
   background-blend-mode: multiply, screen, color, normal;
 }
-[data-liquid] .fx-prism::before {         /* the confetti — 6 tiled wedge layers.
-   SMALL shards (tiles 29–53px, wedge spans 26–44°) at coprime tile
-   sizes: dense tiny triangles, no readable repeat, some dark
-   (negative alpha via black wedges) like real cracked-ice foil. */
+[data-liquid] .fx-prism::before {        /* the confetti — an inline-SVG shard
+   texture (random triangles, varied luminance), the same way real
+   cracked-ice foils blend a glitter TEXTURE over the rainbow —
+   tiled gradients always read as a pattern; a texture never does. */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background:
-    conic-gradient(from 25deg at 34% 38%, oklch(1 0 0 / 0.85) 0 32deg, transparent 32deg) 0 0 / 29px 33px,
-    conic-gradient(from 203deg at 66% 60%, oklch(1 0 0 / 0.7) 0 40deg, transparent 40deg) 9px 14px / 37px 41px,
-    conic-gradient(from 117deg at 45% 70%, oklch(1 0 0 / 0.55) 0 26deg, transparent 26deg) 17px 5px / 43px 31px,
-    conic-gradient(from 311deg at 60% 28%, oklch(1 0 0 / 0.75) 0 36deg, transparent 36deg) 4px 22px / 53px 47px,
-    conic-gradient(from 78deg at 28% 55%, oklch(0 0 0 / 0.6) 0 30deg, transparent 30deg) 12px 9px / 47px 39px,
-    conic-gradient(from 256deg at 70% 42%, oklch(0 0 0 / 0.5) 0 34deg, transparent 34deg) 21px 17px / 31px 49px,
+    url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27200%27%20height=%27200%27%3E%3Cpolygon%20points=%27129,13%20123,1%20132,1%27%20fill=%27%23fff%27%20opacity=%270.49%27/%3E%3Cpolygon%20points=%27116,99%20137,112%20110,116%27%20fill=%27%23ddd%27%20opacity=%270.55%27/%3E%3Cpolygon%20points=%2740,197%2022,195%2036,184%27%20fill=%27%23ddd%27%20opacity=%270.4%27/%3E%3Cpolygon%20points=%2751,135%2055,108%2066,143%27%20fill=%27%23fff%27%20opacity=%270.58%27/%3E%3Cpolygon%20points=%2786,172%2090,162%2096,169%27%20fill=%27%23fff%27%20opacity=%270.45%27/%3E%3Cpolygon%20points=%2762,193%2086,194%2086,203%27%20fill=%27%23fff%27%20opacity=%270.39%27/%3E%3Cpolygon%20points=%27186,129%20172,109%20184,98%27%20fill=%27%23999%27%20opacity=%270.51%27/%3E%3Cpolygon%20points=%27119,189%20110,180%20118,170%27%20fill=%27%23000%27%20opacity=%270.6%27/%3E%3Cpolygon%20points=%27-8,73%2017,57%2012,94%27%20fill=%27%23fff%27%20opacity=%270.81%27/%3E%3Cpolygon%20points=%2775,59%2062,62%2066,54%27%20fill=%27%23000%27%20opacity=%270.53%27/%3E%3Cpolygon%20points=%27128,115%20131,125%20125,125%27%20fill=%27%23fff%27%20opacity=%270.88%27/%3E%3Cpolygon%20points=%27169,59%20167,65%20163,58%27%20fill=%27%23fff%27%20opacity=%270.75%27/%3E%3Cpolygon%20points=%27179,25%20202,32%20184,42%27%20fill=%27%23000%27%20opacity=%270.74%27/%3E%3Cpolygon%20points=%2789,109%2083,103%2088,98%27%20fill=%27%23fff%27%20opacity=%270.39%27/%3E%3Cpolygon%20points=%274,77%20-2,56%2016,64%27%20fill=%27%23ddd%27%20opacity=%270.83%27/%3E%3Cpolygon%20points=%2728,24%2041,7%2047,17%27%20fill=%27%23fff%27%20opacity=%270.83%27/%3E%3Cpolygon%20points=%2729,47%2013,36%2033,31%27%20fill=%27%23fff%27%20opacity=%270.38%27/%3E%3Cpolygon%20points=%27213,161%20199,182%20188,162%27%20fill=%27%23ddd%27%20opacity=%270.35%27/%3E%3Cpolygon%20points=%2774,201%2070,172%2090,181%27%20fill=%27%23fff%27%20opacity=%270.93%27/%3E%3Cpolygon%20points=%27129,113%20105,112%20124,100%27%20fill=%27%23fff%27%20opacity=%270.39%27/%3E%3Cpolygon%20points=%2723,169%2016,180%208,164%27%20fill=%27%23fff%27%20opacity=%270.91%27/%3E%3Cpolygon%20points=%2736,147%2038,135%2047,140%27%20fill=%27%23999%27%20opacity=%270.95%27/%3E%3Cpolygon%20points=%2723,39%2015,49%2012,35%27%20fill=%27%23999%27%20opacity=%270.94%27/%3E%3Cpolygon%20points=%27152,102%20172,102%20153,118%27%20fill=%27%23fff%27%20opacity=%270.51%27/%3E%3Cpolygon%20points=%27116,138%20129,145%20124,149%27%20fill=%27%23fff%27%20opacity=%270.38%27/%3E%3Cpolygon%20points=%2777,42%2053,26%2085,23%27%20fill=%27%23fff%27%20opacity=%270.68%27/%3E%3Cpolygon%20points=%27172,122%20160,116%20171,114%27%20fill=%27%23fff%27%20opacity=%270.75%27/%3E%3Cpolygon%20points=%2790,109%2069,125%2070,99%27%20fill=%27%23ddd%27%20opacity=%270.36%27/%3E%3Cpolygon%20points=%27154,48%20163,78%20136,83%27%20fill=%27%23ddd%27%20opacity=%270.48%27/%3E%3Cpolygon%20points=%27165,86%20170,96%20154,87%27%20fill=%27%23fff%27%20opacity=%270.56%27/%3E%3Cpolygon%20points=%2793,152%2091,124%20109,146%27%20fill=%27%23999%27%20opacity=%270.61%27/%3E%3Cpolygon%20points=%27133,62%20150,50%20160,65%27%20fill=%27%23999%27%20opacity=%270.76%27/%3E%3Cpolygon%20points=%27181,151%20190,140%20196,146%27%20fill=%27%23999%27%20opacity=%270.54%27/%3E%3Cpolygon%20points=%2788,87%2072,81%2085,74%27%20fill=%27%23999%27%20opacity=%270.85%27/%3E%3Cpolygon%20points=%2750,33%2075,39%2049,55%27%20fill=%27%23000%27%20opacity=%270.45%27/%3E%3Cpolygon%20points=%2710,115%2013,93%2025,98%27%20fill=%27%23fff%27%20opacity=%270.94%27/%3E%3Cpolygon%20points=%27131,146%20125,163%20112,158%27%20fill=%27%23fff%27%20opacity=%270.82%27/%3E%3Cpolygon%20points=%2728,164%2043,150%2054,170%27%20fill=%27%23999%27%20opacity=%270.71%27/%3E%3Cpolygon%20points=%27187,164%20204,184%20178,181%27%20fill=%27%23fff%27%20opacity=%270.8%27/%3E%3Cpolygon%20points=%27154,57%20176,45%20182,66%27%20fill=%27%23fff%27%20opacity=%270.43%27/%3E%3Cpolygon%20points=%2759,144%2038,146%2042,123%27%20fill=%27%23999%27%20opacity=%270.92%27/%3E%3Cpolygon%20points=%27-7,178%208,163%204,188%27%20fill=%27%23000%27%20opacity=%270.68%27/%3E%3Cpolygon%20points=%27115,47%20123,38%20128,44%27%20fill=%27%23fff%27%20opacity=%270.94%27/%3E%3Cpolygon%20points=%27101,171%20116,185%20106,192%27%20fill=%27%23ddd%27%20opacity=%270.55%27/%3E%3Cpolygon%20points=%27158,66%20165,84%20145,65%27%20fill=%27%23000%27%20opacity=%270.39%27/%3E%3Cpolygon%20points=%27192,13%20187,7%20193,3%27%20fill=%27%23ddd%27%20opacity=%270.77%27/%3E%3Cpolygon%20points=%27153,19%20159,42%20152,45%27%20fill=%27%23000%27%20opacity=%270.89%27/%3E%3Cpolygon%20points=%2770,185%2081,187%2072,195%27%20fill=%27%23999%27%20opacity=%270.82%27/%3E%3Cpolygon%20points=%2759,85%2075,81%2065,94%27%20fill=%27%23ddd%27%20opacity=%270.77%27/%3E%3Cpolygon%20points=%2785,164%2074,137%20102,148%27%20fill=%27%23fff%27%20opacity=%270.85%27/%3E%3Cpolygon%20points=%2711,178%2016,168%2023,178%27%20fill=%27%23fff%27%20opacity=%270.55%27/%3E%3Cpolygon%20points=%27182,141%20170,146%20177,132%27%20fill=%27%23000%27%20opacity=%270.78%27/%3E%3Cpolygon%20points=%2782,8%2088,-5%20100,5%27%20fill=%27%23999%27%20opacity=%270.55%27/%3E%3Cpolygon%20points=%27145,58%20132,56%20138,48%27%20fill=%27%23ddd%27%20opacity=%270.52%27/%3E%3Cpolygon%20points=%27129,151%20115,163%20116,142%27%20fill=%27%23fff%27%20opacity=%270.93%27/%3E%3Cpolygon%20points=%27115,134%20112,145%20106,139%27%20fill=%27%23fff%27%20opacity=%270.5%27/%3E%3Cpolygon%20points=%27167,23%20173,17%20171,26%27%20fill=%27%23fff%27%20opacity=%270.42%27/%3E%3Cpolygon%20points=%27155,135%20136,116%20166,125%27%20fill=%27%23999%27%20opacity=%270.39%27/%3E%3Cpolygon%20points=%27184,12%20205,13%20197,32%27%20fill=%27%23000%27%20opacity=%270.71%27/%3E%3Cpolygon%20points=%2754,32%2071,56%2046,54%27%20fill=%27%23fff%27%20opacity=%270.61%27/%3E%3Cpolygon%20points=%27115,117%20121,143%2094,128%27%20fill=%27%23fff%27%20opacity=%270.63%27/%3E%3Cpolygon%20points=%2753,78%2069,77%2061,86%27%20fill=%27%23fff%27%20opacity=%270.93%27/%3E%3Cpolygon%20points=%27182,115%20166,134%20157,100%27%20fill=%27%23fff%27%20opacity=%270.46%27/%3E%3Cpolygon%20points=%27125,132%20105,131%20114,116%27%20fill=%27%23fff%27%20opacity=%270.75%27/%3E%3C/svg%3E") 0 0 / 200px 200px,
     var(--fx-grain);
   mix-blend-mode: overlay;
+  filter: contrast(1.15) brightness(1.08);
 }
 [data-liquid] .fx-prism::after {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -222,21 +218,12 @@
    layers per drop, six drops, sizes 26–64px. */
 [data-liquid] .fx-dew {
   position: relative;
-  /* Each drop is ONE radial with an off-center eye: a small hard
-     specular up-left, a nearly-clear lens body, a THIN low-alpha
-     rim (not a drawn circle), and a whisper of shadow under the
-     bottom edge. Sizes 16–44px — condensation, not bubbles. */
+  /* Condensation as an inline-SVG droplet texture: each drop has a
+     radial lens body (clear middle, soft bright rim, shadow under
+     the lower edge) and an offset specular — asymmetric like real
+     drops, impossible to fake with symmetric CSS radials. */
   background:
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.75) 0 7%, oklch(1 0 0 / 0.12) 14% 60%, oklch(1 0 0 / 0.42) 68% 72%, oklch(0.35 0.04 220 / 0.2) 79%, transparent 84%) 12% 18% / 44px 44px no-repeat,
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.7) 0 7%, oklch(1 0 0 / 0.1) 14% 60%, oklch(1 0 0 / 0.38) 68% 72%, oklch(0.35 0.04 220 / 0.18) 79%, transparent 84%) 64% 10% / 30px 30px no-repeat,
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.75) 0 7%, oklch(1 0 0 / 0.12) 14% 60%, oklch(1 0 0 / 0.42) 68% 72%, oklch(0.35 0.04 220 / 0.2) 79%, transparent 84%) 36% 54% / 38px 38px no-repeat,
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.65) 0 8%, oklch(1 0 0 / 0.1) 16% 60%, oklch(1 0 0 / 0.35) 68% 73%, transparent 82%) 83% 42% / 20px 20px no-repeat,
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.7) 0 7%, oklch(1 0 0 / 0.1) 14% 60%, oklch(1 0 0 / 0.38) 68% 72%, oklch(0.35 0.04 220 / 0.18) 79%, transparent 84%) 10% 74% / 34px 34px no-repeat,
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.65) 0 8%, oklch(1 0 0 / 0.1) 16% 60%, oklch(1 0 0 / 0.35) 68% 73%, transparent 82%) 58% 82% / 22px 22px no-repeat,
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.6) 0 8%, oklch(1 0 0 / 0.08) 16% 60%, oklch(1 0 0 / 0.3) 68% 74%, transparent 82%) 90% 78% / 16px 16px no-repeat,
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.65) 0 8%, oklch(1 0 0 / 0.1) 16% 60%, oklch(1 0 0 / 0.35) 68% 73%, transparent 82%) 28% 6% / 18px 18px no-repeat,
-    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.6) 0 8%, oklch(1 0 0 / 0.08) 16% 60%, oklch(1 0 0 / 0.3) 68% 74%, transparent 82%) 76% 62% / 24px 24px no-repeat,
-    /* the wet surface behind the drops */
+    url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27240%27%20height=%27240%27%3E%3Cdefs%3E%3CradialGradient%20id=%27b%27%20cx=%2738%25%27%20cy=%2732%25%27%20r=%2772%25%27%3E%3Cstop%20offset=%270%25%27%20stop-color=%27%23fff%27%20stop-opacity=%27.55%27/%3E%3Cstop%20offset=%2728%25%27%20stop-color=%27%23fff%27%20stop-opacity=%27.10%27/%3E%3Cstop%20offset=%2762%25%27%20stop-color=%27%23fff%27%20stop-opacity=%27.04%27/%3E%3Cstop%20offset=%2784%25%27%20stop-color=%27%23fff%27%20stop-opacity=%27.34%27/%3E%3Cstop%20offset=%2794%25%27%20stop-color=%27%23234%27%20stop-opacity=%27.28%27/%3E%3Cstop%20offset=%27100%25%27%20stop-color=%27%23234%27%20stop-opacity=%270%27/%3E%3C/radialGradient%3E%3C/defs%3E%3Cellipse%20cx=%2783%27%20cy=%2746%27%20rx=%2716%27%20ry=%2716%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%2778%27%20cy=%2741%27%20rx=%273.5%27%20ry=%272.6%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27128%27%20cy=%2792%27%20rx=%277%27%20ry=%277%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27126%27%20cy=%2789%27%20rx=%271.5%27%20ry=%271.2%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%2722%27%20cy=%27106%27%20rx=%277%27%20ry=%277%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%2720%27%20cy=%27103%27%20rx=%271.6%27%20ry=%271.1%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27104%27%20cy=%27189%27%20rx=%278%27%20ry=%278%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27102%27%20cy=%27187%27%20rx=%271.7%27%20ry=%271.3%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27147%27%20cy=%27215%27%20rx=%2715%27%20ry=%2716%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27143%27%20cy=%27210%27%20rx=%273.2%27%20ry=%272.5%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27221%27%20cy=%2724%27%20rx=%2719%27%20ry=%2720%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27216%27%20cy=%2717%27%20rx=%274.2%27%20ry=%273.2%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%2745%27%20cy=%2739%27%20rx=%2711%27%20ry=%2712%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%2742%27%20cy=%2735%27%20rx=%272.3%27%20ry=%272.0%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%2752%27%20cy=%27137%27%20rx=%2716%27%20ry=%2717%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%2748%27%20cy=%27132%27%20rx=%273.4%27%20ry=%272.7%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27130%27%20cy=%2727%27%20rx=%277%27%20ry=%277%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27128%27%20cy=%2725%27%20rx=%271.5%27%20ry=%271.1%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27158%27%20cy=%27105%27%20rx=%2711%27%20ry=%2712%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27155%27%20cy=%27101%27%20rx=%272.4%27%20ry=%271.9%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27162%27%20cy=%2766%27%20rx=%2715%27%20ry=%2716%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27158%27%20cy=%2760%27%20rx=%273.2%27%20ry=%272.6%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27200%27%20cy=%27169%27%20rx=%2710%27%20ry=%2712%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27197%27%20cy=%27165%27%20rx=%272.3%27%20ry=%271.9%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%27156%27%20cy=%27176%27%20rx=%2715%27%20ry=%2717%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%27152%27%20cy=%27170%27%20rx=%273.2%27%20ry=%272.7%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3Cellipse%20cx=%2781%27%20cy=%27161%27%20rx=%2715%27%20ry=%2716%27%20fill=%27url(%23b)%27/%3E%3Cellipse%20cx=%2776%27%20cy=%27156%27%20rx=%273.3%27%20ry=%272.6%27%20fill=%27%23fff%27%20opacity=%27.85%27/%3E%3C/svg%3E") 0 0 / 240px 240px,
     linear-gradient(150deg, oklch(0.82 0.07 230 / 0.7), oklch(0.76 0.10 200 / 0.6));
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
@@ -315,14 +302,17 @@
   background:
     var(--fx-core),
     radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    linear-gradient(125deg, transparent 30%, oklch(1 0 0 / 0.5) 50%, transparent 70%),
     var(--fx-nacre),
     var(--fx-metal);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 300% 300%;
-  background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
-  background-blend-mode: screen, screen, color, normal;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, screen, screen, color, normal;
   /* pastel nacre nearly vanishes under overlay on dark surfaces —
-     boost the dial so pearl stays noticeable in dark mode */
-  opacity: calc(var(--fx-amount) * 1.4);
+     boost the dial hard + a diagonal luster band so pearl reads
+     as pearl, not as a faint smudge */
+  opacity: calc(var(--fx-amount) * 1.8);
+  filter: saturate(1.35);
 }
 [data-liquid] .fx-finish.aurora::after {
   background:
