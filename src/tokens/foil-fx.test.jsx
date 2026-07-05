@@ -54,3 +54,23 @@ describe('solid finishes', () => {
     expect(chrome).toMatch(/52%/) // falloff ends
   })
 })
+
+describe('fx-finish glaze', () => {
+  it('has the four-step intensity ladder with the spec amounts', () => {
+    expect(css()).toMatch(/\.whisper[\s\S]*?--fx-amount:\s*0\.14/)
+    expect(css()).toMatch(/\.soft[\s\S]*?--fx-amount:\s*0\.30/)
+    expect(css()).toMatch(/\.rich[\s\S]*?--fx-amount:\s*0\.55/)
+    expect(css()).toMatch(/\.ultra[\s\S]*?--fx-amount:\s*0\.80/)
+  })
+  it('grit scales with the same dial (amount * 0.9)', () => {
+    expect(css()).toMatch(/calc\(var\(--fx-amount\) \* 0\.9\)/)
+  })
+  it('chrome variant blends via luminosity at 1.5x (keeps silver over dark art)', () => {
+    expect(css()).toMatch(/\.fx-finish\.chrome::after[\s\S]*?mix-blend-mode:\s*luminosity/)
+    expect(css()).toMatch(/calc\(var\(--fx-amount\) \* 1\.5\)/)
+  })
+  it('cosmos rays are a dedicated child (fx-finish owns both pseudos)', () => {
+    expect(css()).toMatch(/\[data-liquid\] \.fx-cosmos-rays/)
+    expect(css()).toMatch(/@keyframes fx-twinkle/)
+  })
+})

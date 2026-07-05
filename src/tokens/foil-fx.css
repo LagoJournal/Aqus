@@ -232,7 +232,102 @@
 }
 
 /* ============ GLAZE — .fx-finish ============================= */
-/* (appended by integration tasks) */
+/* THE core recipe for anything large. Two pseudo-layers over
+   REAL art — the art must read through. If the picture dies,
+   ease off the dial. One dial: whisper·soft·rich·ultra.
+   Exactly ONE ultra per view. Never nest .fx-finish in .fx-finish. */
+
+[data-liquid] .fx-finish { position: relative; --fx-amount: 0.30; }
+
+[data-liquid] .fx-finish::before {        /* z4 — grit only */
+  content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(115deg,
+      oklch(1 0 0 / 0.9) 0 1px, oklch(0 0 0 / 0.9) 1px 2px, transparent 2px 4.5px),
+    var(--fx-grain);
+  mix-blend-mode: overlay;
+  opacity: calc(var(--fx-amount) * 0.9);
+}
+
+[data-liquid] .fx-finish::after {         /* z5 — sheen: bloom + spectrum + metal */
+  content: ""; position: absolute; inset: 0; z-index: 5; border-radius: inherit; pointer-events: none;
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    var(--fx-spectrum),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+  mix-blend-mode: overlay;
+  opacity: var(--fx-amount);
+  filter: saturate(1.15);
+}
+
+/* The intensity ladder — glaze and grit scale together */
+[data-liquid] .fx-finish.whisper { --fx-amount: 0.14; }  /* backgrounds, lists, chips */
+[data-liquid] .fx-finish.soft    { --fx-amount: 0.30; }  /* default card finish       */
+[data-liquid] .fx-finish.rich    { --fx-amount: 0.55; }  /* features, covers          */
+[data-liquid] .fx-finish.ultra   { --fx-amount: 0.80; }  /* ONE hero per view         */
+
+/* Variants — swap only the spectrum */
+[data-liquid] .fx-finish.pearl::after {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    var(--fx-nacre),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+}
+[data-liquid] .fx-finish.aurora::after {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    var(--fx-heat),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+}
+/* Chrome glaze: metal only, luminosity — keeps chrome silver over
+   dark art in dark mode. Give chrome demos a fixed steel base. */
+[data-liquid] .fx-finish.chrome::after {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.9), transparent 64%),
+    var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, normal;
+  mix-blend-mode: luminosity;
+  opacity: calc(var(--fx-amount) * 1.5);
+}
+
+/* Cosmos = fx-finish ultra + this dedicated overlay CHILD
+   (<i class="fx-cosmos-rays"></i>) — a child because .fx-finish
+   owns both pseudos. Sparse 116° rays + twinkling foil flecks. */
+[data-liquid] .fx-cosmos-rays {
+  position: absolute; inset: 0; z-index: 6; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(116deg,
+      transparent 0 34px, oklch(1 0 0 / 0.5) 34px 35px, transparent 35px 89px),
+    radial-gradient(2px 2px at 12% 22%, oklch(1 0 0), transparent),
+    radial-gradient(2px 2px at 78% 14%, oklch(1 0 0), transparent),
+    radial-gradient(1.5px 1.5px at 32% 64%, oklch(1 0 0), transparent),
+    radial-gradient(2px 2px at 88% 58%, oklch(1 0 0), transparent),
+    radial-gradient(1.5px 1.5px at 55% 38%, oklch(1 0 0), transparent),
+    radial-gradient(2px 2px at 22% 86%, oklch(1 0 0), transparent),
+    radial-gradient(1.5px 1.5px at 66% 90%, oklch(1 0 0), transparent),
+    radial-gradient(2px 2px at 44% 8%, oklch(1 0 0), transparent);
+  mix-blend-mode: screen;
+  animation: fx-twinkle 3.2s var(--ease-inout) infinite;
+}
+@keyframes fx-twinkle { 0%, 100% { opacity: 0.38; } 50% { opacity: 0.72; } }
+
+/* Scrim — any text over a finish rides above the glaze pseudos
+   (z4–5) on a bottom-up dark gradient; put text content at z7. */
+[data-liquid] .scrim {
+  position: absolute; inset: 0; z-index: 6; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(to top, oklch(0 0 0 / 0.62), transparent 55%);
+}
 
 /* ============ FRAME · AERO · SHINE · TEXT ==================== */
 /* (appended by integration tasks) */
