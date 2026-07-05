@@ -97,3 +97,18 @@ describe('frame / aero / shine / text', () => {
     expect(css()).toMatch(/\.fx-text-chrome[\s\S]*?background-clip:\s*text/)
   })
 })
+
+describe('crt / glass / bridges / reduced-motion', () => {
+  it('crt has phosphor grille + rolling refresh band', () => {
+    expect(css()).toMatch(/\[data-liquid\] \.fx-crt/)
+    expect(css()).toMatch(/@keyframes fx-roll/)
+  })
+  it('punk objects inherit fx optics via bridges, stickers frozen', () => {
+    expect(css()).toMatch(/\[data-liquid\] \.foil-sticker\.holo[\s\S]*?animation:\s*none/)
+    expect(css()).toMatch(/\[data-liquid\] \.foil-bubble\.iris/)
+    expect(css()).toMatch(/\[data-liquid\] \.foil-bubble\.chrome/)
+  })
+  it('freezes all fx motion under prefers-reduced-motion', () => {
+    expect(css()).toMatch(/prefers-reduced-motion:\s*reduce[\s\S]*?\.fx-live[\s\S]*?animation:\s*none\s*!important/)
+  })
+})

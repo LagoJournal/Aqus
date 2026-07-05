@@ -433,4 +433,111 @@
 }
 
 /* ============ CRT · GLASS · BRIDGES · REDUCED MOTION ========= */
-/* (appended by integration tasks) */
+
+/* -- CRT: a real tube, not a line pattern. */
+[data-liquid] .fx-crt { position: relative; overflow: hidden; }
+[data-liquid] .fx-crt::before {           /* z7 — scanlines + RGB phosphor grille */
+  content: ""; position: absolute; inset: 0; z-index: 7; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, oklch(0 0 0 / 0.28) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(to right,
+      oklch(0.6 0.25 25 / 0.13) 0 2px, oklch(0.7 0.24 145 / 0.13) 2px 4px, oklch(0.55 0.2 262 / 0.13) 4px 6px);
+}
+[data-liquid] .fx-crt::after {            /* z8 — curved glass vignette + bloom + refresh band */
+  content: ""; position: absolute; inset: 0; z-index: 8; border-radius: inherit; pointer-events: none;
+  background:
+    radial-gradient(120% 120% at 50% 50%, transparent 58%, oklch(0 0 0 / 0.45) 100%),
+    radial-gradient(60% 45% at 50% 42%, oklch(1 0 0 / 0.10), transparent 70%),
+    linear-gradient(to bottom, transparent 0, oklch(1 0 0 / 0.06) 50%, transparent 110px) no-repeat 0 -110px / 100% 110px;
+}
+[data-liquid] .fx-crt.scan::after { animation: fx-roll 5.5s linear infinite; }
+@keyframes fx-roll {
+  0%        { background-position: 0 0, 0 0, 0 -110px; }
+  70%, 100% { background-position: 0 0, 0 0, 0 calc(100% + 110px); }
+}
+
+/* -- Glass: light-aware frost (Aqus glass tokens + bloom at the light) */
+[data-liquid] .fx-glass {
+  position: relative;
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  border: 1px solid var(--glass-border-light);
+  border-bottom-color: var(--glass-border-dark);
+  box-shadow: var(--shadow-glass);
+}
+[data-liquid] .fx-glass::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 1), transparent 64%);
+  mix-blend-mode: screen; opacity: 0.30;
+}
+/* Liquid glass: heavier frost + chromatic fringes. Needs lively content behind. */
+[data-liquid] .fx-glass.liquid {
+  -webkit-backdrop-filter: blur(12px) saturate(1.9) brightness(1.05);
+  backdrop-filter: blur(12px) saturate(1.9) brightness(1.05);
+  box-shadow:
+    var(--shadow-glass),
+    inset 2px 0 3px -1px oklch(0.66 0.26 345 / 0.4),   /* magenta left fringe */
+    inset -2px 0 3px -1px oklch(0.85 0.13 210 / 0.4),  /* cyan right fringe   */
+    inset 0 8px 12px -6px oklch(1 0 0 / 0.6);          /* thicker caplet      */
+}
+
+/* -- Punk bridges: zine objects inherit FX optics when the DLC
+   is on. Stickers freeze (print doesn't wobble); bubbles keep
+   ONLY the agus-liquid morph — composite motion never re-adds
+   any hue animation. */
+[data-liquid] .foil-sticker.holo,
+[data-liquid] .foil-sticker.label.holo {
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+  animation: none;
+}
+[data-liquid] .foil-sticker.chrome {
+  background: linear-gradient(to bottom,
+    oklch(0.88 0.03 235) 0%, oklch(0.60 0.02 250) 44%,
+    oklch(0.36 0.01 250) 52%, oklch(0.28 0.02 255) 100%);
+  color: oklch(0.95 0 0);
+  animation: none;
+}
+[data-liquid] .foil-bubble.holo {
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
+}
+[data-liquid] .foil-bubble.iris {
+  background: var(--fx-nacre), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
+}
+[data-liquid] .foil-bubble.chrome {
+  background: var(--fx-metal);
+  background-size: 300% 300%;
+  background-position: var(--lx) var(--ly);
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite;
+}
+/* Motion classes on bridged objects: morph + punk motion, never hue */
+[data-liquid] .foil-bubble.holo.foil-breathe,
+[data-liquid] .foil-bubble.iris.foil-breathe {
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite,
+             foil-breathe 4.5s var(--ease-inout) infinite;
+}
+[data-liquid] .foil-bubble.holo.foil-float,
+[data-liquid] .foil-bubble.iris.foil-float {
+  animation: agus-liquid var(--dur-liquid) var(--ease-inout) infinite,
+             foil-float 6s var(--ease-inout) infinite;
+}
+
+/* -- Reduced motion: the light freezes in a good spot
+   (initial --lx 32% / --ly 18%); nothing spins, so nothing
+   needs replacing. */
+@media (prefers-reduced-motion: reduce) {
+  [data-liquid] .fx-live, [data-liquid] .fx-shine::before,
+  [data-liquid] .fx-chrome::after, [data-liquid] .fx-cosmos-rays,
+  [data-liquid] .fx-crt.scan::after { animation: none !important; }
+}
