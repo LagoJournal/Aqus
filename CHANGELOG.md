@@ -6,6 +6,62 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning: [S
 
 ---
 
+## [0.4.0] — 2026-07-05
+
+**Liquid Identity** — the Aqus Foil FX DLC. The loud half of Aqus: trading-card-foil
+optics as an opt-in brand expansion. Core Aqus stays calm and matte by default.
+The toggle is the brand story — the pond at rest vs. the pond catching sun.
+
+### Added
+- **`src/tokens/foil-fx.css`** — the optics layer, fully gated behind `[data-liquid]`:
+  solid finishes (`fx-holo/chrome/pearl/aurora/prism/dew/tile`), the `fx-finish` glaze
+  with the whisper·soft·rich·ultra ladder (one dial, `--fx-amount`), `fx-frame` (TCG rim),
+  `fx-aero` (accent action surface), one-way `fx-shine` passes (+`sheen`/`glint`),
+  `fx-crt` (+`scan`), light-aware `fx-glass` (+`liquid`), holo/chrome text fills,
+  `fx-cosmos-rays`, `.scrim`, and punk-object optic bridges. Law of the stack:
+  metal (luminance) + spectrum (hue) + light (`--lx/--ly`) + grit. The hue-rotation
+  filter is banned library-wide; all motion is the light.
+- **`src/tokens/foil.css`** — the punk/object layer (always on): stickers, bubbles,
+  bursts, sparkles, riso, halftone, zine text, glitch (peaks only), labels, scratch
+  weather, and the `--foil-*` art palette.
+- **`foil-fx.js`** (`@agustin/aqus/foil-fx`) — the light engine: randomized per-surface
+  light origins (no two surfaces share a light spot), rAF-throttled pointer lean
+  (`.fx-hold`), ≤7° tilt for `[data-tilt]`, and the DLC toggle API
+  (`AqusFoil.enable/disable/toggle/enabled/wire`), persisted via
+  `localStorage['aqus-liquid']`. Auto-boots as a script tag.
+- **`npx aqus lint [dir…]`** — foil-law tripwires: the hue-rotation filter, >1 `ultra`
+  per document, `fx-finish` nested in `fx-finish` (`lib/foil-lint.js`).
+- **Playground "Liquid Identity" section** — the DLC on/off acceptance surface
+  (off-state must stay fully readable).
+- **Foil brand card** (`src/components/brand/foil.card.html`).
+- **21 new tests** (CSS content-regression + jsdom engine tests).
+
+### Docs
+- `SKILL.md` + `AGENT_GUIDE.md`: the eight foil laws, the per-view budget (1 ultra ·
+  ≤3 rich · 1 pass · ≤5 bubbles · ≤2 sparkles · ≤2 punk objects · 0 foil-over-foil),
+  contrast/scrim rules, class catalog, recipes, semantic conventions
+  (rarity=edition · finish=state · foil=chart heat), off-state acceptance.
+- Agent-rules improvement pass: DLC docs load only when the gate is on; three new
+  failure-mode rows (flat rainbow fill, spinning hue, foil on reading surface);
+  fixed stale "10-step" composition-process reference (it's 11 since v0.3).
+- `docs/motion-audit.md` — animation inventory, reduced-motion token-hole analysis,
+  FX repaint-cost notes, deferred recommendations.
+
+### Fixed
+- **HeroSection decorative blobs escaped reduced-motion** — literal `11s/9s` durations
+  now derive from `--dur-liquid` (`calc(× 1.1/0.9)`): identical speeds, and the global
+  reduced-motion token zeroing freezes them properly.
+- Removed dead `_adherence.oxlintrc.json` entry from `files` (file never shipped).
+
+### Notes
+- The Foil v2 exploration's source files were not available at integration time;
+  formulas were reconstructed from the handoff spec (layer stack, blend modes, oklch
+  anchors, durations). If the approved originals surface, diff & replace verbatim.
+- Animated `@property` (the drifting light) needs Chrome 85+ / Safari 16.4+; older
+  browsers render a static light.
+
+---
+
 ## [0.3.0] — 2026-07-01
 
 Mobile/layout bugfix pass from a real production dashboard integration. The root

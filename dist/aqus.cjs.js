@@ -3643,7 +3643,8 @@ function HeroSection({
       background: "linear-gradient(140deg, var(--accent-mid), var(--accent))",
       opacity: 0.18,
       borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%",
-      animation: "agus-liquid 11s var(--ease-inout) infinite",
+      // calc off --dur-liquid (10s) so reduced-motion (token → 0ms) freezes it
+      animation: "agus-liquid calc(var(--dur-liquid) * 1.1) var(--ease-inout) infinite",
       filter: "blur(4px)"
     } }),
     /* @__PURE__ */ jsxRuntime.jsx("span", { "aria-hidden": "true", style: {
@@ -3654,7 +3655,7 @@ function HeroSection({
       bottom: "-18%",
       background: "var(--accent-glass)",
       borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%",
-      animation: "agus-liquid 9s var(--ease-inout) infinite",
+      animation: "agus-liquid calc(var(--dur-liquid) * 0.9) var(--ease-inout) infinite",
       animationDelay: "-4s"
     } }),
     /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative", maxWidth: align === "center" ? 680 : 640, marginInline: align === "center" ? "auto" : void 0 }, children: [
