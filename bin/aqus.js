@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* foil-lint-disable — help text names the banned patterns */
 /**
  * Aqus CLI — npx aqus init
  *
@@ -33,6 +34,14 @@ if (cmd === 'init') {
   init(parseFlags(rawArgs)).catch(e => { console.error(e.message); process.exit(1) })
 } else if (cmd === 'agent' && rawArgs[0] === 'install') {
   agentOnly(parseFlags(rawArgs.slice(1))).catch(e => { console.error(e.message); process.exit(1) })
+} else if (cmd === 'lint') {
+  import('../lib/foil-lint.js').then(({ lintPath }) => {
+    const targets = rawArgs.filter(a => !a.startsWith('-'))
+    const findings = targets.length ? targets.flatMap(t => lintPath(t)) : lintPath('.')
+    if (findings.length === 0) { console.log('✔ aqus lint: no foil-law violations'); return }
+    for (const f of findings) console.error(`✘ ${f.file} [${f.rule}] ${f.msg}`)
+    process.exit(1)
+  }).catch(e => { console.error(e.message); process.exit(1) })
 } else {
   console.log(`
   Aqus CLI
@@ -40,6 +49,7 @@ if (cmd === 'init') {
   Commands:
     npx aqus init              Full project setup (accent + CSS + agent)
     npx aqus agent install     Install Claude agent skill only
+    npx aqus lint [dir…]       Foil-law tripwires (hue-rotate, >1 ultra, foil-over-foil)
 
   Flags (init):
     --yes, -y                 Non-interactive: use defaults, skip prompts
