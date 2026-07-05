@@ -13,6 +13,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@agustin/aqus/styles.css': resolve(__dirname, '../styles.css'),
+      '@agustin/aqus/foil-fx': resolve(__dirname, '../foil-fx.js'),
       '@agustin/aqus': resolve(__dirname, '../src/index.js'),
     },
   },
