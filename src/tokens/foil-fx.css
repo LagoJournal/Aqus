@@ -195,13 +195,18 @@
   background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
   background-blend-mode: multiply, screen, color, normal;
 }
-[data-liquid] .fx-prism::before {         /* the confetti — 4 tiled wedge layers */
+[data-liquid] .fx-prism::before {         /* the confetti — 6 tiled wedge layers.
+   SMALL shards (tiles 29–53px, wedge spans 26–44°) at coprime tile
+   sizes: dense tiny triangles, no readable repeat, some dark
+   (negative alpha via black wedges) like real cracked-ice foil. */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background:
-    conic-gradient(from 25deg at 30% 35%, oklch(1 0 0 / 0.9) 0 38deg, transparent 38deg) 0 0 / 57px 63px,
-    conic-gradient(from 200deg at 68% 62%, oklch(1 0 0 / 0.75) 0 46deg, transparent 46deg) 19px 31px / 73px 81px,
-    conic-gradient(from 118deg at 44% 72%, oklch(1 0 0 / 0.6) 0 30deg, transparent 30deg) 33px 11px / 67px 53px,
-    conic-gradient(from 312deg at 62% 24%, oklch(1 0 0 / 0.8) 0 42deg, transparent 42deg) 7px 47px / 89px 71px,
+    conic-gradient(from 25deg at 34% 38%, oklch(1 0 0 / 0.85) 0 32deg, transparent 32deg) 0 0 / 29px 33px,
+    conic-gradient(from 203deg at 66% 60%, oklch(1 0 0 / 0.7) 0 40deg, transparent 40deg) 9px 14px / 37px 41px,
+    conic-gradient(from 117deg at 45% 70%, oklch(1 0 0 / 0.55) 0 26deg, transparent 26deg) 17px 5px / 43px 31px,
+    conic-gradient(from 311deg at 60% 28%, oklch(1 0 0 / 0.75) 0 36deg, transparent 36deg) 4px 22px / 53px 47px,
+    conic-gradient(from 78deg at 28% 55%, oklch(0 0 0 / 0.6) 0 30deg, transparent 30deg) 12px 9px / 47px 39px,
+    conic-gradient(from 256deg at 70% 42%, oklch(0 0 0 / 0.5) 0 34deg, transparent 34deg) 21px 17px / 31px 49px,
     var(--fx-grain);
   mix-blend-mode: overlay;
 }
@@ -217,29 +222,24 @@
    layers per drop, six drops, sizes 26–64px. */
 [data-liquid] .fx-dew {
   position: relative;
+  /* Each drop is ONE radial with an off-center eye: a small hard
+     specular up-left, a nearly-clear lens body, a THIN low-alpha
+     rim (not a drawn circle), and a whisper of shadow under the
+     bottom edge. Sizes 16–44px — condensation, not bubbles. */
   background:
-    /* drop 1 — 64px */
-    radial-gradient(circle at 50% 50%, transparent 0 56%, oklch(1 0 0 / 0.7) 62% 68%, oklch(0.45 0.05 220 / 0.3) 74%, transparent 78%) 14% 22% / 64px 64px no-repeat,
-    radial-gradient(circle at 50% 50%, oklch(1 0 0 / 0.95) 0 18%, transparent 30%) calc(14% + 12px) calc(22% + 10px) / 16px 16px no-repeat,
-    /* drop 2 — 44px */
-    radial-gradient(circle at 50% 50%, transparent 0 56%, oklch(1 0 0 / 0.65) 62% 68%, oklch(0.45 0.05 220 / 0.28) 74%, transparent 78%) 66% 12% / 44px 44px no-repeat,
-    radial-gradient(circle at 50% 50%, oklch(1 0 0 / 0.9) 0 18%, transparent 30%) calc(66% + 8px) calc(12% + 7px) / 11px 11px no-repeat,
-    /* drop 3 — 56px */
-    radial-gradient(circle at 50% 50%, transparent 0 56%, oklch(1 0 0 / 0.7) 62% 68%, oklch(0.45 0.05 220 / 0.3) 74%, transparent 78%) 38% 58% / 56px 56px no-repeat,
-    radial-gradient(circle at 50% 50%, oklch(1 0 0 / 0.95) 0 18%, transparent 30%) calc(38% + 10px) calc(58% + 9px) / 14px 14px no-repeat,
-    /* drop 4 — 30px */
-    radial-gradient(circle at 50% 50%, transparent 0 54%, oklch(1 0 0 / 0.6) 62% 70%, transparent 78%) 84% 46% / 30px 30px no-repeat,
-    radial-gradient(circle at 50% 50%, oklch(1 0 0 / 0.85) 0 20%, transparent 32%) calc(84% + 6px) calc(46% + 5px) / 8px 8px no-repeat,
-    /* drop 5 — 48px */
-    radial-gradient(circle at 50% 50%, transparent 0 56%, oklch(1 0 0 / 0.65) 62% 68%, oklch(0.45 0.05 220 / 0.28) 74%, transparent 78%) 12% 80% / 48px 48px no-repeat,
-    radial-gradient(circle at 50% 50%, oklch(1 0 0 / 0.9) 0 18%, transparent 30%) calc(12% + 9px) calc(80% + 8px) / 12px 12px no-repeat,
-    /* drop 6 — 26px */
-    radial-gradient(circle at 50% 50%, transparent 0 54%, oklch(1 0 0 / 0.6) 62% 70%, transparent 78%) 62% 84% / 26px 26px no-repeat,
-    radial-gradient(circle at 50% 50%, oklch(1 0 0 / 0.85) 0 20%, transparent 32%) calc(62% + 5px) calc(84% + 4px) / 7px 7px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.75) 0 7%, oklch(1 0 0 / 0.12) 14% 60%, oklch(1 0 0 / 0.42) 68% 72%, oklch(0.35 0.04 220 / 0.2) 79%, transparent 84%) 12% 18% / 44px 44px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.7) 0 7%, oklch(1 0 0 / 0.1) 14% 60%, oklch(1 0 0 / 0.38) 68% 72%, oklch(0.35 0.04 220 / 0.18) 79%, transparent 84%) 64% 10% / 30px 30px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.75) 0 7%, oklch(1 0 0 / 0.12) 14% 60%, oklch(1 0 0 / 0.42) 68% 72%, oklch(0.35 0.04 220 / 0.2) 79%, transparent 84%) 36% 54% / 38px 38px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.65) 0 8%, oklch(1 0 0 / 0.1) 16% 60%, oklch(1 0 0 / 0.35) 68% 73%, transparent 82%) 83% 42% / 20px 20px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.7) 0 7%, oklch(1 0 0 / 0.1) 14% 60%, oklch(1 0 0 / 0.38) 68% 72%, oklch(0.35 0.04 220 / 0.18) 79%, transparent 84%) 10% 74% / 34px 34px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.65) 0 8%, oklch(1 0 0 / 0.1) 16% 60%, oklch(1 0 0 / 0.35) 68% 73%, transparent 82%) 58% 82% / 22px 22px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.6) 0 8%, oklch(1 0 0 / 0.08) 16% 60%, oklch(1 0 0 / 0.3) 68% 74%, transparent 82%) 90% 78% / 16px 16px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.65) 0 8%, oklch(1 0 0 / 0.1) 16% 60%, oklch(1 0 0 / 0.35) 68% 73%, transparent 82%) 28% 6% / 18px 18px no-repeat,
+    radial-gradient(circle at 40% 34%, oklch(1 0 0 / 0.6) 0 8%, oklch(1 0 0 / 0.08) 16% 60%, oklch(1 0 0 / 0.3) 68% 74%, transparent 82%) 76% 62% / 24px 24px no-repeat,
     /* the wet surface behind the drops */
     linear-gradient(150deg, oklch(0.82 0.07 230 / 0.7), oklch(0.76 0.10 200 / 0.6));
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 [data-liquid] .fx-dew::after {            /* bloom behind the drops */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -320,6 +320,9 @@
   background-size: 100% 100%, 100% 100%, 100% 100%, 300% 300%;
   background-position: 0 0, 0 0, 0 0, var(--lx) var(--ly);
   background-blend-mode: screen, screen, color, normal;
+  /* pastel nacre nearly vanishes under overlay on dark surfaces —
+     boost the dial so pearl stays noticeable in dark mode */
+  opacity: calc(var(--fx-amount) * 1.4);
 }
 [data-liquid] .fx-finish.aurora::after {
   background:
