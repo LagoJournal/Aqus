@@ -74,3 +74,26 @@ describe('fx-finish glaze', () => {
     expect(css()).toMatch(/@keyframes fx-twinkle/)
   })
 })
+
+describe('frame / aero / shine / text', () => {
+  it('fx-frame wears the rim as padding with inner radius on the child', () => {
+    expect(css()).toMatch(/\[data-liquid\] \.fx-frame[\s\S]*?padding:\s*5px/)
+    expect(css()).toMatch(/\.fx-frame\.thin[\s\S]*?padding:\s*2\.5px/)
+    expect(css()).toMatch(/\[data-liquid\] \.fx-frame > \*/)
+  })
+  it('fx-aero is accent-driven — the spectrum never touches it', () => {
+    const aero = css().slice(css().indexOf('[data-liquid] .fx-aero'), css().indexOf('/* -- Shine'))
+    expect(aero).toContain('--accent')
+    expect(aero).not.toContain('--fx-spectrum')
+  })
+  it('shine passes once, one way, and holds (forwards, never reverse/infinite)', () => {
+    // lastIndexOf: .fx-text-holo also appears in the OFF-STATE block at the top
+    const shine = css().slice(css().indexOf('[data-liquid] .fx-shine'), css().lastIndexOf('.fx-text-holo'))
+    expect(shine).toMatch(/animation:[^;]*forwards/)
+    expect(shine).not.toMatch(/animation:[^;]*(infinite|alternate)/)
+  })
+  it('text fills clip the composite to glyphs', () => {
+    expect(css()).toMatch(/\.fx-text-holo[\s\S]*?background-clip:\s*text/)
+    expect(css()).toMatch(/\.fx-text-chrome[\s\S]*?background-clip:\s*text/)
+  })
+})

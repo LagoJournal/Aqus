@@ -330,7 +330,107 @@
 }
 
 /* ============ FRAME · AERO · SHINE · TEXT ==================== */
-/* (appended by integration tasks) */
+
+/* -- Frame: the TCG holo edge. The primary way to mark a rare
+   without glazing it twice (foil-over-foil is the forbidden stack). */
+[data-liquid] .fx-frame {
+  position: relative; border: none; padding: 5px;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.8), transparent 64%),
+    var(--fx-spectrum),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+}
+[data-liquid] .fx-frame > * { border-radius: calc(var(--radius-lg) - 5px); }
+[data-liquid] .fx-frame.thin { padding: 2.5px; }
+[data-liquid] .fx-frame.thin > * { border-radius: calc(var(--radius-lg) - 2.5px); }
+[data-liquid] .fx-frame.chrome {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.8), transparent 64%),
+    var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, normal;
+}
+[data-liquid] .fx-frame.pearl {
+  background:
+    radial-gradient(70% 52% at var(--lx) var(--ly), oklch(1 0 0 / 0.8), transparent 64%),
+    var(--fx-nacre),
+    var(--fx-metal);
+  background-size: 100% 100%, 100% 100%, 300% 300%;
+  background-position: 0 0, 0 0, var(--lx) var(--ly);
+  background-blend-mode: screen, color, normal;
+}
+
+/* -- Aero: the frutiger action surface. ACCENT-driven; the
+   spectrum never touches it (accent owns interaction). For
+   buttons, toggles, active tabs — action only. */
+[data-liquid] .fx-aero {
+  position: relative;
+  background:
+    radial-gradient(120% 85% at 50% 0%, var(--accent-mid), var(--accent) 55%, var(--accent-hover)),
+    radial-gradient(90% 40% at 50% 108%, oklch(1 0 0 / 0.35), transparent 70%);
+  color: var(--on-accent);
+  box-shadow:
+    inset 0 -12px 22px oklch(0 0 0 / 0.28),   /* deep well        */
+    0 4px 14px var(--accent-glow);
+}
+[data-liquid] .fx-aero::before {          /* inset caplet highlight */
+  content: ""; position: absolute; inset: 2px 2px auto 2px; height: 48%;
+  border-radius: inherit; border-bottom-left-radius: 50% 60%; border-bottom-right-radius: 50% 60%;
+  background: linear-gradient(to bottom, oklch(1 0 0 / 0.92), oklch(1 0 0 / 0.02));
+  pointer-events: none;
+}
+[data-liquid] .fx-aero::after {           /* accent underglow */
+  content: ""; position: absolute; inset: 60% -6% -18% -6%; border-radius: inherit;
+  background: radial-gradient(60% 80% at 50% 100%, var(--accent-glow), transparent 70%);
+  mix-blend-mode: screen; pointer-events: none;
+}
+
+/* -- Shine: one-way specular pass — crosses ONCE, then rests.
+   Transform/position only (cheap). Never reverses. */
+[data-liquid] .fx-shine { position: relative; overflow: hidden; }
+[data-liquid] .fx-shine::before {
+  content: ""; position: absolute; top: -20%; bottom: -20%; left: -70%; width: 56%;
+  background: linear-gradient(105deg, transparent, oklch(1 0 0 / 0.34), transparent);
+  filter: blur(14px); transform: skewX(-12deg); pointer-events: none;
+  animation: fx-pass var(--fx-dur-shine) var(--ease-out) 1 forwards;
+}
+[data-liquid] .fx-shine.sheen::before {
+  width: 110%; filter: blur(22px);
+  background: linear-gradient(105deg, transparent, oklch(1 0 0 / 0.20), transparent);
+  animation-duration: calc(var(--fx-dur-shine) * 2.6);
+}
+[data-liquid] .fx-shine.glint::before {
+  width: 22%; filter: blur(4px);
+  background: linear-gradient(105deg, transparent, oklch(1 0 0 / 0.9), transparent);
+  animation-duration: calc(var(--fx-dur-shine) * 0.5);
+}
+@keyframes fx-pass { to { left: 135%; } }  /* travels once and HOLDS */
+
+/* -- Text fills: only on display type sitting ON a surface
+   (law 5: foil the container, not floating letters). */
+[data-liquid] .fx-text-holo {
+  background: var(--fx-spectrum), var(--fx-metal);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--lx) var(--ly);
+  background-blend-mode: color, normal;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 6px oklch(0 0 0 / 0.35));
+}
+[data-liquid] .fx-text-chrome {
+  background: linear-gradient(to bottom,
+    oklch(0.90 0.02 235) 0%, oklch(0.70 0.03 230) 30%,
+    oklch(0.55 0.02 250) 46%, oklch(0.35 0.01 250) 54%,
+    oklch(0.65 0.02 250) 72%, oklch(0.30 0.01 255) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 6px oklch(0 0 0 / 0.35));
+}
 
 /* ============ CRT · GLASS · BRIDGES · REDUCED MOTION ========= */
 /* (appended by integration tasks) */
