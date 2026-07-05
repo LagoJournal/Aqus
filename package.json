@@ -12,7 +12,8 @@
       "import": "./dist/aqus.es.js",
       "require": "./dist/aqus.cjs.js"
     },
-    "./styles.css": "./styles.css"
+    "./styles.css": "./styles.css",
+    "./foil-fx": "./foil-fx.js"
   },
   "bin": {
     "aqus": "./bin/aqus.js"
@@ -24,6 +25,7 @@
     "bin",
     "lib",
     "styles.css",
+    "foil-fx.js",
     "assets/fonts",
     "docs/AGENT_GUIDE.md",
     "docs/USER_GUIDE.md",
@@ -31,8 +33,7 @@
     "docs/ux-laws.md",
     "docs/voice-rules.md",
     "SKILL.md",
-    "postinstall.js",
-    "_adherence.oxlintrc.json"
+    "postinstall.js"
   ],
   "sideEffects": [
     "*.css"
