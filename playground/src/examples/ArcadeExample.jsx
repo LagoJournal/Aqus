@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Badge, Tag, Stack, SegmentedControl } from '@agustin/aqus'
+import { Card, Badge, Tag, Stack, SegmentedControl, EmptyState, Button, LiquidBubble } from '@agustin/aqus'
 import { AqusFoil } from '@agustin/aqus/foil-fx'
 
 /**
@@ -70,7 +70,7 @@ export function ArcadeExample() {
         <Stack direction="row" wrap gap={2} align="center" style={{ justifyContent: 'space-between' }}>
           <Stack direction="row" wrap gap={2} align="center">
             <span className="foil-sticker chrome" style={{ fontSize: 'var(--text-mini)', padding: '5px 10px' }}>
-              ⬤ {pearls} pearls
+              <LiquidBubble size={10} color="oklch(0.9 0.02 250)" /> {pearls} pearls
             </span>
             <Tag>{catches.length} caught</Tag>
           </Stack>
@@ -85,7 +85,7 @@ export function ArcadeExample() {
 
         {view === 'pond' && <PondGame addPearls={addPearls} addCatch={addCatch} hasLegendary={hasLegendary} />}
         {view === 'spin' && <SpinWheel pearls={pearls} spend={spend} addPearls={addPearls} addCatch={addCatch} />}
-        {view === 'aquarium' && <Aquarium catches={catches} pearls={pearls} spend={spend} grow={(id) => setCatches(cs => cs.map(c => c.id === id ? { ...c, size: Math.min(c.size + 1, 3) } : c))} />}
+        {view === 'aquarium' && <Aquarium catches={catches} pearls={pearls} spend={spend} goPond={() => setView('pond')} grow={(id) => setCatches(cs => cs.map(c => c.id === id ? { ...c, size: Math.min(c.size + 1, 3) } : c))} />}
       </Stack>
     </div>
   )
@@ -167,7 +167,7 @@ function PondGame({ addPearls, addCatch, hasLegendary }) {
           <span className="foil-bubble holo foil-float" style={{ position: 'absolute', width: 18, height: 18, left: '58%', top: '58%' }} />
         </>)}
         <div style={{ position: 'relative', zIndex: 7, padding: 16, color: 'oklch(0.97 0 0)' }}>
-          <strong>{biting ? 'BITE!' : phase === 'waiting' ? 'Line in the water…' : 'The pond'}</strong>
+          <strong>{biting ? 'Bite!' : phase === 'waiting' ? 'Line in the water…' : 'The pond'}</strong>
         </div>
       </div>
 
@@ -180,10 +180,10 @@ function PondGame({ addPearls, addCatch, hasLegendary }) {
             {biting ? 'Reel!' : 'Waiting…'}
           </button>
         )}
-        <span className="sc-item-desc">
+        <span className="sc-item-desc" aria-live="polite">
           {last === 'miss' ? 'It got away. Cast again.' :
            phase === 'waiting' ? 'Watch for the bite — you have under a second.' :
-           phase === 'bite' ? 'NOW.' : 'Catches pay pearls: 1 / 3 / 8 / 20 by rarity.'}
+           phase === 'bite' ? 'Reel it in.' : 'Catches pay pearls: 1 / 3 / 8 / 20 by rarity.'}
         </span>
       </Stack>
 
@@ -254,14 +254,14 @@ function SpinWheel({ pearls, spend, addPearls, addCatch }) {
         }} />
         <span className="foil-bubble chrome" style={{ position: 'absolute', left: '50%', top: '50%', width: 44, height: 44, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }} />
       </div>
-      <Stack direction="row" wrap gap={2} align="center" style={{ justifyContent: 'center' }}>
+      <Stack direction="row" wrap gap={2} align="center" style={{ justifyContent: 'center' }} aria-live="polite">
         <button className="fx-aero agus-focusable" onClick={spin} disabled={spinning || pearls < 5}
           style={{ ...aeroBtn, opacity: spinning || pearls < 5 ? 0.6 : 1 }}>
           Spin — 5 pearls
         </button>
-        {pearls < 5 && !spinning && <span className="sc-item-desc">Not enough pearls — go fish.</span>}
+        {pearls < 5 && !spinning && <span className="sc-item-desc">Not enough pearls — catch fish in the Pond.</span>}
         {result && result !== '—' && result !== 'JACKPOT' && <span className="sc-item-desc">Won: {result === 'fish' ? 'a bonus fish → aquarium' : `${result} pearls`}</span>}
-        {result === '—' && <span className="sc-item-desc">Blank. The pond gives, the wheel takes.</span>}
+        {result === '—' && <span className="sc-item-desc">Blank — no prize this spin.</span>}
         {result === 'JACKPOT' && (
           <Stack direction="row" gap={2} align="center">
             <span className="foil-text-zine foil-text-glitch" style={{ fontSize: 'var(--text-h4)' }}>JACKPOT +25</span>
@@ -277,7 +277,7 @@ function SpinWheel({ pearls, spend, addPearls, addCatch }) {
 const BUBBLE_VARIANT = { common: '', uncommon: 'iris', rare: 'holo', legendary: 'chrome' }
 const SPOTS = [[14, 30], [38, 55], [60, 25], [76, 60], [28, 72]]
 
-function Aquarium({ catches, pearls, spend, grow }) {
+function Aquarium({ catches, pearls, spend, grow, goPond }) {
   const [fedId, setFedId] = React.useState(null)
   const shown = catches.slice(0, 5)
 
@@ -290,13 +290,12 @@ function Aquarium({ catches, pearls, spend, grow }) {
 
   if (catches.length === 0) {
     return (
-      <Card style={{ textAlign: 'center', padding: 'var(--space-7)' }}>
-        <Stack gap={2} align="center">
-          <span style={{ fontSize: 34 }}>🎣</span>
-          <strong>Nothing swimming yet</strong>
-          <span className="sc-item-desc">Cast a line in the Pond — every catch lands here.</span>
-        </Stack>
-      </Card>
+      <EmptyState
+        icon={<i className="ph ph-fish" />}
+        title="Nothing swimming yet"
+        description="Every catch from the Pond lands here."
+        action={<Button variant="primary" onClick={goPond}>Go to the Pond</Button>}
+      />
     )
   }
 
