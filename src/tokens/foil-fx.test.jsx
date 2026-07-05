@@ -61,6 +61,15 @@ describe('solid finishes', () => {
     expect(chrome).toMatch(/44%/) // falloff begins
     expect(chrome).toMatch(/52%/) // falloff ends
   })
+  it('chrome clips its sweeping specular and wobbles without hard stops', () => {
+    const chrome = css().slice(css().indexOf('[data-liquid] .fx-chrome'), css().indexOf('/* -- Pearl'))
+    // sweep must never render outside the surface
+    expect(chrome).toMatch(/overflow:\s*hidden/)
+    // wobble bands: every stop is a single-position ramp (a double-position
+    // stop like `0 44px` is a hard band edge — the "weird lines" bug)
+    const wobble = chrome.slice(chrome.indexOf('.fx-chrome::before'), chrome.indexOf('.fx-chrome::after'))
+    expect(wobble).not.toMatch(/oklch\([^)]*\)\s+\d+px\s+\d+px/)
+  })
 })
 
 describe('fx-finish glaze', () => {
