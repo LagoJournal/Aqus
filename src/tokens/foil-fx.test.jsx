@@ -115,6 +115,21 @@ describe('frame / aero / shine / text', () => {
   })
 })
 
+describe('fx-aero-toggle (frutiger UI surface)', () => {
+  it('has an ungated off-state (a plain readable switch) and a gated aero upgrade', () => {
+    // off-state must exist outside the gate — the control cannot vanish DLC-off
+    const head = css().slice(0, css().search(/^\[data-liquid\]/m))
+    expect(head).toMatch(/\.fx-aero-toggle\b/)
+    // gated: pressed state wears the accent aero dome
+    expect(css()).toMatch(/\[data-liquid\] \.fx-aero-toggle\[aria-pressed="true"\]/)
+  })
+  it('thumb is a liquid blob, never a plain circle (round = LiquidBubble law)', () => {
+    const toggle = css().slice(css().indexOf('.fx-aero-toggle'), css().indexOf('/* ============ LIGHT'))
+    expect(toggle).toMatch(/border-radius:\s*42% 58% 63% 37%/)
+    expect(toggle).not.toMatch(/border-radius:\s*50%/)
+  })
+})
+
 describe('crt / glass / bridges / reduced-motion', () => {
   it('crt has phosphor grille + rolling refresh band', () => {
     expect(css()).toMatch(/\[data-liquid\] \.fx-crt/)

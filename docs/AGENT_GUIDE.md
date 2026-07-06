@@ -1024,6 +1024,7 @@ The loud half of Aqus, opt-in. Enable: `AqusFoil.enable()` from `@agustin/aqus/f
 | `.fx-cosmos-rays` | overlay **child** `<i>` for the ultra hero | cosmos = `fx-finish ultra` + this child |
 | `.fx-frame` (+`.thin/.chrome/.pearl`) | TCG holo rim worn as padding | mark a rare without glazing twice |
 | `.fx-aero` | frutiger action surface — **accent-driven, spectrum never touches it** | buttons, toggles, active tabs |
+| `.fx-aero-toggle` | frutiger on/off switch on a `<button aria-pressed>` — plain readable switch DLC-off, wet accent dome when pressed + on | settings toggles, feature switches (the DLC's own toggle) |
 | `.fx-crt` (+`.scan`) | scanlines + RGB grille + rolling refresh | video/retro frames |
 | `.fx-glass` (+`.liquid`) | light-aware frost, chromatic fringes | overlays with lively content behind |
 | `.fx-text-holo` / `.fx-text-chrome` | composite clipped to glyphs | display type ON a surface only |
