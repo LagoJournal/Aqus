@@ -48,12 +48,14 @@ function BudgetMeter({ catches }) {
   )
 }
 
-const GAMES = { pond: 'Pond', slots: 'Slots', aquarium: 'Aquarium' }
+const GAMES = { pond: 'Pond', slots: 'Slots', aquarium: 'Aquarium', prizes: 'Prizes' }
 
 export function ArcadeExample() {
   const [pearls, setPearls] = React.useState(6)
   const [catches, setCatches] = React.useState([])
+  const [wins, setWins] = React.useState({ jackpots: 0, triples: 0 })
   const [view, setView] = React.useState('pond')
+  const [liquid, setLiquid] = React.useState(() => AqusFoil.enabled())
   const ref = React.useRef(null)
 
   // Wire pointer-lean/tilt whenever a game renders new .fx-live nodes.
@@ -62,11 +64,30 @@ export function ArcadeExample() {
   const addPearls = (n) => setPearls(p => p + n)
   const spend = (n) => setPearls(p => Math.max(0, p - n))
   const addCatch = (c) => setCatches(cs => [...cs, c])
+  const onWin = (kind) => setWins(w => ({ ...w, [kind]: w[kind] + 1 }))
   const hasLegendary = catches.some(c => c.rarity === 'legendary')
 
   return (
     <div ref={ref}>
       <Stack gap={3}>
+        {/* Marquee — CRT tube chrome + holo display type (foil the container) */}
+        <div className="fx-crt scan" style={{
+          position: 'relative', borderRadius: 'var(--radius-lg)', padding: '18px 22px',
+          background: 'linear-gradient(140deg, oklch(0.26 0.06 280), oklch(0.34 0.09 250) 55%, oklch(0.24 0.05 300))',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap',
+        }}>
+          <span className="fx-text-holo" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'var(--text-h3)', color: 'oklch(0.95 0.01 250)', letterSpacing: '0.01em' }}>
+            Aqus arcade
+          </span>
+          {/* the DLC's own switch, worn as the new aero toggle surface */}
+          <label style={{ display: 'inline-flex', alignItems: 'center', gap: 10, position: 'relative', zIndex: 9 }}>
+            <span style={{ fontSize: 'var(--text-caption)', color: 'oklch(0.9 0.01 250)' }}>Liquid lights</span>
+            <button type="button" className="fx-aero-toggle agus-focusable" aria-pressed={liquid}
+              aria-label="Toggle Liquid Identity"
+              onClick={() => setLiquid(AqusFoil.toggle())} />
+          </label>
+        </div>
+
         {/* HUD — theme-adaptive chips; the meter is the teaching element */}
         <Stack direction="row" wrap gap={2} align="center" style={{ justifyContent: 'space-between' }}>
           <Stack direction="row" wrap gap={2} align="center">
@@ -85,8 +106,9 @@ export function ArcadeExample() {
         />
 
         {view === 'pond' && <PondGame addPearls={addPearls} addCatch={addCatch} hasLegendary={hasLegendary} />}
-        {view === 'slots' && <SlotMachine pearls={pearls} spend={spend} addPearls={addPearls} addCatch={addCatch} />}
+        {view === 'slots' && <SlotMachine pearls={pearls} spend={spend} addPearls={addPearls} addCatch={addCatch} onWin={onWin} />}
         {view === 'aquarium' && <Aquarium catches={catches} pearls={pearls} spend={spend} goPond={() => setView('pond')} grow={(id) => setCatches(cs => cs.map(c => c.id === id ? { ...c, size: Math.min(c.size + 1, 3) } : c))} />}
+        {view === 'prizes' && <PrizeShelf catches={catches} wins={wins} hasLegendary={hasLegendary} />}
       </Stack>
     </div>
   )
@@ -250,9 +272,9 @@ const REPEATS = 8 // strip length per reel = SYMBOLS.length * REPEATS
 function resolvePayout(r, g) {
   const [a, b, c] = r
   if (a === b && b === c) {
-    if (SYMBOLS[a] === '🐚') { g.addPearls(25); return 'jackpot' }
-    if (SYMBOLS[a] === '🐟') { g.addCatch(makeCatch('uncommon')); return 'fish' }
-    g.addPearls(10); return 'triple'
+    if (SYMBOLS[a] === '🐚') { g.addPearls(25); g.onWin('jackpots'); return 'jackpot' }
+    if (SYMBOLS[a] === '🐟') { g.addCatch(makeCatch('uncommon')); g.onWin('triples'); return 'fish' }
+    g.addPearls(10); g.onWin('triples'); return 'triple'
   }
   if (a === b || b === c || a === c) { g.addPearls(2); return 'pair' }
   return 'blank'
@@ -286,7 +308,7 @@ function Reel({ target, spinning, delay }) {
   )
 }
 
-function SlotMachine({ pearls, spend, addPearls, addCatch }) {
+function SlotMachine({ pearls, spend, addPearls, addCatch, onWin }) {
   const [targets, setTargets] = React.useState([0, 1, 2])
   const [spinning, setSpinning] = React.useState(false)
   const [result, setResult] = React.useState(null)
@@ -296,7 +318,7 @@ function SlotMachine({ pearls, spend, addPearls, addCatch }) {
     if (spinning || pearls < 5) return
     spend(5); setResult(null)
     const next = [0, 1, 2].map(() => Math.floor(Math.random() * SYMBOLS.length))
-    const finish = () => setResult(resolvePayout(next, { addPearls, addCatch }))
+    const finish = () => setResult(resolvePayout(next, { addPearls, addCatch, onWin }))
     setTargets(next)
     if (reduced) { finish() }
     else {
@@ -373,25 +395,47 @@ function Aquarium({ catches, pearls, spend, grow, goPond }) {
     )
   }
 
+  const rarest = ['legendary', 'rare', 'uncommon', 'common'].find(r => catches.some(c => c.rarity === r))
   return (
     <Stack gap={3}>
-      <div className="fx-finish soft fx-live" style={{ ...WATER, minHeight: 220 }}>
-        {/* light shafts through the water */}
-        <span aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(105deg, transparent 18%, oklch(0.95 0.02 210 / 0.14) 24%, transparent 32%, transparent 55%, oklch(0.95 0.02 210 / 0.1) 62%, transparent 70%)', pointerEvents: 'none' }} />
-        {/* floor */}
-        <span aria-hidden style={{ position: 'absolute', insetInline: 0, bottom: 0, height: 34, background: 'linear-gradient(to top, oklch(0.35 0.05 80 / 0.55), transparent)', pointerEvents: 'none' }} />
-        {/* fish swim ABOVE everything decorative */}
-        {shown.map((c, i) => (
-          <span key={c.id} title={c.name}
-            className={`foil-bubble ${BUBBLE_VARIANT[c.rarity]} ${i % 2 ? 'foil-float' : 'foil-drift'}`}
-            style={{ position: 'absolute', left: `${SPOTS[i][0]}%`, top: `${SPOTS[i][1]}%`, width: 30 + c.size * 12, height: 30 + c.size * 12, zIndex: 8, fontSize: 15 + c.size * 5 }}>
-            {c.emoji}
-          </span>
-        ))}
-        {/* one glass reflection strip — decoration, not a frost wall */}
-        <span key={fedId} aria-hidden className={fedId ? 'fx-shine glint' : undefined} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 9 }} />
-        {catches.length > 5 && <Tag style={{ position: 'absolute', right: 10, bottom: 10, zIndex: 10 }}>+{catches.length - 5} more</Tag>}
-        {catches.some(c => c.rarity === 'legendary') && <span className="foil-sparkle blink" style={{ position: 'absolute', right: 24, top: 18, zIndex: 10 }} />}
+      <div className="sc-split">
+        <div className="fx-finish soft fx-live" style={{ ...WATER, minHeight: 220 }}>
+          {/* mosaic pool wall behind everything (fx-tile as texture) */}
+          <span aria-hidden className="fx-tile" style={{ position: 'absolute', insetInline: 0, bottom: 0, height: 62, opacity: 0.45, pointerEvents: 'none' }} />
+          {/* light shafts through the water */}
+          <span aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(105deg, transparent 18%, oklch(0.95 0.02 210 / 0.14) 24%, transparent 32%, transparent 55%, oklch(0.95 0.02 210 / 0.1) 62%, transparent 70%)', pointerEvents: 'none' }} />
+          {/* floor */}
+          <span aria-hidden style={{ position: 'absolute', insetInline: 0, bottom: 0, height: 34, background: 'linear-gradient(to top, oklch(0.35 0.05 80 / 0.55), transparent)', pointerEvents: 'none' }} />
+          {/* fish swim ABOVE everything decorative */}
+          {shown.map((c, i) => (
+            <span key={c.id} title={c.name}
+              className={`foil-bubble ${BUBBLE_VARIANT[c.rarity]} ${i % 2 ? 'foil-float' : 'foil-drift'}`}
+              style={{ position: 'absolute', left: `${SPOTS[i][0]}%`, top: `${SPOTS[i][1]}%`, width: 30 + c.size * 12, height: 30 + c.size * 12, zIndex: 8, fontSize: 15 + c.size * 5 }}>
+              {c.emoji}
+            </span>
+          ))}
+          {/* one glass reflection strip — decoration, not a frost wall */}
+          <span key={fedId} aria-hidden className={fedId ? 'fx-shine glint' : undefined} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 9 }} />
+          {catches.length > 5 && <Tag style={{ position: 'absolute', right: 10, bottom: 10, zIndex: 10 }}>+{catches.length - 5} more</Tag>}
+          {catches.some(c => c.rarity === 'legendary') && <span className="foil-sparkle blink" style={{ position: 'absolute', right: 24, top: 18, zIndex: 10 }} />}
+        </div>
+
+        {/* Tank log — light-aware glass chrome floating beside the scene.
+            foil-glass = always-frosted base; fx upgrades add the light bloom. */}
+        <div className="foil-glass fx-glass liquid fx-live" style={{ borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', alignSelf: 'stretch' }}>
+          <Stack gap={2}>
+            <span className="sc-item-cat">Tank log</span>
+            <Stack direction="row" gap={2} align="center" style={{ justifyContent: 'space-between' }}>
+              <span className="sc-item-desc">Fish</span><strong>{catches.length}</strong>
+            </Stack>
+            <Stack direction="row" gap={2} align="center" style={{ justifyContent: 'space-between' }}>
+              <span className="sc-item-desc">Rarest</span><Badge tone={rarest === 'common' ? 'neutral' : 'accent'} pill nowrap>{RARITIES[rarest].label}</Badge>
+            </Stack>
+            <Stack direction="row" gap={2} align="center" style={{ justifyContent: 'space-between' }}>
+              <span className="sc-item-desc">Biggest</span><strong>size {Math.max(...catches.map(c => c.size))}</strong>
+            </Stack>
+          </Stack>
+        </div>
       </div>
       <Stack direction="row" wrap gap={2} align="center">
         <button className="fx-aero agus-focusable" onClick={feed} disabled={pearls < 1} style={{ ...aeroBtn, opacity: pearls < 1 ? 0.6 : 1 }}>
@@ -399,6 +443,59 @@ function Aquarium({ catches, pearls, spend, grow, goPond }) {
         </button>
         <span className="sc-item-desc">Feeding grows a random fish (3 sizes). Rarity shows as the bubble's finish.</span>
       </Stack>
+    </Stack>
+  )
+}
+
+// ── Game 4: Prize shelf — every remaining surface, worn semantically ──
+// rarity = edition · finish = state · locked prizes fog up with fx-dew.
+function PrizeShelf({ catches, wins, hasLegendary }) {
+  const prizes = [
+    { id: 'first', done: catches.length >= 1, cls: 'fx-holo fx-live', name: 'First catch', how: 'Catch one fish', dark: false },
+    { id: 'school', done: catches.length >= 5, frame: true, name: 'School of five', how: 'Catch five fish', dark: false },
+    { id: 'triple', done: wins.triples >= 1, cls: 'fx-finish pearl soft fx-live', name: 'Triple line', how: 'Land any triple on the slots', dark: false },
+    { id: 'jackpot', done: wins.jackpots >= 1, cls: 'fx-prism fx-live', name: 'Shell jackpot', how: 'Hit three shells', dark: true },
+    { id: 'legend', done: hasLegendary, cls: 'fx-finish aurora rich fx-live', name: 'Legend of the pond', how: 'Catch the legendary', dark: true },
+    { id: 'chrome', done: catches.length >= 1 && wins.triples >= 1, cls: 'fx-chrome', name: 'House veteran', how: 'One catch + one slots win', dark: true },
+  ]
+  return (
+    <Stack gap={3}>
+      <span className="fx-text-chrome" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'var(--text-h4)', color: 'var(--text)' }}>
+        Trophy shelf
+      </span>
+      <div className="sc-grid">
+        {prizes.map(p => {
+          const inner = (
+            <div className={p.done ? p.cls : undefined} style={{ position: 'relative', overflow: 'hidden', borderRadius: p.frame ? 'calc(var(--radius-lg) - 2.5px)' : 'var(--radius-lg)', minHeight: 96, background: p.done ? undefined : 'var(--surface)', border: p.done ? 'none' : '1px solid var(--border)' }}>
+              {p.done && p.dark && <div className="scrim" />}
+              {/* locked prizes fog up — dew as the lock state */}
+              {!p.done && <span aria-hidden className="fx-dew" style={{ position: 'absolute', inset: 0, opacity: 0.8, pointerEvents: 'none' }} />}
+              <div style={{ position: 'relative', zIndex: 7, padding: 14, display: 'flex', flexDirection: 'column', gap: 4, color: p.done ? (p.dark ? 'oklch(0.97 0 0)' : 'var(--foil-ink)') : 'var(--text-muted)' }}>
+                <Stack direction="row" gap={2} align="center" style={{ justifyContent: 'space-between' }}>
+                  <strong style={{ textShadow: p.done && p.dark ? '0 1px 3px oklch(0 0 0 / 0.5)' : 'none' }}>{p.name}</strong>
+                  {p.done ? <i className="ph ph-trophy" aria-label="Unlocked" /> : <i className="ph ph-lock-simple" aria-label="Locked" />}
+                </Stack>
+                <span style={{ fontSize: 'var(--text-caption)', opacity: 0.85 }}>{p.how}</span>
+              </div>
+            </div>
+          )
+          return p.frame && p.done
+            ? <div key={p.id} className="fx-frame thin fx-live">{inner}</div>
+            : <div key={p.id}>{inner}</div>
+        })}
+      </div>
+
+      {/* the punk corner — one composed zine poster (print stays ink) */}
+      <Card className="foil-scratch" style={{ position: 'relative', overflow: 'hidden' }}>
+        <span aria-hidden className="foil-halftone" style={{ position: 'absolute', inset: 0, opacity: 0.14, pointerEvents: 'none' }} />
+        <Stack direction="row" wrap gap={3} align="center" style={{ justifyContent: 'space-between', position: 'relative' }}>
+          <Stack gap={1}>
+            <span className="foil-text-zine foil-riso-offset" style={{ fontSize: 'var(--text-h4)' }}>Season one</span>
+            <span className="sc-item-desc">Zine corner: riso overprint, halftone, scratch weather — print stays ink.</span>
+          </Stack>
+          <span className="foil-sticker cut" style={{ fontSize: 'var(--text-mini)', padding: '8px 12px' }}>Fresh drops</span>
+        </Stack>
+      </Card>
     </Stack>
   )
 }
